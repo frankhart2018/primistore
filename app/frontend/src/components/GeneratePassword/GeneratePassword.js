@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createPasswordThunk } from "../../services/password-thunk";
+import NavBar from "../NavBar/NavBar";
 
 const GeneratePassword = () => {
   let [identifier, setIdentifier] = useState("");
@@ -22,6 +23,7 @@ const GeneratePassword = () => {
 
   return (
     <div>
+      <NavBar />
       <p>
         <label for="identifier">Password identifier (should be unique):</label>
         <input

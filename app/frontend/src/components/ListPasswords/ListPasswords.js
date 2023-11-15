@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPasswordsThunk } from "../../services/password-thunk";
 
 import "./ListPasswords.css";
+import NavBar from "../NavBar/NavBar";
 
 const ListPasswords = () => {
   const { passwords } = useSelector((state) => state.password);
@@ -15,6 +16,7 @@ const ListPasswords = () => {
 
   return (
     <div>
+      <NavBar />
       <table>
         <thead>
           <tr>
