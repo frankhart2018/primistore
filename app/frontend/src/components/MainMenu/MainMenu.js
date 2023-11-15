@@ -4,7 +4,14 @@ import { Link } from "react-router-dom";
 const MainMenu = () => {
   return (
     <div>
-      <Link to={{ pathname: "/password" }}>Generate Password</Link>
+      <ul>
+        <li>
+          <Link to={{ pathname: "/password" }}>Generate Password</Link>
+        </li>
+        <li>
+          <Link to={{ pathname: "/passwords" }}>List Passwords</Link>
+        </li>
+      </ul>
     </div>
   );
 };

@@ -9,3 +9,8 @@ export const createPassword = async (passwordUid) => {
 
   return response;
 };
+
+export const fetchPasswords = async () => {
+  const response = await axios.get(`${API_BASE}/passwords`);
+  return response;
+};

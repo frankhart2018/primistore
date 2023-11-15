@@ -9,6 +9,7 @@ import GeneratePassword from "./components/GeneratePassword/GeneratePassword";
 import { configureStore } from "@reduxjs/toolkit";
 import passwordReducer from "./reducers/password-reducer";
 import { Provider } from "react-redux";
+import ListPasswords from "./components/ListPasswords/ListPasswords";
 
 const store = configureStore({
   reducer: {
@@ -77,6 +78,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<MainMenu />} />
           <Route path="/password" element={<GeneratePassword />} />
+          <Route path="/passwords" element={<ListPasswords />} />
         </Routes>
       </Provider>
     </div>

@@ -9,3 +9,11 @@ export const createPasswordThunk = createAsyncThunk(
     return response;
   }
 );
+
+export const fetchPasswordsThunk = createAsyncThunk(
+  "password/fetchPasswords",
+  async () => {
+    const response = await passwordService.fetchPasswords();
+    return response;
+  }
+);
