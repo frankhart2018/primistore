@@ -48,7 +48,9 @@ const rotateAESKeyIVHandler = async (req, res) => {
   const { key, iv } = generateAESKeyIV();
   const updatedPassword = await updatePasswordAES(pass_uid, key, iv);
 
-  res.status(200).send(updatedPassword);
+  res.status(200).send({
+    password: updatedPassword,
+  });
 };
 
 const rotateCharsetHandler = async (req, res) => {

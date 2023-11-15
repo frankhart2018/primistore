@@ -8,6 +8,7 @@ import {
 
 import "./ListPasswords.css";
 import NavBar from "../NavBar/NavBar";
+import { TIMEZONE } from "../../utils/constants";
 
 const ListPasswords = () => {
   const { passwords } = useSelector((state) => state.password);
@@ -19,19 +20,58 @@ const ListPasswords = () => {
   }, [dispatch]);
 
   const rotateAESKeyAndIV = (passUid) => {
-    dispatch(
-      rotateAESKeyAndIVThunk({
-        passUid,
-      })
+    const userConfirmed = window.confirm(
+      "Have you copied your current password?"
     );
+
+    if (userConfirmed) {
+      dispatch(
+        rotateAESKeyAndIVThunk({
+          passUid,
+        })
+      );
+    } else {
+      alert("Cancelling AES Key and IV rotation!");
+    }
   };
 
   const rotateCharset = (passUid) => {
-    dispatch(
-      rotateCharsetThunk({
-        passUid,
-      })
+    const userConfirmed = window.confirm(
+      "Have you copied your current password?"
     );
+
+    if (userConfirmed === true) {
+      dispatch(
+        rotateCharsetThunk({
+          passUid,
+        })
+      );
+    } else {
+      alert("Cancelling Charset rotation!");
+    }
+  };
+
+  const parseUnixEpochTimeString = (unixEpochTimeString, targetTimeZone) => {
+    const unixEpochTimeInSeconds = parseInt(unixEpochTimeString, 10);
+
+    if (isNaN(unixEpochTimeInSeconds)) {
+      console.error("Invalid Unix epoch time string");
+      return null;
+    }
+
+    const date = new Date(unixEpochTimeInSeconds * 1000); // Convert seconds to milliseconds
+    const formattedDateTimeString = date.toLocaleString("en-US", {
+      timeZone: targetTimeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+
+    return formattedDateTimeString;
   };
 
   return (
@@ -58,11 +98,27 @@ const ListPasswords = () => {
                   >
                     Rotate AES Key and IV
                   </button>
+                  <br />
+                  <span>
+                    <strong>Last rotated:</strong>{" "}
+                    {parseUnixEpochTimeString(
+                      password_obj.aes_last_rotated,
+                      TIMEZONE
+                    )}
+                  </span>
                 </td>
                 <td>
                   <button onClick={() => rotateCharset(password_obj.pass_uid)}>
-                    Rotate CharSet
+                    Rotate Charset
                   </button>
+                  <br />
+                  <span>
+                    <strong>Last rotated:</strong>{" "}
+                    {parseUnixEpochTimeString(
+                      password_obj.charset_last_rotated,
+                      TIMEZONE
+                    )}
+                  </span>
                 </td>
               </tr>
             );
