@@ -6,6 +6,7 @@ import {
   createPassword,
   getPasswords,
   updatePasswordAES,
+  updatePasswordCharset,
 } from "./primistore-dao.js";
 import { generateCharset } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
@@ -57,9 +58,11 @@ const rotateCharsetHandler = async (req, res) => {
   const charset = generateCharset();
 
   fs.writeFileSync(charsetPath, charset);
+  const updatedPassword = await updatePasswordCharset(pass_uid);
 
   res.status(200).send({
     updatedCharset: charset,
+    password: updatedPassword,
   });
 };
 
