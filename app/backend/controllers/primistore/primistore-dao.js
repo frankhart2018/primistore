@@ -14,3 +14,7 @@ export const createPassword = (pass_uid, aes_key, aes_iv, charset_path) => {
   let options = { upsert: true };
   return primistoreModel.findOneAndUpdate(query, update, options);
 };
+
+export const getPasswords = () => {
+  return primistoreModel.find();
+};

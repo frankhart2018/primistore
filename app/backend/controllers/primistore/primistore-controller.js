@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { generateAESKeyIV } from "../../utils/command-utils.js";
-import { createPassword } from "./primistore-dao.js";
+import { createPassword, getPasswords } from "./primistore-dao.js";
 import { generateCharset } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 
@@ -32,8 +32,14 @@ const passwordCreationHandler = async (req, res) => {
   });
 };
 
+const getAllPasswordsHandler = async (req, res) => {
+  const passwords = await getPasswords();
+  return res.status(200).send(passwords);
+};
+
 const PrimistoreController = (app) => {
   app.post("/password", passwordCreationHandler);
+  app.get("/passwords", getAllPasswordsHandler);
 };
 
 export default PrimistoreController;
