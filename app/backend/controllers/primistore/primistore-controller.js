@@ -28,7 +28,7 @@ const passwordCreationHandler = async (req, res) => {
   await createPassword(password_uid, key, iv, charset_path);
 
   res.status(200).send({
-    password: "success",
+    status: "success",
   });
 };
 
