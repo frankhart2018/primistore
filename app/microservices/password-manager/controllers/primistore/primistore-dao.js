@@ -52,3 +52,7 @@ export const updatePasswordCharset = (pass_uid) => {
 
   return primistoreModel.findOneAndUpdate(query, update, options);
 };
+
+export const getPasswordByPassUid = (pass_uid) => {
+  return primistoreModel.findOne({ pass_uid: pass_uid });
+};

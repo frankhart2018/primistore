@@ -18,4 +18,12 @@ const generateAESKeyIV = () => {
   };
 };
 
-export { runCommand, generateAESKeyIV };
+const encryptWithAES = (key, iv, password) => {
+  const encryptedOutput = runCommand(
+    `echo "${password}" | openssl aes-256-cbc -e -a -K ${key} -iv ${iv}`
+  );
+
+  return encryptedOutput;
+};
+
+export { runCommand, generateAESKeyIV, encryptWithAES };

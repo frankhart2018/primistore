@@ -1,14 +1,18 @@
 import fs from "fs";
 import path from "path";
 
-import { generateAESKeyIV } from "../../utils/command-utils.js";
+import { encryptWithAES, generateAESKeyIV } from "../../utils/command-utils.js";
 import {
   createPassword,
+  getPasswordByPassUid,
   getPasswords,
   updatePasswordAES,
   updatePasswordCharset,
 } from "./primistore-dao.js";
-import { generateCharset } from "../../utils/charset-utils.js";
+import {
+  encryptWithCharset,
+  generateCharset,
+} from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 
 const opensslNotInstalledError = (res) => {
@@ -68,11 +72,32 @@ const rotateCharsetHandler = async (req, res) => {
   });
 };
 
+const encryptPasswordHandler = async (req, res) => {
+  const { pass_uid } = req.params;
+  const raw_password = req.body.password;
+
+  const passwordDetails = await getPasswordByPassUid(pass_uid);
+  const { aes_key, aes_iv, charset_path } = passwordDetails;
+
+  let encryptedPassword = encryptWithAES(aes_key, aes_iv, raw_password);
+  let charset = fs
+    .readFileSync(charset_path)
+    .toString("utf-8")
+    .split("\n")
+    .slice(0, -1);
+  encryptedPassword = encryptWithCharset(charset, encryptedPassword);
+
+  res.status(200).send({
+    encryptedPassword,
+  });
+};
+
 const PrimistoreController = (app) => {
   app.post("/password", passwordCreationHandler);
   app.get("/passwords", getAllPasswordsHandler);
   app.put("/password/aes/:pass_uid", rotateAESKeyIVHandler);
   app.put("/password/charset/:pass_uid", rotateCharsetHandler);
+  app.post("/password/encrypt/:pass_uid", encryptPasswordHandler);
 };
 
 export default PrimistoreController;

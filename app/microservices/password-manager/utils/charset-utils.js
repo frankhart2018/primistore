@@ -31,4 +31,18 @@ const generateCharset = () => {
   return charset;
 };
 
-export { generateCharset };
+const mapNumberToPaddedBinaryString = (number) => {
+  const binaryString = number.toString(2);
+  return binaryString.padStart(8, "0");
+};
+
+const encryptWithCharset = (charset, password) => {
+  const binaryPassword = password.split("").map((char) => {
+    const indexOfChar = charset.indexOf(char);
+    return mapNumberToPaddedBinaryString(indexOfChar);
+  });
+
+  return binaryPassword.join("");
+};
+
+export { generateCharset, encryptWithCharset };
