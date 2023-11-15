@@ -17,3 +17,19 @@ export const fetchPasswordsThunk = createAsyncThunk(
     return response;
   }
 );
+
+export const rotateAESKeyAndIVThunk = createAsyncThunk(
+  "password/rotateAESKeyAndIV",
+  async (payload) => {
+    const response = await passwordService.rotateAESKeyAndIV(payload.passUid);
+    return response;
+  }
+);
+
+export const rotateCharsetThunk = createAsyncThunk(
+  "password/rotateCharset",
+  async (payload) => {
+    const response = await passwordService.rotateCharset(payload.passUid);
+    return response;
+  }
+);

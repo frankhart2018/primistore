@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createPasswordThunk,
   fetchPasswordsThunk,
+  rotateAESKeyAndIVThunk,
+  rotateCharsetThunk,
 } from "../services/password-thunk";
 
 const initialState = {
@@ -16,11 +18,15 @@ const passwordSlice = createSlice({
   extraReducers: {
     [createPasswordThunk.fulfilled]: (state, action) => {
       alert(action.payload.data.status);
-      state.created = true;
     },
     [fetchPasswordsThunk.fulfilled]: (state, action) => {
-      console.log(action.payload);
       state.passwords = action.payload.data;
+    },
+    [rotateAESKeyAndIVThunk.fulfilled]: (state, action) => {
+      alert("AES Key and IV rotated successfully");
+    },
+    [rotateCharsetThunk.fulfilled]: (state, action) => {
+      alert("Charset rotated successfully");
     },
   },
 });

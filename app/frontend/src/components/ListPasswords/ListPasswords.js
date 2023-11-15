@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPasswordsThunk } from "../../services/password-thunk";
+import {
+  fetchPasswordsThunk,
+  rotateAESKeyAndIVThunk,
+  rotateCharsetThunk,
+} from "../../services/password-thunk";
 
 import "./ListPasswords.css";
 import NavBar from "../NavBar/NavBar";
@@ -13,6 +17,22 @@ const ListPasswords = () => {
   useEffect(() => {
     dispatch(fetchPasswordsThunk());
   }, [dispatch]);
+
+  const rotateAESKeyAndIV = (passUid) => {
+    dispatch(
+      rotateAESKeyAndIVThunk({
+        passUid,
+      })
+    );
+  };
+
+  const rotateCharset = (passUid) => {
+    dispatch(
+      rotateCharsetThunk({
+        passUid,
+      })
+    );
+  };
 
   return (
     <div>
@@ -33,9 +53,17 @@ const ListPasswords = () => {
                 <td>{idx + 1}</td>
                 <td>{password_obj.pass_uid}</td>
                 <td>
-                  {password_obj.aes_key}-{password_obj.aes_iv}
+                  <button
+                    onClick={() => rotateAESKeyAndIV(password_obj.pass_uid)}
+                  >
+                    Rotate AES Key and IV
+                  </button>
                 </td>
-                <td>{password_obj.charset_path}</td>
+                <td>
+                  <button onClick={() => rotateCharset(password_obj.pass_uid)}>
+                    Rotate CharSet
+                  </button>
+                </td>
               </tr>
             );
           })}

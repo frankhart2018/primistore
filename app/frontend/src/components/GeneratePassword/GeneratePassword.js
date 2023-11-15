@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { createPasswordThunk } from "../../services/password-thunk";
 import NavBar from "../NavBar/NavBar";
 
 const GeneratePassword = () => {
   let [identifier, setIdentifier] = useState("");
-  let { created } = useSelector((state) => state.password);
 
   const dispatch = useDispatch();
 
@@ -16,10 +15,6 @@ const GeneratePassword = () => {
       })
     );
   };
-
-  useEffect(() => {
-    setIdentifier("");
-  }, [created]);
 
   return (
     <div>

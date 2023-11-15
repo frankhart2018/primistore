@@ -14,3 +14,13 @@ export const fetchPasswords = async () => {
   const response = await axios.get(`${API_BASE}/passwords`);
   return response;
 };
+
+export const rotateAESKeyAndIV = async (passUid) => {
+  const response = await axios.put(`${API_BASE}/password/aes/${passUid}`);
+  return response;
+};
+
+export const rotateCharset = async (passUid) => {
+  const response = await axios.put(`${API_BASE}/password/charset/${passUid}`);
+  return response;
+};

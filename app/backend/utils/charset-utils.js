@@ -6,7 +6,7 @@ const upperCaseCharacters = Array.from({ length: 26 }, (_, index) =>
   String.fromCharCode("A".charCodeAt(0) + index)
 );
 
-const numbers = Array.from({ length: 26 }, (_, index) =>
+const numbers = Array.from({ length: 10 }, (_, index) =>
   String.fromCharCode("0".charCodeAt(0) + index)
 );
 
