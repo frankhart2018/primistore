@@ -2,7 +2,11 @@ import fs from "fs";
 import path from "path";
 
 import { generateAESKeyIV } from "../../utils/command-utils.js";
-import { createPassword, getPasswords } from "./primistore-dao.js";
+import {
+  createPassword,
+  getPasswords,
+  updatePasswordAES,
+} from "./primistore-dao.js";
 import { generateCharset } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 
@@ -37,9 +41,33 @@ const getAllPasswordsHandler = async (req, res) => {
   return res.status(200).send(passwords);
 };
 
+const rotateAESKeyIVHandler = async (req, res) => {
+  const { pass_uid } = req.params;
+
+  const { key, iv } = generateAESKeyIV();
+  const updatedPassword = await updatePasswordAES(pass_uid, key, iv);
+
+  res.status(200).send(updatedPassword);
+};
+
+const rotateCharsetHandler = async (req, res) => {
+  const { pass_uid } = req.params;
+
+  const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
+  const charset = generateCharset();
+
+  fs.writeFileSync(charsetPath, charset);
+
+  res.status(200).send({
+    updatedCharset: charset,
+  });
+};
+
 const PrimistoreController = (app) => {
   app.post("/password", passwordCreationHandler);
   app.get("/passwords", getAllPasswordsHandler);
+  app.put("/password/aes/:pass_uid", rotateAESKeyIVHandler);
+  app.put("/password/charset/:pass_uid", rotateCharsetHandler);
 };
 
 export default PrimistoreController;
