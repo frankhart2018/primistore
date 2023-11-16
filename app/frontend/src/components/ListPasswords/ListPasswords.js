@@ -8,7 +8,6 @@ import {
 
 import "./ListPasswords.css";
 import NavBar from "../NavBar/NavBar";
-import { TIMEZONE } from "../../utils/constants";
 import { Link } from "react-router-dom";
 
 const ListPasswords = () => {
@@ -52,32 +51,54 @@ const ListPasswords = () => {
     }
   };
 
-  const parseUnixEpochTimeString = (unixEpochTimeString, targetTimeZone) => {
-    const unixEpochTimeInSeconds = parseInt(unixEpochTimeString, 10);
+  const dateDiffInDays = (date1, date2) => {
+    const oneDayMs = 24 * 60 * 60 * 1000;
 
-    if (isNaN(unixEpochTimeInSeconds)) {
-      console.error("Invalid Unix epoch time string");
-      return null;
+    const utcDate1 = Date.UTC(
+      date1.getFullYear(),
+      date1.getMonth(),
+      date1.getDate()
+    );
+    const utcDate2 = Date.UTC(
+      date2.getFullYear(),
+      date2.getMonth(),
+      date2.getDate()
+    );
+
+    const timeDiff = Math.abs(utcDate2 - utcDate1);
+
+    return Math.floor(timeDiff / oneDayMs);
+  };
+
+  const daysSinceLastRotated = (unixEpochTimeString) => {
+    const then = new Date(parseInt(unixEpochTimeString) * 1000);
+    const now = new Date(Date.now());
+
+    return dateDiffInDays(now, then);
+  };
+
+  const getClassByDays = (days) => {
+    if (days > 30) {
+      return "red";
+    } else if (days > 20 && days <= 30) {
+      return "yellow";
+    } else {
+      return "green";
     }
-
-    const date = new Date(unixEpochTimeInSeconds * 1000); // Convert seconds to milliseconds
-    const formattedDateTimeString = date.toLocaleString("en-US", {
-      timeZone: targetTimeZone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
-
-    return formattedDateTimeString;
   };
 
   return (
     <div>
       <NavBar />
+      <br />
+      <div style={{ textAlign: "left" }}>
+        Color scheme:
+        <br />
+        <span className="red smallbox"></span> Time to rotate &nbsp;
+        <span className="yellow smallbox"></span> Almost time to rotate &nbsp;
+        <span className="red smallbox"></span> Does not need rotation
+      </div>
+      <br />
       <table>
         <thead>
           <tr>
@@ -94,7 +115,11 @@ const ListPasswords = () => {
               <tr key={idx}>
                 <td>{idx + 1}</td>
                 <td>{password_obj.pass_uid}</td>
-                <td>
+                <td
+                  className={getClassByDays(
+                    daysSinceLastRotated(password_obj.aes_last_rotated)
+                  )}
+                >
                   <button
                     onClick={() => rotateAESKeyAndIV(password_obj.pass_uid)}
                   >
@@ -103,23 +128,23 @@ const ListPasswords = () => {
                   <br />
                   <span>
                     <strong>Last rotated:</strong>{" "}
-                    {parseUnixEpochTimeString(
-                      password_obj.aes_last_rotated,
-                      TIMEZONE
-                    )}
-                  </span>
+                    {daysSinceLastRotated(password_obj.aes_last_rotated)}
+                  </span>{" "}
+                  day(s) ago
                 </td>
-                <td>
+                <td
+                  className={getClassByDays(
+                    daysSinceLastRotated(password_obj.charset_last_rotated)
+                  )}
+                >
                   <button onClick={() => rotateCharset(password_obj.pass_uid)}>
                     Rotate Charset
                   </button>
                   <br />
                   <span>
                     <strong>Last rotated:</strong>{" "}
-                    {parseUnixEpochTimeString(
-                      password_obj.charset_last_rotated,
-                      TIMEZONE
-                    )}
+                    {daysSinceLastRotated(password_obj.charset_last_rotated)}{" "}
+                    day(s) ago
                   </span>
                 </td>
                 <td>
