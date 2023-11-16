@@ -38,7 +38,7 @@ const mapNumberToPaddedBinaryString = (number) => {
 
 const encryptWithCharset = (charset, password) => {
   const binaryPassword = password.split("").map((char) => {
-    const indexOfChar = charset.indexOf(char);
+    const indexOfChar = charset.indexOf(char) + 1;
     return mapNumberToPaddedBinaryString(indexOfChar);
   });
 
