@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createPasswordThunk,
+  decryptPasswordThunk,
   encryptPasswordThunk,
   fetchPasswordsThunk,
   rotateAESKeyAndIVThunk,
@@ -21,6 +22,7 @@ const initialState = {
   created: false,
   passwords: [],
   encryptedData: getZeros2DArray(ROWS, COLS),
+  decryptedData: "",
 };
 
 const passwordSlice = createSlice({
@@ -69,6 +71,9 @@ const passwordSlice = createSlice({
       );
 
       state.encryptedData = paddedArray;
+    },
+    [decryptPasswordThunk.fulfilled]: (state, action) => {
+      state.decryptedData = action.payload.data.decrypted;
     },
   },
 });

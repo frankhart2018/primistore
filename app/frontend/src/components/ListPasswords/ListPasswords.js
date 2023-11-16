@@ -130,7 +130,14 @@ const ListPasswords = () => {
                   >
                     Encrypt
                   </Link>
-                  <button type="button">Decrypt</button>
+                  &nbsp;
+                  <Link
+                    to={{
+                      pathname: `/password/decrypt/${password_obj.pass_uid}`,
+                    }}
+                  >
+                    Decrypt
+                  </Link>
                 </td>
               </tr>
             );

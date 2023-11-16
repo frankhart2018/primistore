@@ -6,8 +6,9 @@ import SquareTable from "../SquareTable/SquareTable";
 import { useDispatch, useSelector } from "react-redux";
 import { COLS, ROWS } from "../../utils/constants";
 import { encryptPasswordThunk } from "../../services/password-thunk";
+import NavBar from "../NavBar/NavBar";
 
-const SinglePage = () => {
+const EncryptPassword = () => {
   const targetRef = useRef();
 
   const [password, setPassword] = useState("");
@@ -50,6 +51,7 @@ const SinglePage = () => {
 
   return (
     <div>
+      <NavBar />
       <div>
         <label for="password">Password: </label>
         <input
@@ -73,4 +75,4 @@ const SinglePage = () => {
   );
 };
 
-export default SinglePage;
+export default EncryptPassword;

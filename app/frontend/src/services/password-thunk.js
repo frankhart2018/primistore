@@ -44,3 +44,14 @@ export const encryptPasswordThunk = createAsyncThunk(
     return response;
   }
 );
+
+export const decryptPasswordThunk = createAsyncThunk(
+  "password/decryptPassword",
+  async (payload) => {
+    const response = await passwordService.decryptPassword(
+      payload.passUid,
+      payload.pmsPath
+    );
+    return response;
+  }
+);
