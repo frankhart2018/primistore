@@ -9,6 +9,7 @@ import {
 import "./ListPasswords.css";
 import NavBar from "../NavBar/NavBar";
 import { TIMEZONE } from "../../utils/constants";
+import { Link } from "react-router-dom";
 
 const ListPasswords = () => {
   const { passwords } = useSelector((state) => state.password);
@@ -84,6 +85,7 @@ const ListPasswords = () => {
             <th>Password UID</th>
             <th>AES Key & IV</th>
             <th>Charset Path</th>
+            <th>Encrypt/Decrypt</th>
           </tr>
         </thead>
         <tbody>
@@ -119,6 +121,16 @@ const ListPasswords = () => {
                       TIMEZONE
                     )}
                   </span>
+                </td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: `/password/encrypt/${password_obj.pass_uid}`,
+                    }}
+                  >
+                    Encrypt
+                  </Link>
+                  <button type="button">Decrypt</button>
                 </td>
               </tr>
             );

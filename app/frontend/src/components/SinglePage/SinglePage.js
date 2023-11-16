@@ -1,28 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { v4 as uuidv4 } from "uuid";
 import SquareTable from "../SquareTable/SquareTable";
+import { useDispatch, useSelector } from "react-redux";
 import { COLS, ROWS } from "../../utils/constants";
+import { encryptPasswordThunk } from "../../services/password-thunk";
 
-const SinglePage = ({ data }) => {
+const SinglePage = () => {
   const targetRef = useRef();
 
-  const exportToJsonFile = (data, uuid) => {
-    const jsonData = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonData], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `output-${uuid}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  const [password, setPassword] = useState("");
+  const { encryptedData } = useSelector((state) => state.password);
 
   const uuid = uuidv4();
+
+  const dispatch = useDispatch();
+
+  const pathName = window.location.pathname;
+  const passUid = pathName.split("/")[3];
 
   const handleDownloadImage = async (uuid) => {
     const element = targetRef.current;
@@ -43,19 +39,35 @@ const SinglePage = ({ data }) => {
     }
   };
 
+  const encryptData = () => {
+    dispatch(
+      encryptPasswordThunk({
+        passUid,
+        password,
+      })
+    );
+  };
+
   return (
     <div>
+      <div>
+        <label for="password">Password: </label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoFocus
+        />
+        <button onClick={() => encryptData()}>Encrypt password</button>
+      </div>
       <div>
         <button onClick={() => handleDownloadImage(uuid)} id="download-image">
           Download Image
         </button>
-
-        <button onClick={() => exportToJsonFile(data, uuid)} id="download-data">
-          Download Data
-        </button>
       </div>
       <div ref={targetRef}>
-        <SquareTable rows={ROWS} cols={COLS} data={data} />
+        <SquareTable rows={ROWS} cols={COLS} data={encryptedData} />
       </div>
     </div>
   );

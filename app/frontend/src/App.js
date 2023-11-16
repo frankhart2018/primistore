@@ -10,6 +10,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import passwordReducer from "./reducers/password-reducer";
 import { Provider } from "react-redux";
 import ListPasswords from "./components/ListPasswords/ListPasswords";
+import SinglePage from "./components/SinglePage/SinglePage";
 
 const store = configureStore({
   reducer: {
@@ -79,6 +80,7 @@ const App = () => {
           <Route path="/" element={<MainMenu />} />
           <Route path="/password" element={<GeneratePassword />} />
           <Route path="/passwords" element={<ListPasswords />} />
+          <Route path="/password/encrypt/:pass_uid" element={<SinglePage />} />
         </Routes>
       </Provider>
     </div>

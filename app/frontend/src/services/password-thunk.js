@@ -33,3 +33,14 @@ export const rotateCharsetThunk = createAsyncThunk(
     return response;
   }
 );
+
+export const encryptPasswordThunk = createAsyncThunk(
+  "password/encryptPassword",
+  async (payload) => {
+    const response = await passwordService.encryptPassword(
+      payload.passUid,
+      payload.password
+    );
+    return response;
+  }
+);

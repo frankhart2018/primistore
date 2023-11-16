@@ -1,14 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createPasswordThunk,
+  encryptPasswordThunk,
   fetchPasswordsThunk,
   rotateAESKeyAndIVThunk,
   rotateCharsetThunk,
 } from "../services/password-thunk";
+import { COLS, ROWS } from "../utils/constants";
+
+const getZeros2DArray = (rows, cols) => {
+  let data = [];
+  for (let i = 0; i < rows * cols; i++) {
+    data.push(0);
+  }
+
+  return data;
+};
 
 const initialState = {
   created: false,
   passwords: [],
+  encryptedData: getZeros2DArray(ROWS, COLS),
 };
 
 const passwordSlice = createSlice({
@@ -41,6 +53,22 @@ const passwordSlice = createSlice({
             updatedPassword.charset_last_rotated;
         }
       }
+    },
+    [encryptPasswordThunk.fulfilled]: (state, action) => {
+      const encryptedPasswordArr = action.payload.data.encryptedPassword
+        .split("")
+        .map((char) => {
+          return parseInt(char);
+        });
+      console.log(encryptedPasswordArr);
+
+      const aimLength = ROWS * COLS;
+      const paddedArray = Array(aimLength).fill(0);
+      encryptedPasswordArr.forEach(
+        (value, index) => (paddedArray[index] = value)
+      );
+
+      state.encryptedData = paddedArray;
     },
   },
 });
