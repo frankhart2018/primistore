@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { decryptPasswordThunk } from "../../services/password-thunk";
+import NavBar from "../NavBar/NavBar";
 
 const DecryptPassword = () => {
   const { decryptedData } = useSelector((state) => state.password);
@@ -22,6 +23,8 @@ const DecryptPassword = () => {
 
   return (
     <div>
+      <NavBar />
+      <br />
       <label for="pms-path">PMS Path:</label>
       <input
         type="text"
