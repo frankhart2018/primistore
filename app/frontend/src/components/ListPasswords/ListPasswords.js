@@ -96,7 +96,7 @@ const ListPasswords = () => {
         <br />
         <span className="red smallbox"></span> Time to rotate &nbsp;
         <span className="yellow smallbox"></span> Almost time to rotate &nbsp;
-        <span className="red smallbox"></span> Does not need rotation
+        <span className="green smallbox"></span> Does not need rotation
       </div>
       <br />
       <table>
