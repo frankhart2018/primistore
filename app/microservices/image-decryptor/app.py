@@ -8,6 +8,7 @@ from utils.decrypt_utils import decode_memory
 from utils.mongo_connection import MongoDB
 from utils.charset_utils import decode_charset
 from utils.command_utils import decrypt_aes
+from utils.constants import PRIMISTORE_DIR
 
 app = FastAPI()
 
@@ -40,7 +41,8 @@ async def decrypt_password(pass_uid: str, body: DecryptBody):
         return JSONResponse(content={"status": "UID not found!"}, status_code=500)
 
     data_arr = decode_memory(body.pms_path)
-    charset_decrypted = decode_charset(data_arr, password["charset_path"])
+    charset_path = PRIMISTORE_DIR / f"charset-{pass_uid}.txt"
+    charset_decrypted = decode_charset(data_arr, charset_path)
     decrypted = decrypt_aes(
         key=password["aes_key"],
         iv=password["aes_iv"],

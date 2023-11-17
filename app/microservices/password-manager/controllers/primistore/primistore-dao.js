@@ -1,6 +1,6 @@
 import primistoreModel from "./primistore-model.js";
 
-export const createPassword = (pass_uid, aes_key, aes_iv, charset_path) => {
+export const createPassword = (pass_uid, aes_key, aes_iv) => {
   let currentTime = Math.floor(Date.now() / 1000).toString();
 
   const query = { pass_uid };
@@ -9,7 +9,6 @@ export const createPassword = (pass_uid, aes_key, aes_iv, charset_path) => {
       pass_uid,
       aes_key,
       aes_iv,
-      charset_path,
       aes_last_rotated: currentTime,
       charset_last_rotated: currentTime,
     },

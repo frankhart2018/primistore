@@ -34,7 +34,7 @@ const passwordCreationHandler = async (req, res) => {
   const charset_path = path.join(PRIMISTORE_DIR, `charset-${password_uid}.txt`);
   fs.writeFileSync(charset_path, charset);
 
-  await createPassword(password_uid, key, iv, charset_path);
+  await createPassword(password_uid, key, iv);
 
   res.status(200).send({
     status: "success",
@@ -77,11 +77,12 @@ const encryptPasswordHandler = async (req, res) => {
   const raw_password = req.body.password;
 
   const passwordDetails = await getPasswordByPassUid(pass_uid);
-  const { aes_key, aes_iv, charset_path } = passwordDetails;
+  const { aes_key, aes_iv } = passwordDetails;
 
   let encryptedPassword = encryptWithAES(aes_key, aes_iv, raw_password);
+  const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
   let charset = fs
-    .readFileSync(charset_path)
+    .readFileSync(charsetPath)
     .toString("utf-8")
     .split("\n")
     .slice(0, -1);
