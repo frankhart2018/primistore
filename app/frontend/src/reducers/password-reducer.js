@@ -62,7 +62,6 @@ const passwordSlice = createSlice({
         .map((char) => {
           return parseInt(char);
         });
-      console.log(encryptedPasswordArr);
 
       const aimLength = ROWS * COLS;
       const paddedArray = Array(aimLength).fill(0);

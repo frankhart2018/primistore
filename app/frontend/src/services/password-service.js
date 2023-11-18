@@ -42,11 +42,18 @@ export const encryptPassword = async (passUid, password) => {
   return response;
 };
 
-export const decryptPassword = async (passUid, pmsPath) => {
+export const decryptPassword = async (passUid, pmsFile) => {
+  const formData = new FormData();
+  formData.append("file", pmsFile);
+
   const response = await axios.post(
     `${IMAGE_DECRYPTOR_API_BASE}/password/decrypt/${passUid}`,
+    formData,
     {
-      pms_path: pmsPath,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      responseType: "json",
     }
   );
   return response;

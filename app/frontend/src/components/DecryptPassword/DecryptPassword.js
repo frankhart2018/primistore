@@ -5,7 +5,7 @@ import NavBar from "../NavBar/NavBar";
 
 const DecryptPassword = () => {
   const { decryptedData } = useSelector((state) => state.password);
-  const [pmsPath, setPmsPath] = useState("");
+  const [pmsFile, setPmsFile] = useState(null);
 
   const pathName = window.location.pathname;
   const passUid = pathName.split("/")[3];
@@ -16,7 +16,7 @@ const DecryptPassword = () => {
     dispatch(
       decryptPasswordThunk({
         passUid,
-        pmsPath,
+        pmsFile,
       })
     );
   };
@@ -25,13 +25,11 @@ const DecryptPassword = () => {
     <div>
       <NavBar />
       <br />
-      <label for="pms-path">PMS Path:</label>
+      <label for="pms-path">PMS file:</label>
       <input
-        type="text"
-        id="pms-path"
-        value={pmsPath}
-        onChange={(e) => setPmsPath(e.target.value)}
-        autoFocus
+        type="file"
+        id="pms-file"
+        onChange={(e) => setPmsFile(e.target.files[0])}
       />
       <button onClick={() => decryptData()}>Decrypt</button>
 

@@ -50,7 +50,7 @@ export const decryptPasswordThunk = createAsyncThunk(
   async (payload) => {
     const response = await passwordService.decryptPassword(
       payload.passUid,
-      payload.pmsPath
+      payload.pmsFile
     );
     return response;
   }
