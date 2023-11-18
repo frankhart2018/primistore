@@ -1,7 +1,8 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+import uuid
 
 from models.decrypt_body import DecryptBody
 from utils.decrypt_utils import decode_memory
@@ -29,18 +30,17 @@ async def root():
 
 
 @app.post("/password/decrypt/{pass_uid}")
-async def decrypt_password(pass_uid: str, body: DecryptBody):
-    img_path = body.pms_path
-    if not os.path.exists(img_path):
-        return JSONResponse(
-            content={"status": "PMS path specified does not exist!"}, status_code=500
-        )
-
+# async def decrypt_password(pass_uid: str, body: DecryptBody):
+async def decrypt_password(pass_uid: str, file: UploadFile):
     password = db_conn.find_one({"pass_uid": pass_uid})
     if password == None:
         return JSONResponse(content={"status": "UID not found!"}, status_code=500)
 
-    data_arr = decode_memory(body.pms_path)
+    image_path = PRIMISTORE_DIR / f"image-{uuid.uuid4()}.jpeg"
+    with open(image_path, "wb") as f:
+        f.write(await file.read())
+
+    data_arr = decode_memory(str(image_path))
     charset_path = PRIMISTORE_DIR / f"charset-{pass_uid}.txt"
     charset_decrypted = decode_charset(data_arr, charset_path)
     decrypted = decrypt_aes(

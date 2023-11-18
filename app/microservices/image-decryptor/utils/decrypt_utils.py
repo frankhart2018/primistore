@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from collections import defaultdict
+import os
 
 
 def convert_strict_bw(img):
@@ -75,6 +76,7 @@ def decode_values(row_stats, img):
 
 def decode_memory(img_path):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    os.remove(img_path)
 
     strict_bw = convert_strict_bw(img)
     row_stats = get_row_stats(strict_bw)
