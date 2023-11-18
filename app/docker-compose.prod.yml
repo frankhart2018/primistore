@@ -1,0 +1,37 @@
+version: "3"
+services:
+  frontend:
+    image: frankhart2018/primistore:frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_PASSWORD_MANAGER_API_BASE=http://${IP}:4000
+      - REACT_APP_IMAGE_DECRYPTOR_API_BASE=http://${IP}:8000
+
+  password_manager:
+    image: frankhart2018/primistore:password_manager
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
+    environment:
+      - HOST=0.0.0.0
+      - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
+    volumes:
+      - ${LOCAL_DIR}:/root/.primistore
+
+  image_decryptor:
+    image: frankhart2018/primistore:image_decryptor
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
+    volumes:
+      - ${LOCAL_DIR}:/root/.primistore
+
+  mongodb:
+    image: mongo:bionic
+    ports:
+      - "27017:27017"
