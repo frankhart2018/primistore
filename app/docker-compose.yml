@@ -6,7 +6,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_BASE=http://${IP}:4000
+      - REACT_APP_PASSWORD_MANAGER_API_BASE=http://${IP}:4000
+      - REACT_APP_IMAGE_DECRYPTOR_API_BASE=http://${IP}:8000
 
   password_manager:
     build:
@@ -18,6 +19,8 @@ services:
     environment:
       - HOST=0.0.0.0
       - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
+    volumes:
+      - ./.primistore:/root/.primistore
 
   image_decryptor:
     build:
@@ -26,6 +29,10 @@ services:
       - "8000:8000"
     depends_on:
       - mongodb
+    environment:
+      - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
+    volumes:
+      - ./.primistore:/root/.primistore
 
   mongodb:
     image: mongo:bionic

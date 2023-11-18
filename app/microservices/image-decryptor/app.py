@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uuid
 
-from models.decrypt_body import DecryptBody
 from utils.decrypt_utils import decode_memory
 from utils.mongo_connection import MongoDB
 from utils.charset_utils import decode_charset
@@ -13,9 +12,16 @@ from utils.constants import PRIMISTORE_DIR
 
 app = FastAPI()
 
+
+def on_startup():
+    os.makedirs(PRIMISTORE_DIR, exist_ok=True)
+
+
+app.add_event_handler("startup", on_startup)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins="*",
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

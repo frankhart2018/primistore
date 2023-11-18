@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of your application code
 COPY . .
 
+# Install OpenSSL
+RUN apk --no-cache add openssl
+
 # Expose the port that your Node.js app will run on
 EXPOSE 4000
 

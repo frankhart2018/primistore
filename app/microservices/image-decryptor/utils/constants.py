@@ -1,7 +1,8 @@
+import os
 from pathlib import Path
 
 
-CONN_STRING = "mongodb://localhost:27017"
+CONN_STRING = os.environ.get("DB_CONNECTION_STRING", "mongodb://localhost:27017")
 DB_NAME = "primistore"
 
 HOME_DIR = Path.home()
