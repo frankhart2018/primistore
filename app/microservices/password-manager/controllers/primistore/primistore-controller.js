@@ -1,7 +1,11 @@
 import fs from "fs";
 import path from "path";
 
-import { encryptWithAES, generateAESKeyIV } from "../../utils/command-utils.js";
+import {
+  CommandOutputType,
+  encryptWithAES,
+  generateAESKeyIV,
+} from "../../utils/command-utils.js";
 import {
   createPassword,
   getPasswordByPassUid,
@@ -15,18 +19,19 @@ import {
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 
-const opensslNotInstalledError = (res) => {
-  res.status(500).send({
-    status: "OpenSSL not installed, cannot proceed!",
-  });
-};
-
 const passwordCreationHandler = async (req, res) => {
   const password_uid = req.body.identifier;
 
   const { key, iv } = generateAESKeyIV();
-  if (key === null || iv === null) {
-    opensslNotInstalledError(res);
+  if (
+    key.type === CommandOutputType.Error ||
+    iv.type === CommandOutputType.Error
+  ) {
+    let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
+    errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
+    res.status(500).send({
+      error: errorMessage,
+    });
     return;
   }
 
@@ -34,7 +39,7 @@ const passwordCreationHandler = async (req, res) => {
   const charset_path = path.join(PRIMISTORE_DIR, `charset-${password_uid}.txt`);
   fs.writeFileSync(charset_path, charset);
 
-  await createPassword(password_uid, key, iv);
+  await createPassword(password_uid, key.value, iv.value);
 
   res.status(200).send({
     status: "success",
@@ -50,7 +55,23 @@ const rotateAESKeyIVHandler = async (req, res) => {
   const { pass_uid } = req.params;
 
   const { key, iv } = generateAESKeyIV();
-  const updatedPassword = await updatePasswordAES(pass_uid, key, iv);
+  if (
+    key.type === CommandOutputType.Error ||
+    iv.type === CommandOutputType.Error
+  ) {
+    let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
+    errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
+    res.status(500).send({
+      error: errorMessage,
+    });
+    return;
+  }
+
+  const updatedPassword = await updatePasswordAES(
+    pass_uid,
+    key.value,
+    iv.value
+  );
 
   res.status(200).send({
     password: updatedPassword,
@@ -80,13 +101,20 @@ const encryptPasswordHandler = async (req, res) => {
   const { aes_key, aes_iv } = passwordDetails;
 
   let encryptedPassword = encryptWithAES(aes_key, aes_iv, raw_password);
+  if (encryptedPassword.type == CommandOutputType.Error) {
+    res.status(500).send({
+      error: encryptedPassword.value,
+    });
+    return;
+  }
+
   const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
   let charset = fs
     .readFileSync(charsetPath)
     .toString("utf-8")
     .split("\n")
     .slice(0, -1);
-  encryptedPassword = encryptWithCharset(charset, encryptedPassword);
+  encryptedPassword = encryptWithCharset(charset, encryptedPassword.value);
 
   res.status(200).send({
     encryptedPassword,

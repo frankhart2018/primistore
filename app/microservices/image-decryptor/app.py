@@ -7,7 +7,7 @@ import uuid
 from utils.decrypt_utils import decode_memory
 from utils.mongo_connection import MongoDB
 from utils.charset_utils import decode_charset
-from utils.command_utils import decrypt_aes
+from utils.command_utils import decrypt_aes, CommandOutputType
 from utils.constants import PRIMISTORE_DIR
 
 app = FastAPI()
@@ -36,7 +36,6 @@ async def root():
 
 
 @app.post("/password/decrypt/{pass_uid}")
-# async def decrypt_password(pass_uid: str, body: DecryptBody):
 async def decrypt_password(pass_uid: str, file: UploadFile):
     password = db_conn.find_one({"pass_uid": pass_uid})
     if password == None:
@@ -55,9 +54,7 @@ async def decrypt_password(pass_uid: str, file: UploadFile):
         encrypted_string=charset_decrypted,
     )
 
-    if decrypted is None:
-        return JSONResponse(
-            content={"status": "OpenSSL not installed!"}, status_code=500
-        )
+    if decrypted.type_ == CommandOutputType.ERROR:
+        return JSONResponse(content={"error": decrypted.value}, status_code=500)
 
-    return {"decrypted": decrypted}
+    return {"decrypted": decrypted.value}
