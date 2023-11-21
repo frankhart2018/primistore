@@ -5,8 +5,12 @@ import * as passwordService from "./password-service";
 export const createPasswordThunk = createAsyncThunk(
   "password/createPassword",
   async (payload) => {
-    const response = await passwordService.createPassword(payload.identifier);
-    return response;
+    try {
+      const response = await passwordService.createPassword(payload.identifier);
+      return response;
+    } catch (e) {
+      return e;
+    }
   }
 );
 
@@ -21,8 +25,12 @@ export const fetchPasswordsThunk = createAsyncThunk(
 export const rotateAESKeyAndIVThunk = createAsyncThunk(
   "password/rotateAESKeyAndIV",
   async (payload) => {
-    const response = await passwordService.rotateAESKeyAndIV(payload.passUid);
-    return response;
+    try {
+      const response = await passwordService.rotateAESKeyAndIV(payload.passUid);
+      return response;
+    } catch (e) {
+      return e;
+    }
   }
 );
 
@@ -37,21 +45,29 @@ export const rotateCharsetThunk = createAsyncThunk(
 export const encryptPasswordThunk = createAsyncThunk(
   "password/encryptPassword",
   async (payload) => {
-    const response = await passwordService.encryptPassword(
-      payload.passUid,
-      payload.password
-    );
-    return response;
+    try {
+      const response = await passwordService.encryptPassword(
+        payload.passUid,
+        payload.password
+      );
+      return response;
+    } catch (e) {
+      return e;
+    }
   }
 );
 
 export const decryptPasswordThunk = createAsyncThunk(
   "password/decryptPassword",
   async (payload) => {
-    const response = await passwordService.decryptPassword(
-      payload.passUid,
-      payload.pmsFile
-    );
-    return response;
+    try {
+      const response = await passwordService.decryptPassword(
+        payload.passUid,
+        payload.pmsFile
+      );
+      return response;
+    } catch (e) {
+      return e;
+    }
   }
 );

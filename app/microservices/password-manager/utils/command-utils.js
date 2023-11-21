@@ -1,10 +1,23 @@
 import { execSync } from "child_process";
 
+const CommandOutputType = {
+  Success: 0,
+  Error: 1,
+};
+
+class CommandOutput {
+  constructor(type, value) {
+    this.type = type;
+    this.value = value;
+  }
+}
+
 const runCommand = (cmd) => {
   try {
-    return execSync(cmd).toString().trim();
-  } catch {
-    return null;
+    const output = execSync(cmd).toString().trim();
+    return new CommandOutput(CommandOutputType.Success, output);
+  } catch (e) {
+    return new CommandOutput(CommandOutputType.Error, e.message);
   }
 };
 
@@ -26,4 +39,4 @@ const encryptWithAES = (key, iv, password) => {
   return encryptedOutput;
 };
 
-export { runCommand, generateAESKeyIV, encryptWithAES };
+export { runCommand, generateAESKeyIV, encryptWithAES, CommandOutputType };
