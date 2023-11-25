@@ -8,10 +8,13 @@ const NavBar = () => {
         <button type="button">Home</button>
       </Link>
       <Link to={{ pathname: "/password" }}>
-        <button type="button">Generate Password</button>
+        <button type="button">Create Password</button>
       </Link>
       <Link to={{ pathname: "/passwords" }}>
         <button type="button">List Passwords</button>
+      </Link>
+      <Link to={{ pathname: "/generate-password" }}>
+        <button type="button">Generate Safe Password</button>
       </Link>
     </div>
   );

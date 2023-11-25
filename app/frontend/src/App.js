@@ -5,13 +5,14 @@ import "./App.css";
 // import { CHAR2CODE } from "./utils/charset";
 import { Route, Routes } from "react-router";
 import MainMenu from "./components/MainMenu/MainMenu";
-import GeneratePassword from "./components/GeneratePassword/GeneratePassword";
 import { configureStore } from "@reduxjs/toolkit";
 import passwordReducer from "./reducers/password-reducer";
 import { Provider } from "react-redux";
 import ListPasswords from "./components/ListPasswords/ListPasswords";
 import EncryptPassword from "./components/EncryptPassword/EncryptPassword";
 import DecryptPassword from "./components/DecryptPassword/DecryptPassword";
+import CreatePassword from "./components/CreatePassword/CreatePassword";
+import GeneratePassword from "./components/GeneratePassword/GeneratePassword";
 
 const store = configureStore({
   reducer: {
@@ -29,7 +30,7 @@ const App = () => {
       <Provider store={store}>
         <Routes>
           <Route path="/" element={<MainMenu />} />
-          <Route path="/password" element={<GeneratePassword />} />
+          <Route path="/password" element={<CreatePassword />} />
           <Route path="/passwords" element={<ListPasswords />} />
           <Route
             path="/password/encrypt/:pass_uid"
@@ -39,6 +40,7 @@ const App = () => {
             path="/password/decrypt/:pass_uid"
             element={<DecryptPassword />}
           />
+          <Route path="/generate-password" element={<GeneratePassword />} />
         </Routes>
       </Provider>
     </div>
