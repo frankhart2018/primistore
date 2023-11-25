@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { decryptPasswordThunk } from "../../services/password-thunk";
-import NavBar from "../NavBar/NavBar";
+import { decryptPasswordThunk } from "../../../services/password-thunk";
+import NavBar from "../../parts/NavBar/NavBar";
 
 const DecryptPassword = () => {
   const { decryptedData } = useSelector((state) => state.password);

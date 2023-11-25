@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { v4 as uuidv4 } from "uuid";
-import SquareTable from "../SquareTable/SquareTable";
+import SquareTable from "../../parts/SquareTable/SquareTable";
 import { useDispatch, useSelector } from "react-redux";
-import { COLS, ROWS } from "../../utils/constants";
-import { encryptPasswordThunk } from "../../services/password-thunk";
-import NavBar from "../NavBar/NavBar";
+import { COLS, ROWS } from "../../../utils/constants";
+import { encryptPasswordThunk } from "../../../services/password-thunk";
+import NavBar from "../../parts/NavBar/NavBar";
 
 const EncryptPassword = () => {
   const targetRef = useRef();

@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./SquareTable.css";
-import { COLS } from "../../utils/constants";
+import { COLS } from "../../../utils/constants";
 
 const SquareTable = ({ rows, cols, data }) => {
   const renderTable = () => {

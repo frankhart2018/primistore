@@ -1,7 +1,7 @@
 import { useState } from "react";
-import NavBar from "../NavBar/NavBar";
-import Slider from "../Slider/Slider";
-import { generateSafePassword } from "../../utils/password";
+import NavBar from "../../parts/NavBar/NavBar";
+import Slider from "../../parts/Slider/Slider";
+import { generateSafePassword } from "../../../utils/password";
 
 const GeneratePassword = () => {
   const [sliderValues, setSliderValues] = useState({ 0: 100 });

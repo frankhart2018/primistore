@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createPasswordThunk } from "../../services/password-thunk";
-import NavBar from "../NavBar/NavBar";
+import { createPasswordThunk } from "../../../services/password-thunk";
+import NavBar from "../../parts/NavBar/NavBar";
 
 const CreatePassword = () => {
   let [identifier, setIdentifier] = useState("");

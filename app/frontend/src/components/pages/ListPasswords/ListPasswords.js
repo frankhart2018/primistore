@@ -4,10 +4,10 @@ import {
   fetchPasswordsThunk,
   rotateAESKeyAndIVThunk,
   rotateCharsetThunk,
-} from "../../services/password-thunk";
+} from "../../../services/password-thunk";
 
 import "./ListPasswords.css";
-import NavBar from "../NavBar/NavBar";
+import NavBar from "../../parts/NavBar/NavBar";
 import { Link } from "react-router-dom";
 
 const ListPasswords = () => {
