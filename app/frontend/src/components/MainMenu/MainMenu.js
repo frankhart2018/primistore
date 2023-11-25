@@ -8,7 +8,7 @@ const MainMenu = () => {
       <NavBar />
       <ul>
         <li>
-          <Link to={{ pathname: "/password" }}>Generate Password</Link>
+          <Link to={{ pathname: "/password" }}>Create Password</Link>
         </li>
         <li>
           <Link to={{ pathname: "/passwords" }}>List Passwords</Link>

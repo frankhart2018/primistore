@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { createPasswordThunk } from "../../services/password-thunk";
 import NavBar from "../NavBar/NavBar";
 
-const GeneratePassword = () => {
+const CreatePassword = () => {
   let [identifier, setIdentifier] = useState("");
 
   const dispatch = useDispatch();
@@ -37,4 +37,4 @@ const GeneratePassword = () => {
   );
 };
 
-export default GeneratePassword;
+export default CreatePassword;
