@@ -7,7 +7,12 @@ const shuffleString = (inputString) => {
   return charArray.join("");
 };
 
-const generateSafePassword = (length) => {
+const generateSafePassword = (
+  length,
+  alphabetsPercent,
+  numbersPercent,
+  specialsPercent
+) => {
   const uppercase = Array.from({ length: 26 }, (_, i) =>
     String.fromCharCode(65 + i)
   );
@@ -37,9 +42,9 @@ const generateSafePassword = (length) => {
     "_",
   ];
 
-  const numSpecials = Math.floor(0.2 * length);
-  const numNumbers = Math.floor(0.2 * length);
-  let numAlphabets = Math.floor(0.6 * length);
+  const numSpecials = Math.floor((specialsPercent / 100) * length);
+  const numNumbers = Math.floor((numbersPercent / 100) * length);
+  let numAlphabets = Math.floor((alphabetsPercent / 100) * length);
 
   const sumVal = numSpecials + numNumbers + numAlphabets;
   const diff = length - sumVal;

@@ -31,7 +31,12 @@ const GeneratePassword = () => {
     if (errVals.length > 0) {
       alert(errVals.join("\n"));
     } else {
-      const safePassword = generateSafePassword(passwordLength);
+      const safePassword = generateSafePassword(
+        passwordLength,
+        values[0],
+        values[1],
+        values[2]
+      );
       setGeneratedPassword(safePassword);
     }
   };
