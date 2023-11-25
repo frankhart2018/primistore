@@ -1,6 +1,7 @@
 import { useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import Slider from "../Slider/Slider";
+import { generateSafePassword } from "../../utils/password";
 
 const GeneratePassword = () => {
   const [sliderValues, setSliderValues] = useState({ 0: 100 });
@@ -30,7 +31,8 @@ const GeneratePassword = () => {
     if (errVals.length > 0) {
       alert(errVals.join("\n"));
     } else {
-      setGeneratedPassword("helloWorld");
+      const safePassword = generateSafePassword(passwordLength);
+      setGeneratedPassword(safePassword);
     }
   };
 
