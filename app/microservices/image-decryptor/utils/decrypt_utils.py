@@ -15,8 +15,7 @@ def convert_strict_bw(img):
 def get_row_stats(img):
     row_indices = []
     current_row = 0
-    fetched_cols = False
-    rows, cols = img.shape
+    rows, _ = img.shape
 
     row_stats = defaultdict(list)
     for i in range(rows):
@@ -24,7 +23,7 @@ def get_row_stats(img):
         if np.all(np.unique(this_row) == this_row[0]):  # ignore all white rows
             continue
 
-        values, counts = np.unique(this_row, return_counts=True)
+        _, counts = np.unique(this_row, return_counts=True)
         black_ratio = counts[0] / counts.sum()
         if (
             black_ratio > 0.8
@@ -48,7 +47,7 @@ def get_row_stats(img):
 def decode_values(row_stats, img):
     data = []
 
-    for row_idx, val in row_stats.items():
+    for val in row_stats.values():
         img_row_idx, _ = val
         this_row = img[img_row_idx, :]
         zeros = np.where(this_row == 0)
