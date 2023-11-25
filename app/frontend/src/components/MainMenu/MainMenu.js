@@ -13,6 +13,11 @@ const MainMenu = () => {
         <li>
           <Link to={{ pathname: "/passwords" }}>List Passwords</Link>
         </li>
+        <li>
+          <Link to={{ pathname: "/generate-password" }}>
+            Generate Safe Password
+          </Link>
+        </li>
       </ul>
     </div>
   );
