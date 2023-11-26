@@ -23,6 +23,7 @@ const initialState = {
   passwords: [],
   encryptedData: getZeros2DArray(ROWS, COLS),
   decryptedData: "",
+  rawData: "",
 };
 
 const passwordSlice = createSlice({
@@ -91,6 +92,7 @@ const passwordSlice = createSlice({
 
       if ("data" in payload) {
         state.decryptedData = action.payload.data.decrypted;
+        state.rawData = action.payload.data.raw;
       } else {
         alert(payload.response.data.error);
       }

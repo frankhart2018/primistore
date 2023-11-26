@@ -4,7 +4,7 @@ import { decryptPasswordThunk } from "../../../services/password-thunk";
 import NavBar from "../../parts/NavBar/NavBar";
 
 const DecryptPassword = () => {
-  const { decryptedData } = useSelector((state) => state.password);
+  const { decryptedData, rawData } = useSelector((state) => state.password);
   const [pmsFile, setPmsFile] = useState(null);
 
   const pathName = window.location.pathname;
@@ -35,7 +35,20 @@ const DecryptPassword = () => {
 
       <p>
         <strong>Decrypted data: </strong>
-        {decryptedData}
+        {decryptedData.length > 0 ? (
+          <p>
+            <strong>Data:</strong> {decryptedData}
+          </p>
+        ) : (
+          <></>
+        )}
+        {rawData.length > 0 ? (
+          <p>
+            <strong>Raw:</strong> {rawData}
+          </p>
+        ) : (
+          <></>
+        )}
       </p>
     </div>
   );

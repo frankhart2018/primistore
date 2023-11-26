@@ -47,7 +47,7 @@ async def decrypt_password(pass_uid: str, file: UploadFile):
 
     data_arr = decode_memory(str(image_path))
     charset_path = PRIMISTORE_DIR / f"charset-{pass_uid}.txt"
-    charset_decrypted = decode_charset(data_arr, charset_path)
+    charset_decrypted, raw_data = decode_charset(data_arr, charset_path)
     decrypted = decrypt_aes(
         key=password["aes_key"],
         iv=password["aes_iv"],
@@ -57,4 +57,4 @@ async def decrypt_password(pass_uid: str, file: UploadFile):
     if decrypted.type_ == CommandOutputType.ERROR:
         return JSONResponse(content={"error": decrypted.value}, status_code=500)
 
-    return {"decrypted": decrypted.value}
+    return {"decrypted": decrypted.value, "raw": raw_data}
