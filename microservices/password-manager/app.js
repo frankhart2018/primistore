@@ -6,6 +6,7 @@ import {
   PRIMISTORE_DIR,
   createDirectoriesIfNotExistSync,
 } from "./utils/path-utils.js";
+import winston from "winston";
 
 const CONNECTION_STRING =
   process.env.DB_CONNECTION_STRING || "mongodb://localhost:27017/primistore";
@@ -21,13 +22,19 @@ const app = express();
 app.use(cors(corsOptions));
 app.use(express.json());
 
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.simple(),
+  transports: [new winston.transports.Console()],
+});
+
 app.get("/", (req, res) => {
   res.status(200).send({
     status: "Hello world",
   });
 });
 
-PrimistoreController(app);
+PrimistoreController(app, logger);
 
 app.listen(process.env.PORT || 4000, process.env.HOST || "127.0.0.1", () => {
   createDirectoriesIfNotExistSync(PRIMISTORE_DIR);
