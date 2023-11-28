@@ -19,7 +19,7 @@ import {
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 
-const passwordCreationHandler = async (req, res) => {
+const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
 
   const { key, iv } = generateAESKeyIV();
@@ -29,6 +29,7 @@ const passwordCreationHandler = async (req, res) => {
   ) {
     let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
     errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
+    logger.error("POST /password : Status 500");
     res.status(500).send({
       error: errorMessage,
     });
@@ -41,17 +42,19 @@ const passwordCreationHandler = async (req, res) => {
 
   await createPassword(password_uid, key.value, iv.value);
 
+  logger.info("POST /password : Status 200");
   res.status(200).send({
     status: "success",
   });
 };
 
-const getAllPasswordsHandler = async (req, res) => {
+const getAllPasswordsHandler = async (req, res, logger) => {
   const passwords = await getPasswords();
+  logger.info("GET /passwords : Status 200");
   return res.status(200).send(passwords);
 };
 
-const rotateAESKeyIVHandler = async (req, res) => {
+const rotateAESKeyIVHandler = async (req, res, logger) => {
   const { pass_uid } = req.params;
 
   const { key, iv } = generateAESKeyIV();
@@ -61,6 +64,7 @@ const rotateAESKeyIVHandler = async (req, res) => {
   ) {
     let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
     errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
+    logger.error(`PUT /password/aes/${pass_uid} : Status 500`);
     res.status(500).send({
       error: errorMessage,
     });
@@ -73,12 +77,13 @@ const rotateAESKeyIVHandler = async (req, res) => {
     iv.value
   );
 
+  logger.info(`PUT /password/aes/${pass_uid} : Status 200`);
   res.status(200).send({
     password: updatedPassword,
   });
 };
 
-const rotateCharsetHandler = async (req, res) => {
+const rotateCharsetHandler = async (req, res, logger) => {
   const { pass_uid } = req.params;
 
   const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
@@ -87,13 +92,14 @@ const rotateCharsetHandler = async (req, res) => {
   fs.writeFileSync(charsetPath, charset);
   const updatedPassword = await updatePasswordCharset(pass_uid);
 
+  logger.info(`PUT /password/charset/${pass_uid} : Status 200`);
   res.status(200).send({
     updatedCharset: charset,
     password: updatedPassword,
   });
 };
 
-const encryptPasswordHandler = async (req, res) => {
+const encryptPasswordHandler = async (req, res, logger) => {
   const { pass_uid } = req.params;
   const raw_password = req.body.password;
 
@@ -102,6 +108,7 @@ const encryptPasswordHandler = async (req, res) => {
 
   let encryptedPassword = encryptWithAES(aes_key, aes_iv, raw_password);
   if (encryptedPassword.type == CommandOutputType.Error) {
+    logger.error(`POST /password/encrypt/${pass_uid} : Status 500`);
     res.status(500).send({
       error: encryptedPassword.value,
     });
@@ -116,17 +123,26 @@ const encryptPasswordHandler = async (req, res) => {
     .slice(0, -1);
   encryptedPassword = encryptWithCharset(charset, encryptedPassword.value);
 
+  logger.info(`POST /password/encrypt/${pass_uid} : Status 200`);
   res.status(200).send({
     encryptedPassword,
   });
 };
 
-const PrimistoreController = (app) => {
-  app.post("/password", passwordCreationHandler);
-  app.get("/passwords", getAllPasswordsHandler);
-  app.put("/password/aes/:pass_uid", rotateAESKeyIVHandler);
-  app.put("/password/charset/:pass_uid", rotateCharsetHandler);
-  app.post("/password/encrypt/:pass_uid", encryptPasswordHandler);
+const PrimistoreController = (app, logger) => {
+  app.post("/password", (req, res) =>
+    passwordCreationHandler(req, res, logger)
+  );
+  app.get("/passwords", (req, res) => getAllPasswordsHandler(req, res, logger));
+  app.put("/password/aes/:pass_uid", (req, res) =>
+    rotateAESKeyIVHandler(req, res, logger)
+  );
+  app.put("/password/charset/:pass_uid", (req, res) =>
+    rotateCharsetHandler(req, res, logger)
+  );
+  app.post("/password/encrypt/:pass_uid", (req, res) =>
+    encryptPasswordHandler(req, res, logger)
+  );
 };
 
 export default PrimistoreController;
