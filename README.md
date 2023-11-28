@@ -90,7 +90,7 @@ $ mkdir charsets
 3. Use docker-compose (install this if you don't already have it):
 
 ```bash
-$ IP=<IP> LOCAL_DIR=<charset-dir-path> docker-compose up
+$ IP=<IP> LOCAL_DIR=<charset-dir-path> docker-compose up -d
 ```
 
 **Note**: For the first time it will take some time, for later runs, docker will cache things (I hope you have a high level idea of how docker works, if not google it).
