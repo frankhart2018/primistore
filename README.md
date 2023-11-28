@@ -79,10 +79,18 @@ Finally the app should be up and running, so easy wasn't it?
 
 ### Using Docker
 
-1. Use docker-compose (install this if you don't already have it):
+1. Create a directory to hold charsets:
 
 ```bash
-$ docker-compose up
+$ mkdir charsets
+```
+
+2. Find IP address of the host (ifconfig for macOS and Linux systems, I don't know about windows).
+
+3. Use docker-compose (install this if you don't already have it):
+
+```bash
+$ IP=<IP> LOCAL_DIR=<charset-dir-path> docker-compose up
 ```
 
 **Note**: For the first time it will take some time, for later runs, docker will cache things (I hope you have a high level idea of how docker works, if not google it).
