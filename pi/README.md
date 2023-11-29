@@ -1,4 +1,4 @@
-# PI support
+# Pi support
 
 This directory contains all the things that are required to run PrimiStore on Raspberry Pi.
 
