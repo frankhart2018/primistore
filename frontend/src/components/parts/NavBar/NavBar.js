@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { VERSION } from "../../../utils/version";
 
 const NavBar = () => {
   return (
     <div>
+      <h1>PrimiStore v{VERSION}</h1>
       <Link to={{ pathname: "/" }}>
         <button type="button">Home</button>
       </Link>
