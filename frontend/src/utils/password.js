@@ -11,14 +11,16 @@ const generateSafePassword = (
   length,
   alphabetsPercent,
   numbersPercent,
-  specialsPercent
+  specialsPercent,
+  allowUppercase,
+  allowLowercase
 ) => {
-  const uppercase = Array.from({ length: 26 }, (_, i) =>
-    String.fromCharCode(65 + i)
-  );
-  const lowercase = Array.from({ length: 26 }, (_, i) =>
-    String.fromCharCode(97 + i)
-  );
+  const uppercase = allowUppercase
+    ? Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i))
+    : [];
+  const lowercase = allowLowercase
+    ? Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i))
+    : [];
 
   const alphabets = uppercase.concat(lowercase);
   const numbers = Array.from({ length: 10 }, (_, i) => i.toString());

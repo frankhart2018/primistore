@@ -6,7 +6,7 @@ const Slider = ({ initialValue, label, count, parentUpdateCallback }) => {
   const onUpdateSlider = (e) => {
     const thisVal = e.target.value;
     setSliderValue(thisVal);
-    parentUpdateCallback(count, thisVal);
+    parentUpdateCallback(count, thisVal, "slider");
   };
 
   return (

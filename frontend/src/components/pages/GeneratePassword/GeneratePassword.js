@@ -2,14 +2,24 @@ import { useState } from "react";
 import NavBar from "../../parts/NavBar/NavBar";
 import Slider from "../../parts/Slider/Slider";
 import { generateSafePassword } from "../../../utils/password";
+import CheckBox from "../../parts/CheckBox/CheckBox";
 
 const GeneratePassword = () => {
   const [sliderValues, setSliderValues] = useState({ 0: 100 });
+  const [checkboxValues, setCheckboxValues] = useState({});
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [passwordLength, setPasswordLength] = useState(0);
 
-  const childValueUpdateCallback = (count, value) => {
-    setSliderValues({ ...sliderValues, [count]: value });
+  const childValueUpdateCallback = (count, value, type) => {
+    if (type === "slider") {
+      setSliderValues({ ...sliderValues, [count]: value });
+    } else if (type === "checkbox") {
+      setCheckboxValues({ ...checkboxValues, [count]: value });
+    }
+  };
+
+  const getObjKeyOrDefault = (obj, key, default_) => {
+    return obj.hasOwnProperty(key) ? obj[key] : default_;
   };
 
   const generatePasswordHandler = () => {
@@ -25,7 +35,14 @@ const GeneratePassword = () => {
     }
 
     if (passwordLength === 0) {
-      errVals.push("The password length should be greater than 0");
+      errVals.push("The length must be greater than 0");
+    }
+
+    const uppercase = getObjKeyOrDefault(checkboxValues, "chars-0", true);
+    const lowercase = getObjKeyOrDefault(checkboxValues, "chars-1", true);
+
+    if (!uppercase && !lowercase) {
+      errVals.push("You must select either uppercase or lowercase or both");
     }
 
     if (errVals.length > 0) {
@@ -35,7 +52,9 @@ const GeneratePassword = () => {
         passwordLength,
         values[0],
         values[1],
-        values[2]
+        values[2],
+        uppercase,
+        lowercase
       );
       setGeneratedPassword(safePassword);
     }
@@ -74,6 +93,20 @@ const GeneratePassword = () => {
           initialValue={0}
           label="Special characters percent: "
           count={2}
+          parentUpdateCallback={childValueUpdateCallback}
+        />
+
+        <CheckBox
+          label={"Allow uppercase characters: "}
+          count="chars-0"
+          initialValue={true}
+          parentUpdateCallback={childValueUpdateCallback}
+        />
+
+        <CheckBox
+          label={"Allow lowercase characters: "}
+          count="chars-1"
+          initialValue={true}
           parentUpdateCallback={childValueUpdateCallback}
         />
 
