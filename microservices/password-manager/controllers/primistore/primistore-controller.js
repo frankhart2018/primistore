@@ -19,6 +19,7 @@ import {
   generateCharset,
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
+import { getCurrentTime } from "../../utils/date-utils.js";
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
@@ -30,7 +31,7 @@ const passwordCreationHandler = async (req, res, logger) => {
   ) {
     let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
     errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
-    logger.error("POST /password : Status 500");
+    logger.error(`[${getCurrentTime()}] POST /password : Status 500`);
     res.status(500).send({
       error: errorMessage,
     });
@@ -43,7 +44,7 @@ const passwordCreationHandler = async (req, res, logger) => {
 
   await createPassword(password_uid, key.value, iv.value);
 
-  logger.info("POST /password : Status 200");
+  logger.info(`[${getCurrentTime()}] POST /password : Status 200`);
   res.status(200).send({
     status: "success",
   });
@@ -51,7 +52,7 @@ const passwordCreationHandler = async (req, res, logger) => {
 
 const getAllPasswordsHandler = async (req, res, logger) => {
   const passwords = await getPasswords();
-  logger.info("GET /passwords : Status 200");
+  logger.info(`[${getCurrentTime()}] GET /passwords : Status 200`);
   return res.status(200).send(passwords);
 };
 
@@ -65,7 +66,9 @@ const rotateAESKeyIVHandler = async (req, res, logger) => {
   ) {
     let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
     errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
-    logger.error(`PUT /password/aes/${pass_uid} : Status 500`);
+    logger.error(
+      `[${getCurrentTime()}] PUT /password/aes/${pass_uid} : Status 500`
+    );
     res.status(500).send({
       error: errorMessage,
     });
@@ -78,7 +81,9 @@ const rotateAESKeyIVHandler = async (req, res, logger) => {
     iv.value
   );
 
-  logger.info(`PUT /password/aes/${pass_uid} : Status 200`);
+  logger.info(
+    `[${getCurrentTime()}] PUT /password/aes/${pass_uid} : Status 200`
+  );
   res.status(200).send({
     password: updatedPassword,
   });
@@ -93,7 +98,9 @@ const rotateCharsetHandler = async (req, res, logger) => {
   fs.writeFileSync(charsetPath, charset);
   const updatedPassword = await updatePasswordCharset(pass_uid);
 
-  logger.info(`PUT /password/charset/${pass_uid} : Status 200`);
+  logger.info(
+    `[${getCurrentTime()}] PUT /password/charset/${pass_uid} : Status 200`
+  );
   res.status(200).send({
     updatedCharset: charset,
     password: updatedPassword,
@@ -109,7 +116,9 @@ const encryptPasswordHandler = async (req, res, logger) => {
 
   let encryptedPassword = encryptWithAES(aes_key, aes_iv, raw_password);
   if (encryptedPassword.type == CommandOutputType.Error) {
-    logger.error(`POST /password/encrypt/${pass_uid} : Status 500`);
+    logger.error(
+      `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 500`
+    );
     res.status(500).send({
       error: encryptedPassword.value,
     });
@@ -124,7 +133,9 @@ const encryptPasswordHandler = async (req, res, logger) => {
     .slice(0, -1);
   encryptedPassword = encryptWithCharset(charset, encryptedPassword.value);
 
-  logger.info(`POST /password/encrypt/${pass_uid} : Status 200`);
+  logger.info(
+    `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 200`
+  );
   res.status(200).send({
     encryptedPassword,
   });
@@ -145,7 +156,9 @@ const deletePasswordHandler = async (req, res, logger) => {
   try {
     fs.unlinkSync(charsetPath);
   } catch (err) {
-    logger.error(`DELETE /password/${pass_uid} : Status 500`);
+    logger.error(
+      `[${getCurrentTime()}] DELETE /password/${pass_uid} : Status 500`
+    );
     res.status(500).send({
       error: err.message,
     });
@@ -154,7 +167,9 @@ const deletePasswordHandler = async (req, res, logger) => {
 
   const output = await removePasswordByPassUid(pass_uid);
 
-  logger.info(`DELETE /password/${pass_uid} : Status 200`);
+  logger.info(
+    `[${getCurrentTime()}] DELETE /password/${pass_uid} : Status 200`
+  );
   res.status(200).send({
     status: output.hasOwnProperty("acknowledged")
       ? output["acknowledged"]
