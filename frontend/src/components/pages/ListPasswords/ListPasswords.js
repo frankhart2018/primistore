@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deletePasswordThunk,
   fetchPasswordsThunk,
   rotateAESKeyAndIVThunk,
   rotateCharsetThunk,
@@ -87,6 +88,20 @@ const ListPasswords = () => {
     }
   };
 
+  const deletePassword = (passUid) => {
+    const userConfirmed = window.confirm(`Deleting password for ${passUid}`);
+
+    if (userConfirmed === true) {
+      dispatch(
+        deletePasswordThunk({
+          passUid,
+        })
+      );
+    } else {
+      alert(`Retaining password for ${passUid}`);
+    }
+  };
+
   return (
     <div>
       <NavBar />
@@ -106,7 +121,7 @@ const ListPasswords = () => {
             <th>Password UID</th>
             <th>AES Key & IV</th>
             <th>Charset Path</th>
-            <th>Encrypt/Decrypt</th>
+            <th>Operations</th>
           </tr>
         </thead>
         <tbody>
@@ -163,6 +178,10 @@ const ListPasswords = () => {
                   >
                     Decrypt
                   </Link>
+                  &nbsp;
+                  <button onClick={() => deletePassword(password_obj.pass_uid)}>
+                    Delete
+                  </button>
                 </td>
               </tr>
             );

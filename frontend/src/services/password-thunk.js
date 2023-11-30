@@ -71,3 +71,15 @@ export const decryptPasswordThunk = createAsyncThunk(
     }
   }
 );
+
+export const deletePasswordThunk = createAsyncThunk(
+  "password/deletePassword",
+  async (payload) => {
+    try {
+      const response = await passwordService.deletePassword(payload.passUid);
+      return response;
+    } catch (e) {
+      return e;
+    }
+  }
+);

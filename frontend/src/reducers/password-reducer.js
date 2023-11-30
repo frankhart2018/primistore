@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createPasswordThunk,
   decryptPasswordThunk,
+  deletePasswordThunk,
   encryptPasswordThunk,
   fetchPasswordsThunk,
   rotateAESKeyAndIVThunk,
@@ -93,6 +94,23 @@ const passwordSlice = createSlice({
       if ("data" in payload) {
         state.decryptedData = action.payload.data.decrypted;
         state.rawData = action.payload.data.raw;
+      } else {
+        alert(payload.response.data.error);
+      }
+    },
+    [deletePasswordThunk.fulfilled]: (state, action) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        alert(`Status: ${payload.data.status}`);
+        let newPasswords = [];
+        const deletedPassUid = payload.data.pass_uid;
+        for (let i = 0; i < state.passwords.length; i++) {
+          if (state.passwords[i].pass_uid !== deletedPassUid) {
+            newPasswords.push({ ...state.passwords[i] });
+          }
+        }
+        state.passwords = newPasswords;
       } else {
         alert(payload.response.data.error);
       }

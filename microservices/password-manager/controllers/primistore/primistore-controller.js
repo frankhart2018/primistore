@@ -10,6 +10,7 @@ import {
   createPassword,
   getPasswordByPassUid,
   getPasswords,
+  removePasswordByPassUid,
   updatePasswordAES,
   updatePasswordCharset,
 } from "./primistore-dao.js";
@@ -129,6 +130,39 @@ const encryptPasswordHandler = async (req, res, logger) => {
   });
 };
 
+const deletePasswordHandler = async (req, res, logger) => {
+  const { pass_uid } = req.params;
+
+  const passwordDetails = await getPasswordByPassUid(pass_uid);
+  if (passwordDetails === null) {
+    res.status(500).send({
+      error: `Could not find password with id ${pass_uid}`,
+    });
+    return;
+  }
+
+  const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
+  try {
+    fs.unlinkSync(charsetPath);
+  } catch (err) {
+    logger.error(`DELETE /password/${pass_uid} : Status 500`);
+    res.status(500).send({
+      error: err.message,
+    });
+    return;
+  }
+
+  const output = await removePasswordByPassUid(pass_uid);
+
+  logger.info(`DELETE /password/${pass_uid} : Status 200`);
+  res.status(200).send({
+    status: output.hasOwnProperty("acknowledged")
+      ? output["acknowledged"]
+      : false,
+    pass_uid,
+  });
+};
+
 const PrimistoreController = (app, logger) => {
   app.post("/password", (req, res) =>
     passwordCreationHandler(req, res, logger)
@@ -142,6 +176,9 @@ const PrimistoreController = (app, logger) => {
   );
   app.post("/password/encrypt/:pass_uid", (req, res) =>
     encryptPasswordHandler(req, res, logger)
+  );
+  app.delete("/password/:pass_uid", (req, res) =>
+    deletePasswordHandler(req, res, logger)
   );
 };
 

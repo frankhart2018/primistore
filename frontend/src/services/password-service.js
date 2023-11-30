@@ -58,3 +58,10 @@ export const decryptPassword = async (passUid, pmsFile) => {
   );
   return response;
 };
+
+export const deletePassword = async (passUid) => {
+  const response = await axios.delete(
+    `${PASSWORD_MANAGER_API_BASE}/password/${passUid}`
+  );
+  return response;
+};

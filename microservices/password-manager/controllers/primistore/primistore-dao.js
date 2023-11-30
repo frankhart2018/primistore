@@ -55,3 +55,7 @@ export const updatePasswordCharset = (pass_uid) => {
 export const getPasswordByPassUid = (pass_uid) => {
   return primistoreModel.findOne({ pass_uid: pass_uid });
 };
+
+export const removePasswordByPassUid = (pass_uid) => {
+  return primistoreModel.deleteOne({ pass_uid: pass_uid });
+};
