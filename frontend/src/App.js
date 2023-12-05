@@ -1,5 +1,4 @@
 // import { useState } from "react";
-import "./App.css";
 // import SinglePage from "./components/SinglePage/SinglePage";
 // import { COLS, ROWS } from "./utils/constants";
 // import { CHAR2CODE } from "./utils/charset";
@@ -29,7 +28,7 @@ const App = () => {
   document.title = `PrimiStore v${VERSION}`;
 
   return (
-    <div className="App">
+    <div className="bg-slate-400/25 h-[100vh] w-[100vw]">
       <Provider store={store}>
         <Routes>
           <Route path="/" element={<MainMenu />} />
