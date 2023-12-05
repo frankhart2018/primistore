@@ -3,11 +3,6 @@ import { NavLink } from "react-router-dom";
 import { VERSION } from "../../../utils/version";
 
 const NavBar = () => {
-  
-  const activeClassName =
-    "text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-md px-5 py-2.5 me-2 mb-2";
-  const nonActiveClassName =
-    "border border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-md px-5 py-2.5 me-2 mb-2";
 
   return (
     <nav className="mb-10">
@@ -20,7 +15,7 @@ const NavBar = () => {
             <li>
               <NavLink
                 className={({ isActive }) =>
-                  isActive ? activeClassName : nonActiveClassName
+                  isActive ? "activeNavLink" : "defaultNavLink"
                 }
                 to={{ pathname: "/" }}
               >
@@ -30,7 +25,7 @@ const NavBar = () => {
             <li>
               <NavLink
                 className={({ isActive }) =>
-                  isActive ? activeClassName : nonActiveClassName
+                  isActive ? "activeNavLink" : "defaultNavLink"
                 }
                 to={{ pathname: "/password" }}
               >
@@ -40,7 +35,7 @@ const NavBar = () => {
             <li>
               <NavLink
                 className={({ isActive }) =>
-                  isActive ? activeClassName : nonActiveClassName
+                  isActive ? "activeNavLink" : "defaultNavLink"
                 }
                 to={{ pathname: "/passwords" }}
               >
@@ -50,7 +45,7 @@ const NavBar = () => {
             <li>
               <NavLink
                 className={({ isActive }) =>
-                  isActive ? activeClassName : nonActiveClassName
+                  isActive ? "activeNavLink" : "defaultNavLink"
                 }
                 to={{ pathname: "/generate-password" }}
               >
