@@ -17,7 +17,7 @@ const CheckBox = ({ initialValue, label, count, parentUpdateCallback }) => {
     //     checked={checkboxValue}
     //   />
     // </div>
-    <div className="flex flex-row w-1/2 justify-between items-center">
+    <div className="flex flex-row w-1/2 justify-between items-center mb-4">
       <label
         htmlFor={`checkbox-${count}`}
         className="text-md text-gray-900 capitalize"
