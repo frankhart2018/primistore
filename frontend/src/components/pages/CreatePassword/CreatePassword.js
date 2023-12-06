@@ -23,7 +23,7 @@ const CreatePassword = () => {
         <div class="mb-10 w-5/6 space-y-5">
           <label
             for="identifier"
-            class="block mb-2 text-md font-medium text-gray-900"
+            class="block mb-2 text-md font-medium text-gray-900 capitalize"
           >
             Password identifier (should be unique)
           </label>
