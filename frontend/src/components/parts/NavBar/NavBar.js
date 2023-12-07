@@ -7,11 +7,11 @@ const NavBar = () => {
   return (
     <nav className="mb-10">
       <div className="w-11/12 flex items-center justify-between mx-auto pt-10">
-        <NavLink to={{ pathname: "/" }} className="text-4xl font-semibold">
+        <NavLink to={{ pathname: "/" }} className="md:text-2xl lg:text-4xl font-semibold">
           PrimiStore v{VERSION}
         </NavLink>
-        <div className="w-5/12">
-          <ul className="font-medium rounded-lg flex flex-row justify-between items-center space-x-4">
+        <div className="lg:w-9/12 xl:w-6/12 2xl:w-5/12">
+          <ul className="font-medium rounded-lg flex flex-row justify-between items-center lg:space-x-1">
             <li>
               <NavLink
                 className={({ isActive }) =>

@@ -28,7 +28,7 @@ const App = () => {
   document.title = `PrimiStore v${VERSION}`;
 
   return (
-    <div className="bg-slate-400/25 h-[100vh] w-[100vw]">
+    <div className="bg-white h-[100vh] w-[100vw]">
       <Provider store={store}>
         <Routes>
           <Route path="/" element={<MainMenu />} />
