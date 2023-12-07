@@ -3,11 +3,13 @@ import { NavLink } from "react-router-dom";
 import { VERSION } from "../../../utils/version";
 
 const NavBar = () => {
-
   return (
     <nav className="mb-10">
       <div className="w-11/12 flex items-center justify-between mx-auto pt-10">
-        <NavLink to={{ pathname: "/" }} className="md:text-2xl lg:text-4xl font-semibold">
+        <NavLink
+          to={{ pathname: "/" }}
+          className="md:text-2xl lg:text-4xl font-semibold"
+        >
           PrimiStore v{VERSION}
         </NavLink>
         <div className="lg:w-9/12 xl:w-6/12 2xl:w-5/12">

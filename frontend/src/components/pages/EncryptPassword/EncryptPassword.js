@@ -57,7 +57,7 @@ const EncryptPassword = () => {
           className="mb-2 text-lg font-medium text-gray-900 capitalize"
           htmlFor="password"
         >
-          Password:{" "}
+          Password
         </label>
         <input
           type="password"

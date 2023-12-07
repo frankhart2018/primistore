@@ -65,7 +65,9 @@ const GeneratePassword = () => {
       <NavBar />
       <div className="w-5/6 mx-auto flex flex-col justify-center items-center">
         <div className="flex flex-row w-1/2 justify-between items-center mb-4">
-          <label className="capitalize" htmlFor="password-length">Password length </label>
+          <label className="capitalize" htmlFor="password-length">
+            Password length
+          </label>
           <input
             type="number"
             id="password-length"

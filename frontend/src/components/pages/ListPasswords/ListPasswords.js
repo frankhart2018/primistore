@@ -107,21 +107,16 @@ const ListPasswords = () => {
       <NavBar />
       <div className="w-5/6 mx-auto">
         <div className="w-1/2 mx-auto px-4 py-8 flex flex-col justify-center items-center mb-10 border border-red-600">
-          <p className="text-xl font-bold tracking-widest uppercase">
-            Legend
-          </p>
+          <p className="text-xl font-bold tracking-widest uppercase">Legend</p>
           <div className="flex flex-row justify-center items-center space-x-6">
             <p className="font-semibold capitalize">
-              <span className="red smallbox"></span> Time to
-              rotate
+              <span className="red smallbox"></span> Time to rotate
             </p>
             <p className="font-semibold capitalize">
-              <span className="yellow smallbox"></span> Almost
-              time to rotate
+              <span className="yellow smallbox"></span> Almost time to rotate
             </p>
             <p className="font-semibold capitalize">
-              <span className="green smallbox"></span> Does not
-              need rotation
+              <span className="green smallbox"></span> Does not need rotation
             </p>
           </div>
         </div>
@@ -209,82 +204,6 @@ const ListPasswords = () => {
               );
             })}
           </tbody>
-          {/* <tbody>
-            <tr>
-              <td className="text-center font-bold">1</td>
-              <td className="pl-5">Sample</td>
-              <td className="green text-center">
-                <button className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Rotate AES Key and IV
-                </button>
-                <p className="mb-2">
-                  <span>
-                    <strong>Last rotated:</strong> 5
-                  </span>{" "}
-                  day(s) ago
-                </p>
-              </td>
-              <td className="green text-center">
-                <button className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Rotate Charset
-                </button>
-                <p className="mb-2">
-                  <span>
-                    <strong>Last rotated:</strong> 5
-                  </span>{" "}
-                  day(s) ago
-                </p>
-              </td>
-              <td className="text-center">
-                <NavLink className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Encrypt
-                </NavLink>
-                <NavLink className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Decrypt
-                </NavLink>
-                <button className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Delete
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td className="text-center font-bold">2</td>
-              <td className="pl-5">Test</td>
-              <td className="yellow text-center">
-                <button className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Rotate AES Key and IV
-                </button>
-                <p className="mb-2">
-                  <span>
-                    <strong>Last rotated:</strong> 5
-                  </span>{" "}
-                  day(s) ago
-                </p>
-              </td>
-              <td className="red text-center">
-                <button className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Rotate Charset
-                </button>
-                <p className="mb-2">
-                  <span>
-                    <strong>Last rotated:</strong> 5
-                  </span>{" "}
-                  day(s) ago
-                </p>
-              </td>
-              <td className="text-center">
-                <NavLink className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Encrypt
-                </NavLink>
-                <NavLink className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Decrypt
-                </NavLink>
-                <button className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody> */}
         </table>
       </div>
     </div>

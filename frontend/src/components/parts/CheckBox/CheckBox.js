@@ -9,14 +9,6 @@ const CheckBox = ({ initialValue, label, count, parentUpdateCallback }) => {
   };
 
   return (
-    // <div className="flex flex-row w-1/2 justify-between items-center">
-    //   <label for={`checkbox-${count}`}>{label}</label>
-    //   <input
-    //     type="checkbox"
-    //     onChange={updateCheckboxValue}
-    //     checked={checkboxValue}
-    //   />
-    // </div>
     <div className="flex flex-row w-1/2 justify-between items-center mb-4">
       <label
         htmlFor={`checkbox-${count}`}
