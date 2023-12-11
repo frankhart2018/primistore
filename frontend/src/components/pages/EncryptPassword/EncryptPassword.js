@@ -52,19 +52,34 @@ const EncryptPassword = () => {
   return (
     <div>
       <NavBar />
-      <div>
-        <label for="password">Password: </label>
+      <div className="flex flex-row w-11/12 mx-auto justify-between items-center mb-4">
+        <label
+          className="mb-2 text-lg font-medium text-gray-900 capitalize"
+          htmlFor="password"
+        >
+          Password
+        </label>
         <input
           type="password"
+          className="bg-transparent border border-gray-950 text-gray-900 text-md rounded-lg block w-3/5 p-2.5"
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoFocus
         />
-        <button onClick={() => encryptData()}>Encrypt password</button>
+        <button
+          className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-64 text-md px-5 py-2.5 me-2 mb-2"
+          onClick={() => encryptData()}
+        >
+          Encrypt password
+        </button>
       </div>
-      <div>
-        <button onClick={() => handleDownloadImage(uuid)} id="download-image">
+      <div className="text-center mb-4">
+        <button
+          className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-64 text-md px-5 py-2.5 me-2 mb-2"
+          onClick={() => handleDownloadImage(uuid)}
+          id="download-image"
+        >
           Download Image
         </button>
       </div>

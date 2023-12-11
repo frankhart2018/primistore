@@ -27,7 +27,7 @@ const SquareTable = ({ rows, cols, data }) => {
 
   return (
     <div>
-      <table>
+      <table className="w-11/12 mx-auto">
         <tbody>{renderTable()}</tbody>
       </table>
     </div>

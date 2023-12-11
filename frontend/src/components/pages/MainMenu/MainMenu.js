@@ -1,22 +1,22 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import NavBar from "../../parts/NavBar/NavBar";
 
 const MainMenu = () => {
   return (
     <div>
       <NavBar />
-      <ul>
-        <li>
-          <Link to={{ pathname: "/password" }}>Create Password</Link>
+      <ul className="flex flex-col justify-center items-center">
+        <li className="my-2 text-lg font-medium underline underline-offset-4 hover:text-blue-900 hover:scale-110 transition-all duration-300">
+          <NavLink to={{ pathname: "/password" }}>Create Password</NavLink>
         </li>
-        <li>
-          <Link to={{ pathname: "/passwords" }}>List Passwords</Link>
+        <li className="my-2 text-lg font-medium underline underline-offset-4 hover:text-blue-900 hover:scale-110 transition-all duration-300">
+          <NavLink to={{ pathname: "/passwords" }}>List Passwords</NavLink>
         </li>
-        <li>
-          <Link to={{ pathname: "/generate-password" }}>
+        <li className="my-2 text-lg font-medium underline underline-offset-4 hover:text-blue-900 hover:scale-110 transition-all duration-300">
+          <NavLink to={{ pathname: "/generate-password" }}>
             Generate Safe Password
-          </Link>
+          </NavLink>
         </li>
       </ul>
     </div>
