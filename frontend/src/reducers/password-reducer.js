@@ -5,6 +5,7 @@ import {
   deletePasswordThunk,
   encryptPasswordThunk,
   fetchPasswordsThunk,
+  getCpuTempThunk,
   rotateAESKeyAndIVThunk,
   rotateCharsetThunk,
 } from "../services/password-thunk";
@@ -25,6 +26,7 @@ const initialState = {
   encryptedData: getZeros2DArray(ROWS, COLS),
   decryptedData: "",
   rawData: "",
+  cpuTemp: null,
 };
 
 const passwordSlice = createSlice({
@@ -113,6 +115,15 @@ const passwordSlice = createSlice({
         state.passwords = newPasswords;
       } else {
         alert(payload.response.data.error);
+      }
+    },
+    [getCpuTempThunk.fulfilled]: (state, action) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        state.cpuTemp = payload.data.temp;
+      } else {
+        state.cpuTemp = null;
       }
     },
   },

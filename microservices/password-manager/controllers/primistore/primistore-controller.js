@@ -186,7 +186,9 @@ const cpuTempFetchHandler = (req, res, logger) => {
     logger.info(`[${getCurrentTime()}] GET /device/cpu-temp : Status 200`);
     res.status(200).send({
       status: cpuTempOutput.typeValueStr,
-      temp: parseFloat(cpuTempOutput.value.split("=")[1].split("'")[0]),
+      temp: parseFloat(cpuTempOutput.value.split("=")[1].split("'")[0]).toFixed(
+        1
+      ),
     });
   } else {
     logger.info(`[${getCurrentTime()}] GET /device/cpu-temp : Status 500`);
