@@ -9,7 +9,6 @@ class CommandOutput {
   constructor(type, value) {
     this.type = type;
     this.value = value;
-    this.typeValueStr = type === 0 ? "SUCCESS" : "ERROR";
   }
 }
 

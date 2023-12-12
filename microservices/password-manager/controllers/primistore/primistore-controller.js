@@ -185,7 +185,6 @@ const cpuTempFetchHandler = (req, res, logger) => {
   if (cpuTempOutput.type == CommandOutputType.Success) {
     logger.info(`[${getCurrentTime()}] GET /device/cpu-temp : Status 200`);
     res.status(200).send({
-      status: cpuTempOutput.typeValueStr,
       temp: parseFloat(cpuTempOutput.value.split("=")[1].split("'")[0]).toFixed(
         1
       ),
@@ -193,7 +192,6 @@ const cpuTempFetchHandler = (req, res, logger) => {
   } else {
     logger.info(`[${getCurrentTime()}] GET /device/cpu-temp : Status 500`);
     res.status(500).send({
-      status: cpuTempOutput.typeValueStr,
       error: cpuTempOutput.value,
     });
   }
