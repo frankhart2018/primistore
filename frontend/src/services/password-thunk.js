@@ -83,3 +83,15 @@ export const deletePasswordThunk = createAsyncThunk(
     }
   }
 );
+
+export const getCpuTempThunk = createAsyncThunk(
+  "password/getCpuTemp",
+  async () => {
+    try {
+      const response = await passwordService.getCpuTemp();
+      return response;
+    } catch (e) {
+      return e;
+    }
+  }
+);

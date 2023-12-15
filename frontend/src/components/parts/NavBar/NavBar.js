@@ -12,7 +12,7 @@ const NavBar = () => {
         >
           PrimiStore v{VERSION}
         </NavLink>
-        <div className="lg:w-9/12 xl:w-7/12 2xl:w-6/12">
+        <div className="lg:w-9/12 xl:w-8/12 2xl:w-6/12">
           <ul className="font-medium rounded-lg flex flex-row justify-between items-center lg:space-x-1">
             <li>
               <NavLink
@@ -52,6 +52,16 @@ const NavBar = () => {
                 to={{ pathname: "/generate-password" }}
               >
                 Generate Safe Password
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "activeNavLink" : "defaultNavLink"
+                }
+                to={{ pathname: "/device-info" }}
+              >
+                Device Info
               </NavLink>
             </li>
           </ul>
