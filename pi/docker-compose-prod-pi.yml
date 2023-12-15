@@ -1,7 +1,7 @@
 version: "3"
 services:
   frontend:
-    image: frankhart2018/primistore:frontend-v1
+    image: frankhart2018/primistore:frontend-v0.2
     ports:
       - "3000:3000"
     environment:
@@ -9,7 +9,7 @@ services:
       - REACT_APP_IMAGE_DECRYPTOR_API_BASE=http://${IP}:8000
 
   password_manager:
-    image: frankhart2018/primistore:password-manager-v1
+    image: frankhart2018/primistore:password-manager-v0.2
     ports:
       - "4000:4000"
     depends_on:
@@ -21,7 +21,7 @@ services:
       - ${LOCAL_DIR}:/root/.primistore
 
   image_decryptor:
-    image: frankhart2018/primistore:image-decryptor-v1
+    image: frankhart2018/primistore:image-decryptor-v0.2
     ports:
       - "8000:8000"
     depends_on:
