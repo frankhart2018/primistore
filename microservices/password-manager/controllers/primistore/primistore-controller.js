@@ -20,7 +20,7 @@ import {
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
-import { getCpuTemp } from "../../utils/device-utils.js";
+import { getDeviceInfo } from "../../utils/device-utils.js";
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
@@ -179,22 +179,13 @@ const deletePasswordHandler = async (req, res, logger) => {
   });
 };
 
-const cpuTempFetchHandler = (req, res, logger) => {
-  const cpuTempOutput = getCpuTemp();
+const deviceInfoFetchHandler = (req, res, logger) => {
+  const deviceInfo = getDeviceInfo();
 
-  if (cpuTempOutput.type == CommandOutputType.Success) {
-    logger.info(`[${getCurrentTime()}] GET /device/cpu-temp : Status 200`);
-    res.status(200).send({
-      temp: parseFloat(cpuTempOutput.value.split("=")[1].split("'")[0]).toFixed(
-        1
-      ),
-    });
-  } else {
-    logger.info(`[${getCurrentTime()}] GET /device/cpu-temp : Status 500`);
-    res.status(500).send({
-      error: cpuTempOutput.value,
-    });
-  }
+  logger.info(`[${getCurrentTime()}] GET /device/device-info : Status 200`);
+  res.status(200).send({
+    info: deviceInfo,
+  });
 };
 
 const PrimistoreController = (app, logger) => {
@@ -215,8 +206,8 @@ const PrimistoreController = (app, logger) => {
     deletePasswordHandler(req, res, logger)
   );
 
-  app.get("/device/cpu-temp", (req, res) =>
-    cpuTempFetchHandler(req, res, logger)
+  app.get("/device/device-info", (req, res) =>
+    deviceInfoFetchHandler(req, res, logger)
   );
 };
 
