@@ -3,7 +3,6 @@ import { createWriteStream, existsSync, readFileSync, unlinkSync } from "fs";
 
 const PIPE_PATH = "/command-runner";
 const PIPE_OUTPUT_PATH = "/output.txt";
-const PIPED_CMD_TIMEOUT = 3000; // 3 seconds
 
 const CommandOutputType = {
   Success: 0,
@@ -26,10 +25,10 @@ const runCommand = (cmd) => {
   }
 };
 
-function sleep(ms) {
+const sleep = (ms) => {
   const start = Date.now();
   while (Date.now() - start < ms) {}
-}
+};
 
 const runCommandInPipe = (cmd) => {
   if (!existsSync(PIPE_PATH)) {
