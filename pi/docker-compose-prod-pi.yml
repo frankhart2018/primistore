@@ -19,6 +19,8 @@ services:
       - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
     volumes:
       - ${LOCAL_DIR}:/root/.primistore
+      - ${PIPE_PATH}:/command-runner
+      - ${PIPE_OUTPUT_FILE}:/output.txt
 
   image_decryptor:
     image: frankhart2018/primistore:image-decryptor-v0.2

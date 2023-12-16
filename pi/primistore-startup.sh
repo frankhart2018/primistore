@@ -32,6 +32,6 @@ PIPE_OUTPUT_PATH=$HOME/output.txt
 DOCKER_COMPOSE_PATH=$HOME/docker-compose-prod-pi.yml
 
 mkfifo $PIPE_PATH
-while true; do eval "$(cat test)" &> output.txt; done &
+python3 execute_pipe.py &
 
-sudo IP=$IP LOCAL_DIR=$LOCAL_DIR docker-compose -f $DOCKER_COMPOSE_PATH up -d
+sudo IP=$IP LOCAL_DIR=$LOCAL_DIR PIPE_PATH=$PIPE_PATH PIPE_OUTPUT_FILE=$PIPE_OUTPUT_PATH docker-compose -f $DOCKER_COMPOSE_PATH up -d
