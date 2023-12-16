@@ -1,4 +1,4 @@
-import { CommandOutputType, runCommand } from "./command-utils.js";
+import { CommandOutputType, runCommandInPipe } from "./command-utils.js";
 
 const convertStringToObject = (rawOutput, keyTransformer) => {
   const systemInfo = {};
@@ -22,7 +22,7 @@ const convertStringToObject = (rawOutput, keyTransformer) => {
 };
 
 const getDeviceInfo = () => {
-  const output = runCommand("/usr/bin/landscape-sysinfo");
+  const output = runCommandInPipe("/usr/bin/landscape-sysinfo");
 
   const keyTransformer = {
     "System load": "System load",
