@@ -1,11 +1,5 @@
 import { execSync } from "child_process";
-import {
-  createWriteStream,
-  existsSync,
-  readFileSync,
-  stat,
-  unlinkSync,
-} from "fs";
+import { createWriteStream, existsSync, readFileSync, statSync } from "fs";
 
 const PIPE_PATH = "/command-runner";
 const PIPE_OUTPUT_PATH = "/output.txt";
@@ -39,16 +33,8 @@ const sleep = (ms) => {
 };
 
 const getFileLastModified = (filePath) => {
-  let lastModified;
-  stat(filePath, (err, stats) => {
-    if (err) {
-      lastModified = -2;
-    } else {
-      lastModified = Math.round(stats.mtimeMs);
-    }
-  });
-
-  return lastModified;
+  let stats = statSync(filePath);
+  return stats.mtimeMs;
 };
 
 const runCommandInPipe = (cmd) => {
