@@ -21,6 +21,8 @@ services:
       - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
     volumes:
       - ${LOCAL_DIR}:/root/.primistore
+      - ${PIPE_PATH}:/command-runner
+      - ${PIPE_OUTPUT_FILE}:/output.txt
 
   image_decryptor:
     build:
@@ -33,8 +35,6 @@ services:
       - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
     volumes:
       - ${LOCAL_DIR}:/root/.primistore
-      - ${PIPE_PATH}:/command-runner
-      - ${PIPE_OUTPUT_FILE}:/output.txt
 
   mongodb:
     image: mongo:bionic
