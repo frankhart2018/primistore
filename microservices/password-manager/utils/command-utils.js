@@ -26,37 +26,23 @@ const runCommand = (cmd) => {
   }
 };
 
-const runCommandInPipe = (cmd) => {
-  if (existsSync(PIPE_OUTPUT_PATH)) {
-    unlinkSync(PIPE_OUTPUT_PATH);
-  }
+function sleep(ms) {
+  const start = Date.now();
+  while (Date.now() - start < ms) {}
+}
 
+const runCommandInPipe = (cmd) => {
   const stream = createWriteStream(PIPE_PATH);
   stream.write(cmd);
   stream.close();
 
-  const timeoutStart = Date.now();
   let output = null;
-  const runLoop = setInterval(() => {
-    if (Date.now() - timeoutStart > PIPED_CMD_TIMEOUT) {
-      clearInterval(runLoop);
-      output = new CommandOutput(CommandOutputType.Error, "Timed out");
-    } else {
-      if (existsSync(PIPE_OUTPUT_PATH)) {
-        clearInterval(runLoop);
-        const outputData = readFileSync(PIPE_OUTPUT_PATH).toString();
-        if (existsSync(PIPE_OUTPUT_PATH)) {
-          unlinkSync(PIPE_OUTPUT_PATH);
-        }
-        output = new CommandOutput(CommandOutputType.Success, outputData);
-      } else {
-        output = new CommandOutput(
-          CommandOutputType.Error,
-          "Failed to find run output"
-        );
-      }
-    }
-  }, PIPED_CMD_TIMEOUT);
+
+  sleep(1000);
+  if (existsSync(PIPE_OUTPUT_PATH)) {
+    const outputData = readFileSync(PIPE_OUTPUT_PATH).toString();
+    output = new CommandOutput(CommandOutputType.Success, outputData);
+  }
 
   return output;
 };
