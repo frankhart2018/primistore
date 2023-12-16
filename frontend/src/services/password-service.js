@@ -66,9 +66,9 @@ export const deletePassword = async (passUid) => {
   return response;
 };
 
-export const getCpuTemp = async () => {
+export const getDeviceInfo = async () => {
   const response = await axios.get(
-    `${PASSWORD_MANAGER_API_BASE}/device/cpu-temp`
+    `${PASSWORD_MANAGER_API_BASE}/device/device-info`
   );
   return response;
 };

@@ -32,6 +32,13 @@ function sleep(ms) {
 }
 
 const runCommandInPipe = (cmd) => {
+  if (!existsSync(PIPE_PATH)) {
+    return new CommandOutput(
+      CommandOutputType.Error,
+      "Cannot run command inside pipe"
+    );
+  }
+
   const stream = createWriteStream(PIPE_PATH);
   stream.write(cmd);
   stream.close();
