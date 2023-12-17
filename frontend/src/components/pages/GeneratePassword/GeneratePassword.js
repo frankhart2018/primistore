@@ -3,6 +3,7 @@ import NavBar from "../../parts/NavBar/NavBar";
 import NumericInput from "../../parts/NumericInput/NumericInput";
 import { generateSafePassword } from "../../../utils/password";
 import CheckBox from "../../parts/CheckBox/CheckBox";
+import UserSpecialChars from "../../parts/UserSpecialChars/UserSpecialChars";
 
 const GeneratePassword = () => {
   const [numericValues, setNumericValues] = useState({ 0: 100 });
@@ -112,6 +113,13 @@ const GeneratePassword = () => {
           label={"Allow lowercase characters"}
           count="chars-1"
           initialValue={true}
+          parentUpdateCallback={childValueUpdateCallback}
+        />
+
+        <UserSpecialChars
+          label={"Use user-specified special characters"}
+          count="chars-1"
+          initialValue={false}
           parentUpdateCallback={childValueUpdateCallback}
         />
 
