@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import NavBar from "../../parts/NavBar/NavBar";
 import ToggleButton from "../../parts/ToggleButton/ToggleButton";
 import { useDispatch, useSelector } from "react-redux";
-import { getCpuTempThunk } from "../../../services/password-thunk";
+import { getDeviceInfoThunk } from "../../../services/password-thunk";
 
 const DeviceInfo = () => {
-  const { cpuTemp } = useSelector((state) => state.password);
+  const { deviceInfo } = useSelector((state) => state.password);
   const [currentScale, setCurrentScale] = useState("C");
 
   const dispatch = useDispatch();
@@ -16,12 +16,12 @@ const DeviceInfo = () => {
 
   const formatTemp = (tempVal) => {
     let convertedTempVal = tempVal;
-    if (tempVal !== null && currentScale === "F") {
+    if (tempVal !== "Cannot determine" && currentScale === "F") {
       convertedTempVal = convertCToF(tempVal);
     }
-    return tempVal !== null
+    return tempVal !== "Cannot determine"
       ? `${convertedTempVal}°${currentScale}`
-      : "Cannot determine CPU temperature";
+      : tempVal;
   };
 
   const handleScaleToggle = (isChecked) => {
@@ -29,8 +29,8 @@ const DeviceInfo = () => {
   };
 
   useEffect(() => {
-    dispatch(getCpuTempThunk());
-  });
+    dispatch(getDeviceInfoThunk());
+  }, [dispatch]);
 
   return (
     <div>
@@ -44,11 +44,13 @@ const DeviceInfo = () => {
         />
       </p>
 
-      <div className="text-center">
-        <p>
-          <strong>CPU Temperature: </strong>
-          {formatTemp(cpuTemp)}
-        </p>
+      <div className="text-center" style={{ marginLeft: "10px" }}>
+        {Object.entries(deviceInfo).map(([key, value]) => (
+          <li style={{ textAlign: "left" }}>
+            <strong>{key}: </strong>
+            {key.includes("Temperature") ? formatTemp(value) : value}
+          </li>
+        ))}
       </div>
     </div>
   );

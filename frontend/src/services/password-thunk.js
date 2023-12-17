@@ -84,11 +84,11 @@ export const deletePasswordThunk = createAsyncThunk(
   }
 );
 
-export const getCpuTempThunk = createAsyncThunk(
-  "password/getCpuTemp",
+export const getDeviceInfoThunk = createAsyncThunk(
+  "password/getDeviceInfo",
   async () => {
     try {
-      const response = await passwordService.getCpuTemp();
+      const response = await passwordService.getDeviceInfo();
       return response;
     } catch (e) {
       return e;
