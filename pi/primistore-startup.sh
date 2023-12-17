@@ -33,5 +33,6 @@ DOCKER_COMPOSE_PATH=$HOME/docker-compose-prod-pi.yml
 
 mkfifo $PIPE_PATH
 python3 execute_pipe.py &
+touch $PIPE_OUTPUT_PATH
 
 sudo IP=$IP LOCAL_DIR=$LOCAL_DIR PIPE_PATH=$PIPE_PATH PIPE_OUTPUT_FILE=$PIPE_OUTPUT_PATH docker-compose -f $DOCKER_COMPOSE_PATH up -d
