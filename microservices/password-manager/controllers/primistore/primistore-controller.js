@@ -179,7 +179,7 @@ const deletePasswordHandler = async (req, res, logger) => {
   });
 };
 
-const deviceInfoFetchHandler = (req, res, logger) => {
+const deviceInfoFetchHandler = async (req, res, logger) => {
   const deviceInfo = getDeviceInfo();
 
   logger.info(`[${getCurrentTime()}] GET /device/device-info : Status 200`);

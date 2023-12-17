@@ -1,5 +1,11 @@
 import { execSync } from "child_process";
-import { createWriteStream, existsSync, readFileSync, statSync } from "fs";
+import {
+  createWriteStream,
+  existsSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "fs";
 
 const PIPE_PATH = "/command-runner";
 const PIPE_OUTPUT_PATH = "/output.txt";
@@ -47,7 +53,7 @@ const runCommandInPipe = (cmd) => {
 
   let lastModified = -1;
   if (existsSync(PIPE_OUTPUT_PATH)) {
-    const lastModified = getFileLastModified(PIPE_OUTPUT_PATH);
+    lastModified = getFileLastModified(PIPE_OUTPUT_PATH);
     if (lastModified == -2) {
       return CommandOutput(
         CommandOutputType.Error,
@@ -60,21 +66,15 @@ const runCommandInPipe = (cmd) => {
     // If the last updated time was within threshold
     // Return the last result, no need to run the program again
     if (diff <= PIPE_OUTPUT_CACHE_MINUTES) {
-      return new CommandOutput(
-        CommandOutput.Success,
+      const output = new CommandOutput(
+        CommandOutputType.Success,
         readFileSync(PIPE_OUTPUT_PATH).toString()
       );
+      return output;
     }
   }
 
-  const stream = createWriteStream(PIPE_PATH);
-  stream.write(cmd);
-  stream.close();
-
-  let output = new CommandOutput(
-    CommandOutputType.Error,
-    "Cannot run command inside pipe"
-  );
+  writeFileSync(PIPE_PATH, cmd);
 
   // If output path does not exist, wait for it to be created
   // Edge case, will happen only first time
@@ -85,18 +85,15 @@ const runCommandInPipe = (cmd) => {
   } else {
     // Otherwise wait for the file to be modified
     while (true) {
-      const lastModifiedMins = Math.round(
-        getFileLastModified(PIPE_OUTPUT_PATH) / (1000 * 60)
-      );
-      if (lastModifiedMins == -2) {
+      const lastModifiedUpdated = getFileLastModified(PIPE_OUTPUT_PATH);
+      if (lastModifiedUpdated == -2) {
         return CommandOutput(
           CommandOutputType.Error,
           "Cannot read command output"
         );
       }
-      const nowMins = Math.round(Date.now() / (1000 * 60));
 
-      if (nowMins - lastModified === 0) {
+      if (lastModified !== lastModifiedUpdated) {
         break;
       }
       sleep(PIPE_WAIT_SLEEP_TIME);
