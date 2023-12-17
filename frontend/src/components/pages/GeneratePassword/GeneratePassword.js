@@ -1,18 +1,18 @@
 import { useState } from "react";
 import NavBar from "../../parts/NavBar/NavBar";
-import Slider from "../../parts/Slider/Slider";
+import NumericInput from "../../parts/NumericInput/NumericInput";
 import { generateSafePassword } from "../../../utils/password";
 import CheckBox from "../../parts/CheckBox/CheckBox";
 
 const GeneratePassword = () => {
-  const [sliderValues, setSliderValues] = useState({ 0: 100 });
+  const [numericValues, setNumericValues] = useState({ 0: 100 });
   const [checkboxValues, setCheckboxValues] = useState({});
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [passwordLength, setPasswordLength] = useState(0);
 
   const childValueUpdateCallback = (count, value, type) => {
-    if (type === "slider") {
-      setSliderValues({ ...sliderValues, [count]: value });
+    if (type === "numeric") {
+      setNumericValues({ ...numericValues, [count]: value });
     } else if (type === "checkbox") {
       setCheckboxValues({ ...checkboxValues, [count]: value });
     }
@@ -24,7 +24,7 @@ const GeneratePassword = () => {
 
   const generatePasswordHandler = () => {
     setGeneratedPassword("");
-    let values = Object.values(sliderValues);
+    let values = Object.values(numericValues);
     const valuesSum = values.reduce((acc, val) => acc + parseInt(val), 0);
 
     let errVals = [];
@@ -78,21 +78,21 @@ const GeneratePassword = () => {
         </div>
         <table className="border-none w-1/2 table-auto mb-4">
           <tbody>
-            <Slider
+            <NumericInput
               initialValue={100}
               label="Alphabets (uppercase + lowercase) percent"
               count={0}
               parentUpdateCallback={childValueUpdateCallback}
             />
 
-            <Slider
+            <NumericInput
               initialValue={0}
               label="Number percent"
               count={1}
               parentUpdateCallback={childValueUpdateCallback}
             />
 
-            <Slider
+            <NumericInput
               initialValue={0}
               label="Special characters percent"
               count={2}
