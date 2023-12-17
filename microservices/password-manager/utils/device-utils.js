@@ -22,7 +22,7 @@ const convertStringToObject = (rawOutput, keyTransformer) => {
 };
 
 const getDeviceInfo = () => {
-  const output = runCommandInPipe("/usr/local/bin/landscape-sysinfo");
+  const output = runCommandInPipe("/usr/bin/landscape-sysinfo");
 
   const keyTransformer = {
     "System load": "System load",
