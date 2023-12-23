@@ -13,3 +13,5 @@ This directory contains all the things that are required to run PrimiStore on Ra
 4. `nptforce`: This has to be copied to `/usr/bin` and given execute permission (`chmod +x`), then running this command from anywhere in the Pi will force an NTP sync and fix the time.
 
 5. `execute_pipe.py`: Reads data from pipe and executes them as commands, dumps the output to an output file. This should be moved to the home directory.
+
+6. `backup.sh`: Pulls in mongodump from mongo docker container, and tarballs the charsets directory into a single tarball with the timestamp of the backup. This needs to be moved to the home directory.
