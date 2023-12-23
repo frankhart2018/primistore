@@ -1,5 +1,7 @@
 import { CommandOutputType, runCommandInPipe } from "./command-utils.js";
 
+const DEVICE_INFO_PIPE_OUTPUT_PATH = "./device-info-output.txt";
+
 const convertStringToObject = (rawOutput, keyTransformer) => {
   const systemInfo = {};
   const lines = rawOutput.split("\n");
@@ -22,7 +24,11 @@ const convertStringToObject = (rawOutput, keyTransformer) => {
 };
 
 const getDeviceInfo = () => {
-  const output = runCommandInPipe("/usr/bin/landscape-sysinfo");
+  const output = runCommandInPipe(
+    "/usr/bin/landscape-sysinfo",
+    true,
+    DEVICE_INFO_PIPE_OUTPUT_PATH
+  );
 
   const keyTransformer = {
     "System load": "System load",

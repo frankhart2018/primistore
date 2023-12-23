@@ -43,7 +43,35 @@ const getFileLastModified = (filePath) => {
   return stats.mtimeMs;
 };
 
-const runCommandInPipe = (cmd) => {
+const getCachedOutput = (filePath) => {
+  let lastModifiedCached = -1;
+  let outputCached = null;
+  if (existsSync(filePath)) {
+    lastModifiedCached = getFileLastModified(filePath);
+    const now = Date.now();
+    const diff = (now - lastModifiedCached) / (1000 * 60);
+
+    // If the last updated time was within threshold
+    // Return the last result, no need to run the program again
+    if (diff <= PIPE_OUTPUT_CACHE_MINUTES) {
+      outputCached = new CommandOutput(
+        CommandOutputType.Success,
+        readFileSync(filePath).toString()
+      );
+    }
+
+    return {
+      lastModifiedCached,
+      outputCached,
+    };
+  }
+};
+
+const runCommandInPipe = (
+  cmd,
+  withCache = false,
+  outputPath = PIPE_OUTPUT_PATH
+) => {
   if (!existsSync(PIPE_PATH)) {
     return new CommandOutput(
       CommandOutputType.Error,
@@ -52,26 +80,13 @@ const runCommandInPipe = (cmd) => {
   }
 
   let lastModified = -1;
-  if (existsSync(PIPE_OUTPUT_PATH)) {
-    lastModified = getFileLastModified(PIPE_OUTPUT_PATH);
-    if (lastModified == -2) {
-      return CommandOutput(
-        CommandOutputType.Error,
-        "Cannot read command output"
-      );
+  if (withCache) {
+    const { lastModifiedCached, outputCached } = getCachedOutput(outputPath);
+    if (lastModifiedCached !== -1) {
+      return outputCached;
     }
-    const now = Date.now();
-    const diff = (now - lastModified) / (1000 * 60);
 
-    // If the last updated time was within threshold
-    // Return the last result, no need to run the program again
-    if (diff <= PIPE_OUTPUT_CACHE_MINUTES) {
-      const output = new CommandOutput(
-        CommandOutputType.Success,
-        readFileSync(PIPE_OUTPUT_PATH).toString()
-      );
-      return output;
-    }
+    lastModified = lastModifiedCached;
   }
 
   writeFileSync(PIPE_PATH, cmd);
@@ -79,14 +94,13 @@ const runCommandInPipe = (cmd) => {
   // If output path does not exist, wait for it to be created
   // Edge case, will happen only first time
   if (lastModified === -1) {
-    while (!existsSync(PIPE_OUTPUT_PATH)) {
+    while (!existsSync(outputPath)) {
       sleep(PIPE_WAIT_SLEEP_TIME);
     }
   } else {
     // Otherwise wait for the file to be modified
     while (true) {
-      const lastModifiedUpdated = getFileLastModified(PIPE_OUTPUT_PATH);
-
+      const lastModifiedUpdated = getFileLastModified(outputPath);
       if (lastModified !== lastModifiedUpdated) {
         break;
       }
@@ -94,7 +108,7 @@ const runCommandInPipe = (cmd) => {
     }
   }
 
-  const outputData = readFileSync(PIPE_OUTPUT_PATH).toString();
+  const outputData = readFileSync(outputPath).toString();
   return new CommandOutput(CommandOutputType.Success, outputData);
 };
 
