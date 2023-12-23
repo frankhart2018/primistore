@@ -51,7 +51,7 @@ const NavBar = () => {
                 }
                 to={{ pathname: "/generate-password" }}
               >
-                Generate Safe Password
+                Generate Password
               </NavLink>
             </li>
             <li>
