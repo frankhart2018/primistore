@@ -3,8 +3,6 @@ import { NavLink } from "react-router-dom";
 import { VERSION } from "../../../utils/version";
 
 const NavBar = () => {
-  console.log(process.env);
-
   return (
     <nav className="mb-10">
       <div className="w-11/12 flex items-center justify-between mx-auto pt-10">
