@@ -54,16 +54,20 @@ const NavBar = () => {
                 Generate Password
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? "activeNavLink" : "defaultNavLink"
-                }
-                to={{ pathname: "/device-info" }}
-              >
-                Device Info
-              </NavLink>
-            </li>
+            {process.env.REACT_APP_PI === "true" ? (
+              <li>
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? "activeNavLink" : "defaultNavLink"
+                  }
+                  to={{ pathname: "/device-info" }}
+                >
+                  Device Admin
+                </NavLink>
+              </li>
+            ) : (
+              <></>
+            )}
           </ul>
         </div>
       </div>
