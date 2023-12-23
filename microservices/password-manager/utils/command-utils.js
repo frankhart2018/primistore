@@ -80,13 +80,17 @@ const runCommandInPipe = (
   }
 
   let lastModified = -1;
-  if (withCache) {
+  if (withCache && outputPath !== PIPE_OUTPUT_PATH) {
     const { lastModifiedCached, outputCached } = getCachedOutput(outputPath);
     if (lastModifiedCached !== -1) {
       return outputCached;
     }
 
     lastModified = lastModifiedCached;
+  } else if (withCache && outputPath === PIPE_OUTPUT_PATH) {
+    throw new Error(
+      "If using cache, cannot use generic output path, as the contents are often overwritten!"
+    );
   }
 
   writeFileSync(PIPE_PATH, cmd);
