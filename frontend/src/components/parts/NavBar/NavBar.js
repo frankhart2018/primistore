@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import { VERSION } from "../../../utils/version";
 
 const NavBar = () => {
+  console.log(process.env);
+
   return (
     <nav className="mb-10">
       <div className="w-11/12 flex items-center justify-between mx-auto pt-10">
@@ -54,16 +56,20 @@ const NavBar = () => {
                 Generate Password
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? "activeNavLink" : "defaultNavLink"
-                }
-                to={{ pathname: "/device-info" }}
-              >
-                Device Info
-              </NavLink>
-            </li>
+            {process.env.REACT_APP_PI === "true" ? (
+              <li>
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? "activeNavLink" : "defaultNavLink"
+                  }
+                  to={{ pathname: "/device-info" }}
+                >
+                  Device Admin
+                </NavLink>
+              </li>
+            ) : (
+              <></>
+            )}
           </ul>
         </div>
       </div>
