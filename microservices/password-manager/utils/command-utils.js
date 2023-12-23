@@ -86,12 +86,6 @@ const runCommandInPipe = (cmd) => {
     // Otherwise wait for the file to be modified
     while (true) {
       const lastModifiedUpdated = getFileLastModified(PIPE_OUTPUT_PATH);
-      if (lastModifiedUpdated == -2) {
-        return CommandOutput(
-          CommandOutputType.Error,
-          "Cannot read command output"
-        );
-      }
 
       if (lastModified !== lastModifiedUpdated) {
         break;
