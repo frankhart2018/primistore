@@ -59,12 +59,12 @@ const getCachedOutput = (filePath) => {
         readFileSync(filePath).toString()
       );
     }
-
-    return {
-      lastModifiedCached,
-      outputCached,
-    };
   }
+
+  return {
+    lastModifiedCached,
+    outputCached,
+  };
 };
 
 const runCommandInPipe = (
