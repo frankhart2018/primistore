@@ -1,7 +1,7 @@
 import path from "path";
 import {
   CommandOutputType,
-  PIPE_OUTPUT_DIR,
+  PIPE_COMM_DIR,
   PipeCommand,
   runCommandInPipe,
 } from "./command-utils.js";
@@ -39,7 +39,7 @@ const getDeviceInfo = () => {
     output = runCommandInPipe(
       command,
       true,
-      path.join(PIPE_OUTPUT_DIR, command.outputPath)
+      path.join(PIPE_COMM_DIR, command.outputPath)
     );
   } catch (e) {
     console.log(e);

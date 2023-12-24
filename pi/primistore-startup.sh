@@ -13,6 +13,12 @@ check_command_installed() {
     return 0
 }
 
+make_fifo_if_not_exists() {
+	if [ ! -p "$1" ]; then
+		mkfifo "$1"
+	fi
+}
+
 TOTAL=0
 check_command_installed "ifconfig" "net-tools"
 TOTAL=$((TOTAL + $?))
@@ -25,14 +31,14 @@ if [ $TOTAL -gt 0 ]; then
 	return 1
 fi
 
-IP=`python3 /usr/bin/get_current_ip.py`
+# IP=`python3 /usr/bin/get_current_ip.py`
 LOCAL_DIR=$HOME/.primistore
 PIPE_PATH=$HOME/command-runner
-PIPE_OUTPUT_PATH=$HOME/output.txt
+PIPE_COMM_DIR=$HOME/pipe-comm
 DOCKER_COMPOSE_PATH=$HOME/docker-compose-prod-pi.yml
 
-mkfifo $PIPE_PATH
+make_fifo_if_not_exists $PIPE_PATH
+mkdir -p $PIPE_COMM_DIR
 python3 execute_pipe.py &
-touch $PIPE_OUTPUT_PATH
 
-sudo IP=$IP LOCAL_DIR=$LOCAL_DIR PIPE_PATH=$PIPE_PATH PIPE_OUTPUT_FILE=$PIPE_OUTPUT_PATH docker-compose -f $DOCKER_COMPOSE_PATH up -d
+sudo IP=$IP LOCAL_DIR=$LOCAL_DIR PIPE_PATH=$PIPE_PATH PIPE_COMM_DIR=$PIPE_COMM_DIR docker-compose -f $DOCKER_COMPOSE_PATH up -d

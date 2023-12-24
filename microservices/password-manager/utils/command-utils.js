@@ -3,8 +3,8 @@ import path from "path";
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs";
 
 const PIPE_PATH = "/command-runner";
-const PIPE_OUTPUT_DIR = "/pipe-outputs";
-const PIPE_OUTPUT_PATH = path.join(PIPE_OUTPUT_DIR, "output.txt");
+const PIPE_COMM_DIR = "/pipe-comm";
+const PIPE_OUTPUT_PATH = path.join(PIPE_COMM_DIR, "output.txt");
 const PIPE_OUTPUT_CACHE_MINUTES = 3;
 const PIPE_WAIT_SLEEP_TIME = 100; // milliseconds
 
@@ -153,5 +153,5 @@ export {
   encryptWithAES,
   CommandOutputType,
   PipeCommand,
-  PIPE_OUTPUT_DIR,
+  PIPE_COMM_DIR,
 };
