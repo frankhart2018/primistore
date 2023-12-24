@@ -1,14 +1,10 @@
 import { execSync } from "child_process";
-import {
-  createWriteStream,
-  existsSync,
-  readFileSync,
-  statSync,
-  writeFileSync,
-} from "fs";
+import path from "path";
+import { existsSync, readFileSync, statSync, writeFileSync } from "fs";
 
 const PIPE_PATH = "/command-runner";
-const PIPE_OUTPUT_PATH = "/pipe-outputs/output.txt";
+const PIPE_OUTPUT_DIR = "/pipe-outputs";
+const PIPE_OUTPUT_PATH = path.join(PIPE_OUTPUT_DIR, "output.txt");
 const PIPE_OUTPUT_CACHE_MINUTES = 3;
 const PIPE_WAIT_SLEEP_TIME = 100; // milliseconds
 
@@ -22,6 +18,20 @@ class CommandOutput {
     this.type = type;
     this.value = value;
   }
+}
+
+class PipeCommand {
+  constructor(cmd, outputPath = PIPE_OUTPUT_PATH) {
+    this.cmd = cmd;
+    this.outputPath = outputPath;
+  }
+
+  serialize = () => {
+    return JSON.stringify({
+      cmd: this.cmd,
+      outputPath: this.outputPath,
+    });
+  };
 }
 
 const runCommand = (cmd) => {
@@ -58,6 +68,8 @@ const getCachedOutput = (filePath) => {
         CommandOutputType.Success,
         readFileSync(filePath).toString()
       );
+    } else {
+      lastModifiedCached = -1;
     }
   }
 
@@ -93,7 +105,7 @@ const runCommandInPipe = (
     );
   }
 
-  writeFileSync(PIPE_PATH, cmd);
+  writeFileSync(PIPE_PATH, cmd.serialize());
 
   // If output path does not exist, wait for it to be created
   // Edge case, will happen only first time
@@ -140,4 +152,6 @@ export {
   generateAESKeyIV,
   encryptWithAES,
   CommandOutputType,
+  PipeCommand,
+  PIPE_OUTPUT_DIR,
 };
