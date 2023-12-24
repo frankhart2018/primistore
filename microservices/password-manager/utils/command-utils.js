@@ -1,14 +1,10 @@
 import { execSync } from "child_process";
-import {
-  createWriteStream,
-  existsSync,
-  readFileSync,
-  statSync,
-  writeFileSync,
-} from "fs";
+import path from "path";
+import { existsSync, readFileSync, statSync, writeFileSync } from "fs";
 
 const PIPE_PATH = "/command-runner";
-const PIPE_OUTPUT_PATH = "/output.txt";
+const PIPE_OUTPUT_DIR = "/pipe-outputs";
+const PIPE_OUTPUT_PATH = path.join(PIPE_OUTPUT_DIR, "output.txt");
 const PIPE_OUTPUT_CACHE_MINUTES = 3;
 const PIPE_WAIT_SLEEP_TIME = 100; // milliseconds
 
@@ -22,6 +18,20 @@ class CommandOutput {
     this.type = type;
     this.value = value;
   }
+}
+
+class PipeCommand {
+  constructor(cmd, outputPath = PIPE_OUTPUT_PATH) {
+    this.cmd = cmd;
+    this.outputPath = outputPath;
+  }
+
+  serialize = () => {
+    return JSON.stringify({
+      cmd: this.cmd,
+      outputPath: this.outputPath,
+    });
+  };
 }
 
 const runCommand = (cmd) => {
@@ -43,7 +53,37 @@ const getFileLastModified = (filePath) => {
   return stats.mtimeMs;
 };
 
-const runCommandInPipe = (cmd) => {
+const getCachedOutput = (filePath) => {
+  let lastModifiedCached = -1;
+  let outputCached = null;
+  if (existsSync(filePath)) {
+    lastModifiedCached = getFileLastModified(filePath);
+    const now = Date.now();
+    const diff = (now - lastModifiedCached) / (1000 * 60);
+
+    // If the last updated time was within threshold
+    // Return the last result, no need to run the program again
+    if (diff <= PIPE_OUTPUT_CACHE_MINUTES) {
+      outputCached = new CommandOutput(
+        CommandOutputType.Success,
+        readFileSync(filePath).toString()
+      );
+    } else {
+      lastModifiedCached = -1;
+    }
+  }
+
+  return {
+    lastModifiedCached,
+    outputCached,
+  };
+};
+
+const runCommandInPipe = (
+  cmd,
+  withCache = false,
+  outputPath = PIPE_OUTPUT_PATH
+) => {
   if (!existsSync(PIPE_PATH)) {
     return new CommandOutput(
       CommandOutputType.Error,
@@ -52,47 +92,31 @@ const runCommandInPipe = (cmd) => {
   }
 
   let lastModified = -1;
-  if (existsSync(PIPE_OUTPUT_PATH)) {
-    lastModified = getFileLastModified(PIPE_OUTPUT_PATH);
-    if (lastModified == -2) {
-      return CommandOutput(
-        CommandOutputType.Error,
-        "Cannot read command output"
-      );
+  if (withCache && outputPath !== PIPE_OUTPUT_PATH) {
+    const { lastModifiedCached, outputCached } = getCachedOutput(outputPath);
+    if (lastModifiedCached !== -1) {
+      return outputCached;
     }
-    const now = Date.now();
-    const diff = (now - lastModified) / (1000 * 60);
 
-    // If the last updated time was within threshold
-    // Return the last result, no need to run the program again
-    if (diff <= PIPE_OUTPUT_CACHE_MINUTES) {
-      const output = new CommandOutput(
-        CommandOutputType.Success,
-        readFileSync(PIPE_OUTPUT_PATH).toString()
-      );
-      return output;
-    }
+    lastModified = lastModifiedCached;
+  } else if (withCache && outputPath === PIPE_OUTPUT_PATH) {
+    throw new Error(
+      "If using cache, cannot use generic output path, as the contents are often overwritten!"
+    );
   }
 
-  writeFileSync(PIPE_PATH, cmd);
+  writeFileSync(PIPE_PATH, cmd.serialize());
 
   // If output path does not exist, wait for it to be created
   // Edge case, will happen only first time
   if (lastModified === -1) {
-    while (!existsSync(PIPE_OUTPUT_PATH)) {
+    while (!existsSync(outputPath)) {
       sleep(PIPE_WAIT_SLEEP_TIME);
     }
   } else {
     // Otherwise wait for the file to be modified
     while (true) {
-      const lastModifiedUpdated = getFileLastModified(PIPE_OUTPUT_PATH);
-      if (lastModifiedUpdated == -2) {
-        return CommandOutput(
-          CommandOutputType.Error,
-          "Cannot read command output"
-        );
-      }
-
+      const lastModifiedUpdated = getFileLastModified(outputPath);
       if (lastModified !== lastModifiedUpdated) {
         break;
       }
@@ -100,7 +124,7 @@ const runCommandInPipe = (cmd) => {
     }
   }
 
-  const outputData = readFileSync(PIPE_OUTPUT_PATH).toString();
+  const outputData = readFileSync(outputPath).toString();
   return new CommandOutput(CommandOutputType.Success, outputData);
 };
 
@@ -128,4 +152,6 @@ export {
   generateAESKeyIV,
   encryptWithAES,
   CommandOutputType,
+  PipeCommand,
+  PIPE_OUTPUT_DIR,
 };

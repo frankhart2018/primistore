@@ -1,4 +1,12 @@
-import { CommandOutputType, runCommandInPipe } from "./command-utils.js";
+import path from "path";
+import {
+  CommandOutputType,
+  PIPE_OUTPUT_DIR,
+  PipeCommand,
+  runCommandInPipe,
+} from "./command-utils.js";
+
+const DEVICE_INFO_PIPE_OUTPUT_PATH = "/pipe-outputs/device-info-output.txt";
 
 const convertStringToObject = (rawOutput, keyTransformer) => {
   const systemInfo = {};
@@ -22,7 +30,21 @@ const convertStringToObject = (rawOutput, keyTransformer) => {
 };
 
 const getDeviceInfo = () => {
-  const output = runCommandInPipe("/usr/bin/landscape-sysinfo");
+  let output;
+  const command = new PipeCommand(
+    "/usr/bin/landscape-sysinfo",
+    "device-info-output.txt"
+  );
+  try {
+    output = runCommandInPipe(
+      command,
+      true,
+      path.join(PIPE_OUTPUT_DIR, command.outputPath)
+    );
+  } catch (e) {
+    console.log(e);
+    return {};
+  }
 
   const keyTransformer = {
     "System load": "System load",
