@@ -1,6 +1,6 @@
 import { CommandOutputType, runCommandInPipe } from "./command-utils.js";
 
-const DEVICE_INFO_PIPE_OUTPUT_PATH = "./device-info-output.txt";
+const DEVICE_INFO_PIPE_OUTPUT_PATH = "/pipe-outputs/device-info-output.txt";
 
 const convertStringToObject = (rawOutput, keyTransformer) => {
   const systemInfo = {};

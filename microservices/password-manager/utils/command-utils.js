@@ -8,7 +8,7 @@ import {
 } from "fs";
 
 const PIPE_PATH = "/command-runner";
-const PIPE_OUTPUT_PATH = "/output.txt";
+const PIPE_OUTPUT_PATH = "/pipe-outputs/output.txt";
 const PIPE_OUTPUT_CACHE_MINUTES = 3;
 const PIPE_WAIT_SLEEP_TIME = 100; // milliseconds
 
