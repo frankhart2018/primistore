@@ -7,7 +7,10 @@ import {
   runCommand,
 } from "./command-utils.js";
 
-const DEVICE_INFO_PIPE_OUTPUT_PATH = "/pipe-outputs/device-info-output.txt";
+const DEVICE_INFO_PIPE_OUTPUT_PATH = path.join(
+  PIPE_COMM_DIR,
+  "device-info-output.txt"
+);
 
 const convertStringToObject = (rawOutput, keyTransformer) => {
   const systemInfo = {};
