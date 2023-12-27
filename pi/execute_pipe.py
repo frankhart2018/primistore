@@ -4,7 +4,7 @@ import json
 
 
 PIPE_PATH = Path.home() / "command-runner"
-PIPE_OUTPUT_DIR = Path.home() / "pipe-outputs"
+PIPE_OUTPUT_DIR = Path.home() / "pipe-comm"
 
 
 while True:
