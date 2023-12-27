@@ -1,8 +1,9 @@
-import fs from "fs";
+import fs, { existsSync } from "fs";
 import path from "path";
 
 import {
   CommandOutputType,
+  PIPE_COMM_DIR,
   encryptWithAES,
   generateAESKeyIV,
   runCommand,
@@ -193,17 +194,46 @@ const generateBackupHandler = (req, res, logger) => {
   const genBackupOutput = generateBackup();
   if (genBackupOutput.type === CommandOutputType.Error) {
     logger.error(
-      `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
+      `[${getCurrentTime()}] GET /device/generate-backup : Status 500`
     );
     res.status(500).send({
       error: genBackupOutput.value,
     });
   } else {
     logger.error(
-      `[${getCurrentTime()}] POST /device/generate-backup : Status 200`
+      `[${getCurrentTime()}] GET /device/generate-backup : Status 200`
     );
     res.status(200).send({
       path: genBackupOutput.value,
+    });
+  }
+};
+
+const downloadBackupHandler = (req, res, logger) => {
+  const { snapshot_name } = req.params;
+
+  const snapshotPath = path.join(PIPE_COMM_DIR, snapshot_name);
+  if (!existsSync(snapshotPath)) {
+    logger.error(
+      `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`
+    );
+    res.status(500).send({
+      error: `Snapshot ${snapshot_name} does not exist!`,
+    });
+  } else {
+    res.status(200).download(snapshotPath, snapshot_name, (err) => {
+      if (err) {
+        logger.error(
+          `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`
+        );
+        res.status(500).send({
+          error: `Error while downloading snapshot ${snapshot_name}`,
+        });
+      } else {
+        logger.error(
+          `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 200`
+        );
+      }
     });
   }
 };
@@ -229,8 +259,11 @@ const PrimistoreController = (app, logger) => {
   app.get("/device/device-info", (req, res) =>
     deviceInfoFetchHandler(req, res, logger)
   );
-  app.post("/device/generate-backup", (req, res) =>
+  app.get("/device/generate-backup", (req, res) =>
     generateBackupHandler(req, res, logger)
+  );
+  app.get("/device/generate-backup/download/:snapshot_name", (req, res) =>
+    downloadBackupHandler(req, res, logger)
   );
 };
 
