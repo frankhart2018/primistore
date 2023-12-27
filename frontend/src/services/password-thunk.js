@@ -95,3 +95,15 @@ export const getDeviceInfoThunk = createAsyncThunk(
     }
   }
 );
+
+export const downloadBackupThunk = createAsyncThunk(
+  "password/generateBackup",
+  async () => {
+    try {
+      const response = await passwordService.downloadBackup();
+      return response;
+    } catch (e) {
+      return e;
+    }
+  }
+);

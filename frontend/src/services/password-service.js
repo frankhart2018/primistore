@@ -72,3 +72,14 @@ export const getDeviceInfo = async () => {
   );
   return response;
 };
+
+export const downloadBackup = async () => {
+  const response = await axios.get(
+    `${PASSWORD_MANAGER_API_BASE}/device/generate-backup`,
+    {
+      responseType: "blob",
+    }
+  );
+
+  return response;
+};

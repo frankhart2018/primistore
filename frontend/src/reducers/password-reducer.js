@@ -3,6 +3,7 @@ import {
   createPasswordThunk,
   decryptPasswordThunk,
   deletePasswordThunk,
+  downloadBackupThunk,
   encryptPasswordThunk,
   fetchPasswordsThunk,
   getDeviceInfoThunk,
@@ -27,6 +28,7 @@ const initialState = {
   decryptedData: "",
   rawData: "",
   deviceInfo: {},
+  backupData: null,
 };
 
 const passwordSlice = createSlice({
@@ -124,6 +126,15 @@ const passwordSlice = createSlice({
         state.deviceInfo = payload.data.info;
       } else {
         state.deviceInfo = {};
+      }
+    },
+    [downloadBackupThunk.fulfilled]: (state, action) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        state.backupData = payload.data;
+      } else {
+        alert(payload.response.data.error);
       }
     },
   },

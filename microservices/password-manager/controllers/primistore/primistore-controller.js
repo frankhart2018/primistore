@@ -200,12 +200,31 @@ const generateBackupHandler = (req, res, logger) => {
       error: genBackupOutput.value,
     });
   } else {
-    logger.info(
-      `[${getCurrentTime()}] GET /device/generate-backup : Status 200`
-    );
-    res.status(200).send({
-      path: genBackupOutput.value,
-    });
+    const snapshotName = genBackupOutput.value;
+    const snapshotPath = path.join(PIPE_COMM_DIR, snapshotName);
+    if (!existsSync(snapshotPath)) {
+      logger.error(
+        `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 500`
+      );
+      res.status(500).send({
+        error: `Snapshot ${snapshotName} does not exist!`,
+      });
+    } else {
+      res.status(200).download(snapshotPath, snapshotName, (err) => {
+        if (err) {
+          logger.error(
+            `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 500`
+          );
+          res.status(500).send({
+            error: `Error while downloading snapshot ${snapshotName}`,
+          });
+        } else {
+          logger.info(
+            `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 200`
+          );
+        }
+      });
+    }
   }
 };
 
@@ -261,9 +280,6 @@ const PrimistoreController = (app, logger) => {
   );
   app.get("/device/generate-backup", (req, res) =>
     generateBackupHandler(req, res, logger)
-  );
-  app.get("/device/generate-backup/download/:snapshot_name", (req, res) =>
-    downloadBackupHandler(req, res, logger)
   );
 };
 
