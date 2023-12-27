@@ -76,8 +76,8 @@ const generateBackup = () => {
     return copyScriptResult;
   }
 
-  const newScriptPath = path.join(PIPE_COMM_DIR, scriptFileName);
-  const pipedCommand = PipeCommand(`sh ${newScriptPath}`);
+  const newScriptPath = path.join("pipe-comm", scriptFileName);
+  const pipedCommand = new PipeCommand(`sh ${newScriptPath}`);
   const runScriptResult = runCommandInPipe(pipedCommand);
   runCommand(`rm -f ${newScriptPath}`);
 

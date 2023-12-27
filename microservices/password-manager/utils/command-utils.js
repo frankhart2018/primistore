@@ -21,7 +21,7 @@ class CommandOutput {
 }
 
 class PipeCommand {
-  constructor(cmd, outputPath = PIPE_OUTPUT_PATH) {
+  constructor(cmd, outputPath = path.basename(PIPE_OUTPUT_PATH)) {
     this.cmd = cmd;
     this.outputPath = outputPath;
   }
@@ -49,6 +49,9 @@ const sleep = (ms) => {
 };
 
 const getFileLastModified = (filePath) => {
+  if (!existsSync(filePath)) {
+    return -1;
+  }
   let stats = statSync(filePath);
   return stats.mtimeMs;
 };
@@ -91,7 +94,7 @@ const runCommandInPipe = (
     );
   }
 
-  let lastModified = -1;
+  let lastModified = getFileLastModified(outputPath);
   if (withCache && outputPath !== PIPE_OUTPUT_PATH) {
     const { lastModifiedCached, outputCached } = getCachedOutput(outputPath);
     if (lastModifiedCached !== -1) {
