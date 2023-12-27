@@ -5,6 +5,7 @@ import {
   CommandOutputType,
   encryptWithAES,
   generateAESKeyIV,
+  runCommand,
 } from "../../utils/command-utils.js";
 import {
   createPassword,
@@ -20,7 +21,7 @@ import {
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
-import { getDeviceInfo } from "../../utils/device-utils.js";
+import { generateBackup, getDeviceInfo } from "../../utils/device-utils.js";
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
@@ -188,6 +189,25 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
   });
 };
 
+const generateBackupHandler = (req, res, logger) => {
+  const genBackupOutput = generateBackup();
+  if (genBackupOutput.type === CommandOutputType.Error) {
+    logger.error(
+      `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
+    );
+    res.status(500).send({
+      error: genBackupOutput.value,
+    });
+  } else {
+    logger.error(
+      `[${getCurrentTime()}] POST /device/generate-backup : Status 200`
+    );
+    res.status(200).send({
+      path: genBackupOutput.value,
+    });
+  }
+};
+
 const PrimistoreController = (app, logger) => {
   app.post("/password", (req, res) =>
     passwordCreationHandler(req, res, logger)
@@ -208,6 +228,9 @@ const PrimistoreController = (app, logger) => {
 
   app.get("/device/device-info", (req, res) =>
     deviceInfoFetchHandler(req, res, logger)
+  );
+  app.post("/device/generate-backup", (req, res) =>
+    generateBackupHandler(req, res, logger)
   );
 };
 

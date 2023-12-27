@@ -15,6 +15,7 @@ if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
     BACKUP_TARBALL_PATH=$BACKUP_DIR.tar.gz
     PRIMISTORE_DIR=.primistore
     PRIMISTORE_TARBALL_PATH=primistore-backup-$CURRENT_TIME.tar.gz
+    PIPE_COMM_DIR=pipe-comm
 
     cd ~/
     MONGO_CONTAINER_ID=$(sudo docker ps -q --filter "ancestor=mongo:bionic" | head -n 1)
@@ -29,6 +30,7 @@ if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
     sudo mv $PRIMISTORE_TARBALL_PATH $BACKUP_DIR
     tarball $BACKUP_TARBALL_PATH $BACKUP_DIR
     sudo rm -rf $BACKUP_DIR
+    mv $BACKUP_TARBALL_PATH $PIPE_COMM_DIR
     echo $BACKUP_TARBALL_PATH
 else
     echo "More than one containers running MongoDB, please check your docker setup"

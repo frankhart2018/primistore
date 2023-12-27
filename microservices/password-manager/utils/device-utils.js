@@ -4,6 +4,7 @@ import {
   PIPE_COMM_DIR,
   PipeCommand,
   runCommandInPipe,
+  runCommand,
 } from "./command-utils.js";
 
 const DEVICE_INFO_PIPE_OUTPUT_PATH = "/pipe-outputs/device-info-output.txt";
@@ -36,11 +37,7 @@ const getDeviceInfo = () => {
     "device-info-output.txt"
   );
   try {
-    output = runCommandInPipe(
-      command,
-      true,
-      path.join(PIPE_COMM_DIR, command.outputPath)
-    );
+    output = runCommandInPipe(command, true, DEVICE_INFO_PIPE_OUTPUT_PATH);
   } catch (e) {
     console.log(e);
     return {};
@@ -68,4 +65,20 @@ const getDeviceInfo = () => {
   return systemInfo;
 };
 
-export { getDeviceInfo };
+const generateBackup = () => {
+  const scriptFileName = "download-backup.sh";
+  const scriptPath = path.join("scripts", scriptFileName);
+  const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
+  if (copyScriptResult.type === CommandOutputType.Error) {
+    return copyScriptResult;
+  }
+
+  const newScriptPath = path.join(PIPE_COMM_DIR, scriptFileName);
+  const pipedCommand = PipeCommand(`sh ${newScriptPath}`);
+  const runScriptResult = runCommandInPipe(pipedCommand);
+  runCommand(`rm -f ${newScriptPath}`);
+
+  return runScriptResult;
+};
+
+export { getDeviceInfo, generateBackup };
