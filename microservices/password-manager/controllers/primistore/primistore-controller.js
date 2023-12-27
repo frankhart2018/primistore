@@ -200,7 +200,7 @@ const generateBackupHandler = (req, res, logger) => {
       error: genBackupOutput.value,
     });
   } else {
-    logger.error(
+    logger.info(
       `[${getCurrentTime()}] GET /device/generate-backup : Status 200`
     );
     res.status(200).send({
@@ -230,7 +230,7 @@ const downloadBackupHandler = (req, res, logger) => {
           error: `Error while downloading snapshot ${snapshot_name}`,
         });
       } else {
-        logger.error(
+        logger.info(
           `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 200`
         );
       }
