@@ -119,7 +119,7 @@ const GeneratePassword = () => {
         <UserSpecialChars
           label={"Use user-specified special characters"}
           count="chars-1"
-          initialValue={false}
+          initialValue={true}
           parentUpdateCallback={childValueUpdateCallback}
         />
 

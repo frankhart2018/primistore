@@ -61,6 +61,7 @@ const UserSpecialChars = ({
                   <input
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-transparent border-gray-300 rounded focus:ring-blue-500 focus:ring-2 ms-2"
+                    checked={checkboxValue}
                   />
                   <label htmlFor="">{item}</label>
                 </div>
@@ -68,15 +69,15 @@ const UserSpecialChars = ({
             })}
           </div>
           <div className="flex flex-row w-full justify-between items-center mb-4">
-          <label className="capitalize" htmlFor="include-special-chars">
-            Enter the special characters to include
-          </label>
-          <input
-            type="text"
-            id="include-special-chars"
-            className="bg-transparent border border-gray-950 text-gray-900 text-sm rounded-lg w-4/5 p-2.5"
-          />
-        </div>
+            <label className="capitalize" htmlFor="include-special-chars">
+              Enter the special characters to include
+            </label>
+            <input
+              type="text"
+              id="include-special-chars"
+              className="bg-transparent border border-gray-950 text-gray-900 text-sm rounded-lg w-4/5 p-2.5"
+            />
+          </div>
         </div>
       )}
     </div>
