@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import NavBar from "../../parts/NavBar/NavBar";
 import NumericInput from "../../parts/NumericInput/NumericInput";
 import { generateSafePassword } from "../../../utils/password";
@@ -49,17 +49,22 @@ const GeneratePassword = () => {
     if (errVals.length > 0) {
       alert(errVals.join("\n"));
     } else {
+      const specialChars = specialCharsChildRef.current.provideSpecialChars();
+
       const safePassword = generateSafePassword(
         passwordLength,
         values[0],
         values[1],
         values[2],
         uppercase,
-        lowercase
+        lowercase,
+        specialChars
       );
       setGeneratedPassword(safePassword);
     }
   };
+
+  const specialCharsChildRef = useRef();
 
   return (
     <div>
@@ -121,6 +126,7 @@ const GeneratePassword = () => {
           count="chars-1"
           initialValue={true}
           parentUpdateCallback={childValueUpdateCallback}
+          ref={specialCharsChildRef}
         />
 
         <div>

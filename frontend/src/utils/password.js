@@ -13,7 +13,8 @@ const generateSafePassword = (
   numbersPercent,
   specialsPercent,
   allowUppercase,
-  allowLowercase
+  allowLowercase,
+  specials
 ) => {
   const uppercase = allowUppercase
     ? Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i))
@@ -24,25 +25,6 @@ const generateSafePassword = (
 
   const alphabets = uppercase.concat(lowercase);
   const numbers = Array.from({ length: 10 }, (_, i) => i.toString());
-  const specials = [
-    "@",
-    "#",
-    "*",
-    "(",
-    ")",
-    "+",
-    "=",
-    "{",
-    "}",
-    "/",
-    "?",
-    "~",
-    ";",
-    ",",
-    ".",
-    "-",
-    "_",
-  ];
 
   const numSpecials = Math.floor((specialsPercent / 100) * length);
   const numNumbers = Math.floor((numbersPercent / 100) * length);
