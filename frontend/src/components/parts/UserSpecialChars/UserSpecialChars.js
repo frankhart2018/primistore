@@ -7,13 +7,14 @@ const UserSpecialChars = ({
   parentUpdateCallback,
 }) => {
   const [checkboxValue, setCheckboxValue] = useState(initialValue);
+  const [newSpecialChar, setNewSpecialChar] = useState("");
 
   const updateCheckboxValue = (e) => {
     setCheckboxValue(!checkboxValue);
     parentUpdateCallback(count, !checkboxValue, "checkbox");
   };
 
-  const specialChars = [
+  const [specialChars, setSpecialChars] = useState([
     "@",
     "#",
     "*",
@@ -31,7 +32,25 @@ const UserSpecialChars = ({
     ".",
     "-",
     "_",
-  ];
+  ]);
+
+  const textBoxOnKeyDownHandler = (e) => {
+    if (e.key === "Enter") {
+      if (newSpecialChar.length !== 1) {
+        alert("The length of special character must be 1!");
+        return;
+      }
+
+      if (specialChars.includes(newSpecialChar)) {
+        alert(`${newSpecialChar} is already in the list!`);
+        setNewSpecialChar("");
+        return;
+      }
+
+      setSpecialChars([...specialChars, newSpecialChar]);
+      setNewSpecialChar("");
+    }
+  };
 
   return (
     <div className="flex flex-col w-1/2 justify-between items-center mb-4">
@@ -76,6 +95,9 @@ const UserSpecialChars = ({
               type="text"
               id="include-special-chars"
               className="bg-transparent border border-gray-950 text-gray-900 text-sm rounded-lg w-4/5 p-2.5"
+              value={newSpecialChar}
+              onKeyDown={textBoxOnKeyDownHandler}
+              onChange={(e) => setNewSpecialChar(e.target.value)}
             />
           </div>
         </div>
