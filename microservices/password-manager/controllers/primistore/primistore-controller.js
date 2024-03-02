@@ -212,22 +212,11 @@ const generateBackupHandler = (req, res, logger) => {
         error: `Snapshot ${snapshotPath} does not exist!`,
       });
     } else {
-      res.status(200).download(snapshotPath, snapshotName, (err) => {
-        if (err) {
-          logger.error(
-            `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 500`
-          );
-          res.status(500).send({
-            error: `Error while downloading snapshot ${snapshotName}`,
-          });
-        } else {
-          logger.info(
-            `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 200`
-          );
-          res.status(200).send({
-            output: snapshotPath,
-          });
-        }
+      logger.info(
+        `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 200`
+      );
+      res.status(200).send({
+        output: snapshotPath,
       });
     }
   }
