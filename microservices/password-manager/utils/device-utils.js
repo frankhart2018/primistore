@@ -76,7 +76,7 @@ const generateBackup = (password) => {
     return copyScriptResult;
   }
 
-  const newScriptPath = path.join(PIPE_COMM_DIR, scriptFileName);
+  const newScriptPath = path.join("pipe-comm", scriptFileName);
   const pipedCommand = new PipeCommand(
     `echo "${password}" | sudo -S sh ${newScriptPath}`
   );
