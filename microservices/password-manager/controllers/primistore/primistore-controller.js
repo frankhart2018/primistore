@@ -191,7 +191,7 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
 };
 
 const generateBackupHandler = (req, res, logger) => {
-  const { password } = req.body.password;
+  const password = req.body.password;
 
   const genBackupOutput = generateBackup(password);
   if (genBackupOutput.type === CommandOutputType.Error) {
