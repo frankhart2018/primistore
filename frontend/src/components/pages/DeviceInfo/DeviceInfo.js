@@ -3,6 +3,7 @@ import NavBar from "../../parts/NavBar/NavBar";
 import ToggleButton from "../../parts/ToggleButton/ToggleButton";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  downloadBackupThunk,
   generateBackupThunk,
   getDeviceInfoThunk,
 } from "../../../services/password-thunk";
@@ -41,18 +42,47 @@ const DeviceInfo = () => {
     const password = prompt("Enter server password: ");
     dispatch(
       generateBackupThunk({
-        password: password,
+        password,
       })
     );
   };
 
   useEffect(() => {
     if (backupName !== null) {
-      alert(backupName);
-    }
-  }, [backupName]);
+      let shouldDownload = window.confirm(
+        `Generated backup: ${backupName}. Download it?`
+      );
 
-  useEffect(() => {}, [backupData]);
+      if (shouldDownload) {
+        dispatch(
+          downloadBackupThunk({
+            backupName,
+          })
+        );
+      } else {
+        alert(
+          "Cancelling download, thanks for wasting compute on generating backup!"
+        );
+      }
+    }
+  }, [backupName, dispatch]);
+
+  useEffect(() => {
+    if (backupData !== null) {
+      try {
+        const url = window.URL.createObjectURL(backupData);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = backupName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } catch (e) {
+        alert(`Error downloading file: ${e}`);
+      }
+    }
+  }, [backupData, backupName]);
 
   return (
     <div>

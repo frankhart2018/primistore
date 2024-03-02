@@ -9,6 +9,7 @@ import {
   getDeviceInfoThunk,
   rotateAESKeyAndIVThunk,
   rotateCharsetThunk,
+  downloadBackupThunk,
 } from "../services/password-thunk";
 import { COLS, ROWS } from "../utils/constants";
 
@@ -134,6 +135,15 @@ const passwordSlice = createSlice({
 
       if ("data" in payload) {
         state.backupName = payload.data.output;
+      } else {
+        alert(payload.response.data.error);
+      }
+    },
+    [downloadBackupThunk.fulfilled]: (state, action) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        state.backupData = payload.data;
       } else {
         alert(payload.response.data.error);
       }
