@@ -191,7 +191,9 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
 };
 
 const generateBackupHandler = (req, res, logger) => {
-  const genBackupOutput = generateBackup();
+  const { password } = req.body.password;
+
+  const genBackupOutput = generateBackup(password);
   if (genBackupOutput.type === CommandOutputType.Error) {
     logger.error(
       `[${getCurrentTime()}] GET /device/generate-backup : Status 500`
@@ -278,7 +280,7 @@ const PrimistoreController = (app, logger) => {
   app.get("/device/device-info", (req, res) =>
     deviceInfoFetchHandler(req, res, logger)
   );
-  app.get("/device/generate-backup", (req, res) =>
+  app.post("/device/generate-backup", (req, res) =>
     generateBackupHandler(req, res, logger)
   );
 };

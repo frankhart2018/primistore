@@ -68,7 +68,7 @@ const getDeviceInfo = () => {
   return systemInfo;
 };
 
-const generateBackup = () => {
+const generateBackup = (password) => {
   const scriptFileName = "download-backup.sh";
   const scriptPath = path.join("scripts", scriptFileName);
   const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
@@ -76,11 +76,12 @@ const generateBackup = () => {
     return copyScriptResult;
   }
 
-  const newScriptPath = path.join("pipe-comm", scriptFileName);
-  const pipedCommand = new PipeCommand(`sh ${newScriptPath}`);
+  const newScriptPath = path.join(PIPE_COMM_DIR, scriptFileName);
+  const pipedCommand = new PipeCommand(
+    `echo "${password}" | sudo -S sh ${newScriptPath}`
+  );
   const runScriptResult = runCommandInPipe(pipedCommand);
-  const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
-  runCommand(`rm -f ${newScriptPathOnDevice}`);
+  runCommand(`rm -f ${newScriptPath}`);
 
   return runScriptResult;
 };
