@@ -234,13 +234,16 @@ const downloadBackupHandler = (req, res, logger) => {
       error: `Snapshot ${snapshot_name} does not exist!`,
     });
   } else {
-    res.status(200).download(snapshotPath, snapshot_name, (err) => {
+    res.download(snapshotPath, snapshot_name, (err) => {
       if (err) {
         logger.error(
           `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`
         );
+
+        // Handle error, for example:
         res.status(500).send({
-          error: `Error while downloading snapshot ${snapshot_name}`,
+          message: "Error downloading file",
+          error: err,
         });
       } else {
         logger.info(
