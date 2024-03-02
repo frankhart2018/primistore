@@ -96,11 +96,23 @@ export const getDeviceInfoThunk = createAsyncThunk(
   }
 );
 
-export const downloadBackupThunk = createAsyncThunk(
+export const generateBackupThunk = createAsyncThunk(
   "password/generateBackup",
-  async () => {
+  async (payload) => {
     try {
-      const response = await passwordService.downloadBackup();
+      const response = await passwordService.generateBackup(payload.password);
+      return response;
+    } catch (e) {
+      return e;
+    }
+  }
+);
+
+export const downloadBackupThunk = createAsyncThunk(
+  "password/downloadBackup",
+  async (payload) => {
+    try {
+      const response = await passwordService.downloadBackup(payload.backupName);
       return response;
     } catch (e) {
       return e;

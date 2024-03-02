@@ -3,12 +3,14 @@ import NavBar from "../../parts/NavBar/NavBar";
 import ToggleButton from "../../parts/ToggleButton/ToggleButton";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  downloadBackupThunk,
+  generateBackupThunk,
   getDeviceInfoThunk,
 } from "../../../services/password-thunk";
 
 const DeviceInfo = () => {
-  const { deviceInfo, backupData } = useSelector((state) => state.password);
+  const { deviceInfo, backupData, backupName } = useSelector(
+    (state) => state.password
+  );
   const [currentScale, setCurrentScale] = useState("C");
 
   const dispatch = useDispatch();
@@ -36,25 +38,21 @@ const DeviceInfo = () => {
   }, [dispatch]);
 
   const downloadBackupHandler = () => {
-    dispatch(downloadBackupThunk());
+    const password = prompt("Enter server password: ");
+    dispatch(
+      generateBackupThunk({
+        password: password,
+      })
+    );
   };
 
   useEffect(() => {
-    if (backupData !== null) {
-      try {
-        const url = window.URL.createObjectURL(new Blob([backupData]));
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "latest-snapshot.tar.gz";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      } catch (e) {
-        alert(`Error downloading file: ${e}`);
-      }
+    if (backupName !== null) {
+      alert(backupName);
     }
-  }, [backupData]);
+  }, [backupName]);
+
+  useEffect(() => {}, [backupData]);
 
   return (
     <div>
