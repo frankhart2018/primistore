@@ -203,7 +203,7 @@ const generateBackupHandler = (req, res, logger) => {
     });
   } else {
     const snapshotName = genBackupOutput.value;
-    const snapshotPath = path.join(PIPE_COMM_DIR, snapshotName);
+    const snapshotPath = path.join(PIPE_COMM_DIR, snapshotName.trim());
     if (!existsSync(snapshotPath)) {
       logger.error(
         `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotPath} : Status 500`
