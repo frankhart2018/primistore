@@ -41,7 +41,7 @@ if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
 
     BASE_BACKUP_TARBALL_PATH=$(basename $BACKUP_TARBALL_PATH)
 
-    echo $PIPE_COMM_DIR/$BASE_BACKUP_TARBALL_PATH
+    echo $BASE_BACKUP_TARBALL_PATH
 else
     echo "More than one containers running MongoDB, please check your docker setup"
 fi

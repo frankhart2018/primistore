@@ -206,10 +206,10 @@ const generateBackupHandler = (req, res, logger) => {
     const snapshotPath = path.join(PIPE_COMM_DIR, snapshotName);
     if (!existsSync(snapshotPath)) {
       logger.error(
-        `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 500`
+        `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotPath} : Status 500`
       );
       res.status(500).send({
-        error: `Snapshot ${snapshotName} does not exist!`,
+        error: `Snapshot ${snapshotPath} does not exist!`,
       });
     } else {
       res.status(200).download(snapshotPath, snapshotName, (err) => {
@@ -224,6 +224,9 @@ const generateBackupHandler = (req, res, logger) => {
           logger.info(
             `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 200`
           );
+          res.status(200).send({
+            output: snapshotPath,
+          });
         }
       });
     }
