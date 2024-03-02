@@ -5,7 +5,7 @@ tarball() {
 }
 
 docker_exec() {
-    sudo docker exec -it $1 $2
+    sudo docker exec $1 $2
 }
 
 MONGO_CONTAINER_IDS=$(sudo docker ps -q --filter "ancestor=mongo:bionic")
