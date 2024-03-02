@@ -216,7 +216,7 @@ const generateBackupHandler = (req, res, logger) => {
         `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 200`
       );
       res.status(200).send({
-        output: snapshotPath,
+        output: snapshotName,
       });
     }
   }
@@ -274,6 +274,9 @@ const PrimistoreController = (app, logger) => {
   );
   app.post("/device/generate-backup", (req, res) =>
     generateBackupHandler(req, res, logger)
+  );
+  app.get("/device/generate-backup/download/:snapshot_name", (req, res) =>
+    downloadBackupHandler(req, res, logger)
   );
 };
 
