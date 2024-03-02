@@ -81,7 +81,7 @@ const generateBackup = (password) => {
     `echo "${password}" | sudo -S sh ${newScriptPath}`
   );
   const runScriptResult = runCommandInPipe(pipedCommand);
-  runCommand(`rm -f ${newScriptPath}`);
+  runCommandInPipe(`rm -f ${newScriptPath}`);
 
   return runScriptResult;
 };
