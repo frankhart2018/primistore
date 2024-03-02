@@ -9,7 +9,7 @@ docker_exec() {
 }
 
 MONGO_CONTAINER_IDS=$(sudo docker ps -q --filter "ancestor=mongo:bionic")
-MONGO_CONTAINER_COUNTS=$($MONGO_CONTAINER_IDS | wc -l)
+MONGO_CONTAINER_COUNTS=$(echo $MONGO_CONTAINER_IDS | wc -l)
 if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
     CURRENT_TIME=$(date +'%d-%m-%Y')
     BACKUP_DIR=$HOME/primistore-$CURRENT_TIME
@@ -20,7 +20,7 @@ if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
 
     cd $HOME
     mkdir $BACKUP_DIR
-    MONGO_CONTAINER_ID=$($MONGO_CONTAINER_IDS | head -n 1)
+    MONGO_CONTAINER_ID=$(echo $MONGO_CONTAINER_IDS | head -n 1)
     docker_exec $MONGO_CONTAINER_ID "mongodump --host localhost --db primistore --quiet"
     sudo docker cp $MONGO_CONTAINER_ID:/dump . > /dev/null 2>&1
     sudo tarball mongodump.tar.gz dump
