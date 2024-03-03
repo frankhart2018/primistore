@@ -196,7 +196,7 @@ const generateBackupHandler = (req, res, logger) => {
   const genBackupOutput = generateBackup(password);
   if (genBackupOutput.type === CommandOutputType.Error) {
     logger.error(
-      `[${getCurrentTime()}] GET /device/generate-backup : Status 500`
+      `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
     );
     res.status(500).send({
       error: genBackupOutput.value,
@@ -206,14 +206,14 @@ const generateBackupHandler = (req, res, logger) => {
     const snapshotPath = path.join(PIPE_COMM_DIR, snapshotName);
     if (!existsSync(snapshotPath)) {
       logger.error(
-        `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotPath} : Status 500`
+        `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
       );
       res.status(500).send({
         error: `Snapshot ${snapshotPath} does not exist!`,
       });
     } else {
       logger.info(
-        `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshotName} : Status 200`
+        `[${getCurrentTime()}] POST /device/generate-backup : Status 200`
       );
       res.status(200).send({
         output: snapshotName,
