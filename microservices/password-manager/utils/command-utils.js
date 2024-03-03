@@ -3,8 +3,8 @@ import path from "path";
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs";
 
 const PIPE_PATH = "/command-runner";
-const PIPE_OUTPUT_DIR = "/pipe-outputs";
-const PIPE_OUTPUT_PATH = path.join(PIPE_OUTPUT_DIR, "output.txt");
+const PIPE_COMM_DIR = "/pipe-comm";
+const PIPE_OUTPUT_PATH = path.join(PIPE_COMM_DIR, "output.txt");
 const PIPE_OUTPUT_CACHE_MINUTES = 3;
 const PIPE_WAIT_SLEEP_TIME = 100; // milliseconds
 
@@ -21,7 +21,7 @@ class CommandOutput {
 }
 
 class PipeCommand {
-  constructor(cmd, outputPath = PIPE_OUTPUT_PATH) {
+  constructor(cmd, outputPath = path.basename(PIPE_OUTPUT_PATH)) {
     this.cmd = cmd;
     this.outputPath = outputPath;
   }
@@ -49,6 +49,9 @@ const sleep = (ms) => {
 };
 
 const getFileLastModified = (filePath) => {
+  if (!existsSync(filePath)) {
+    return -1;
+  }
   let stats = statSync(filePath);
   return stats.mtimeMs;
 };
@@ -91,7 +94,7 @@ const runCommandInPipe = (
     );
   }
 
-  let lastModified = -1;
+  let lastModified = getFileLastModified(outputPath);
   if (withCache && outputPath !== PIPE_OUTPUT_PATH) {
     const { lastModifiedCached, outputCached } = getCachedOutput(outputPath);
     if (lastModifiedCached !== -1) {
@@ -153,5 +156,5 @@ export {
   encryptWithAES,
   CommandOutputType,
   PipeCommand,
-  PIPE_OUTPUT_DIR,
+  PIPE_COMM_DIR,
 };

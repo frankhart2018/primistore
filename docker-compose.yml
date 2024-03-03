@@ -22,7 +22,7 @@ services:
     volumes:
       - ${LOCAL_DIR}:/root/.primistore
       - ${PIPE_PATH}:/command-runner
-      - ${PIPE_OUTPUT_DIR}:/pipe-outputs
+      - ${PIPE_COMM_DIR}:/pipe-comm
 
   image_decryptor:
     build:

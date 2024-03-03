@@ -1,12 +1,16 @@
 import path from "path";
 import {
   CommandOutputType,
-  PIPE_OUTPUT_DIR,
+  PIPE_COMM_DIR,
   PipeCommand,
   runCommandInPipe,
+  runCommand,
 } from "./command-utils.js";
 
-const DEVICE_INFO_PIPE_OUTPUT_PATH = "/pipe-outputs/device-info-output.txt";
+const DEVICE_INFO_PIPE_OUTPUT_PATH = path.join(
+  PIPE_COMM_DIR,
+  "device-info-output.txt"
+);
 
 const convertStringToObject = (rawOutput, keyTransformer) => {
   const systemInfo = {};
@@ -36,11 +40,7 @@ const getDeviceInfo = () => {
     "device-info-output.txt"
   );
   try {
-    output = runCommandInPipe(
-      command,
-      true,
-      path.join(PIPE_OUTPUT_DIR, command.outputPath)
-    );
+    output = runCommandInPipe(command, true, DEVICE_INFO_PIPE_OUTPUT_PATH);
   } catch (e) {
     console.log(e);
     return {};
@@ -68,4 +68,23 @@ const getDeviceInfo = () => {
   return systemInfo;
 };
 
-export { getDeviceInfo };
+const generateBackup = (password) => {
+  const scriptFileName = "download-backup.sh";
+  const scriptPath = path.join("scripts", scriptFileName);
+  const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
+  if (copyScriptResult.type === CommandOutputType.Error) {
+    return copyScriptResult;
+  }
+
+  const newScriptPath = path.join("pipe-comm", scriptFileName);
+  const pipedCommand = new PipeCommand(
+    `PASSWORD="${password}" sh ${newScriptPath}`
+  );
+  const runScriptResult = runCommandInPipe(pipedCommand);
+  const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
+  runCommand(`rm -f ${newScriptPathOnDevice}`);
+
+  return runScriptResult;
+};
+
+export { getDeviceInfo, generateBackup };

@@ -72,3 +72,25 @@ export const getDeviceInfo = async () => {
   );
   return response;
 };
+
+export const generateBackup = async (password) => {
+  const response = await axios.post(
+    `${PASSWORD_MANAGER_API_BASE}/device/generate-backup`,
+    {
+      password,
+    }
+  );
+
+  return response;
+};
+
+export const downloadBackup = async (backupName) => {
+  const response = await axios.get(
+    `${PASSWORD_MANAGER_API_BASE}/device/generate-backup/download/${backupName}`,
+    {
+      responseType: "blob",
+    }
+  );
+
+  return response;
+};

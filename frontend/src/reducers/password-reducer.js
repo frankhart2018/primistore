@@ -3,11 +3,13 @@ import {
   createPasswordThunk,
   decryptPasswordThunk,
   deletePasswordThunk,
+  generateBackupThunk,
   encryptPasswordThunk,
   fetchPasswordsThunk,
   getDeviceInfoThunk,
   rotateAESKeyAndIVThunk,
   rotateCharsetThunk,
+  downloadBackupThunk,
 } from "../services/password-thunk";
 import { COLS, ROWS } from "../utils/constants";
 
@@ -27,6 +29,8 @@ const initialState = {
   decryptedData: "",
   rawData: "",
   deviceInfo: {},
+  backupName: null,
+  backupData: null,
 };
 
 const passwordSlice = createSlice({
@@ -124,6 +128,24 @@ const passwordSlice = createSlice({
         state.deviceInfo = payload.data.info;
       } else {
         state.deviceInfo = {};
+      }
+    },
+    [generateBackupThunk.fulfilled]: (state, action) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        state.backupName = payload.data.output;
+      } else {
+        alert(payload.response.data.error);
+      }
+    },
+    [downloadBackupThunk.fulfilled]: (state, action) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        state.backupData = payload.data;
+      } else {
+        alert(payload.response.data.error);
       }
     },
   },

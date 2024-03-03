@@ -1,10 +1,12 @@
-import fs from "fs";
+import fs, { existsSync } from "fs";
 import path from "path";
 
 import {
   CommandOutputType,
+  PIPE_COMM_DIR,
   encryptWithAES,
   generateAESKeyIV,
+  runCommand,
 } from "../../utils/command-utils.js";
 import {
   createPassword,
@@ -20,7 +22,7 @@ import {
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
-import { getDeviceInfo } from "../../utils/device-utils.js";
+import { generateBackup, getDeviceInfo } from "../../utils/device-utils.js";
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
@@ -188,6 +190,70 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
   });
 };
 
+const generateBackupHandler = (req, res, logger) => {
+  const password = req.body.password;
+
+  const genBackupOutput = generateBackup(password);
+  if (genBackupOutput.type === CommandOutputType.Error) {
+    logger.error(
+      `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
+    );
+    res.status(500).send({
+      error: genBackupOutput.value,
+    });
+  } else {
+    const snapshotName = genBackupOutput.value.trim();
+    const snapshotPath = path.join(PIPE_COMM_DIR, snapshotName);
+    if (!existsSync(snapshotPath)) {
+      logger.error(
+        `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
+      );
+      res.status(500).send({
+        error: `Snapshot ${snapshotPath} does not exist!`,
+      });
+    } else {
+      logger.info(
+        `[${getCurrentTime()}] POST /device/generate-backup : Status 200`
+      );
+      res.status(200).send({
+        output: snapshotName,
+      });
+    }
+  }
+};
+
+const downloadBackupHandler = (req, res, logger) => {
+  const { snapshot_name } = req.params;
+
+  const snapshotPath = path.join(PIPE_COMM_DIR, snapshot_name);
+  if (!existsSync(snapshotPath)) {
+    logger.error(
+      `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`
+    );
+    res.status(500).send({
+      error: `Snapshot ${snapshot_name} does not exist!`,
+    });
+  } else {
+    res.download(snapshotPath, snapshot_name, (err) => {
+      if (err) {
+        logger.error(
+          `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`
+        );
+
+        // Handle error, for example:
+        res.status(500).send({
+          message: "Error downloading file",
+          error: err,
+        });
+      } else {
+        logger.info(
+          `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 200`
+        );
+      }
+    });
+  }
+};
+
 const PrimistoreController = (app, logger) => {
   app.post("/password", (req, res) =>
     passwordCreationHandler(req, res, logger)
@@ -208,6 +274,12 @@ const PrimistoreController = (app, logger) => {
 
   app.get("/device/device-info", (req, res) =>
     deviceInfoFetchHandler(req, res, logger)
+  );
+  app.post("/device/generate-backup", (req, res) =>
+    generateBackupHandler(req, res, logger)
+  );
+  app.get("/device/generate-backup/download/:snapshot_name", (req, res) =>
+    downloadBackupHandler(req, res, logger)
   );
 };
 

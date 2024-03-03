@@ -4,7 +4,7 @@ import json
 
 
 PIPE_PATH = Path.home() / "command-runner"
-PIPE_OUTPUT_DIR = Path.home() / "pipe-outputs"
+PIPE_OUTPUT_DIR = Path.home() / "pipe-comm"
 
 
 while True:
@@ -16,8 +16,12 @@ while True:
     except:
         command_obj = {"cmd": "", "outputPath": "output.txt"}
 
-    output = subprocess.getoutput(command_obj["cmd"])
+    process = subprocess.Popen(
+        command_obj["cmd"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
+    output, error = process.communicate()
     output_path = PIPE_OUTPUT_DIR / command_obj["outputPath"]
 
     with open(output_path, "w") as f:
-        f.write(output)
+        result = error.decode() if error else output.decode()
+        f.write(result)

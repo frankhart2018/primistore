@@ -21,7 +21,7 @@ services:
     volumes:
       - ${LOCAL_DIR}:/root/.primistore
       - ${PIPE_PATH}:/command-runner
-      - ${PIPE_OUTPUT_DIR}:/pipe-outputs
+      - ${PIPE_COMM_DIR}:/pipe-comm
 
   image_decryptor:
     image: frankhart2018/primistore:image-decryptor-v0.3
