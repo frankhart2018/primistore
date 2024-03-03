@@ -4,10 +4,6 @@ sudo_uninteractive() {
     echo "$PASSWORD" | sudo -S $@
 }
 
-tarball() {
-    sudo_uninteractive tar czf $1 $2
-}
-
 docker_exec() {
     sudo_uninteractive docker exec $1 $2
 }
@@ -35,7 +31,7 @@ if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
 
     BASE_BACKUP_DIR_PATH=$(basename $BACKUP_DIR)
 
-    tarball $BACKUP_TARBALL_PATH $BASE_BACKUP_DIR_PATH 
+    sudo_uninteractive tar czf $BACKUP_TARBALL_PATH $BASE_BACKUP_DIR_PATH 
     sudo_uninteractive rm -rf $BACKUP_DIR
     mv $BACKUP_TARBALL_PATH $PIPE_COMM_DIR
 
