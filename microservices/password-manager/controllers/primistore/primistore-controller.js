@@ -1,12 +1,12 @@
 import fs, { existsSync } from "fs";
 import path from "path";
+import multer from "multer";
 
 import {
   CommandOutputType,
   PIPE_COMM_DIR,
   encryptWithAES,
   generateAESKeyIV,
-  runCommand,
   runScriptInPipe,
 } from "../../utils/command-utils.js";
 import {
@@ -24,6 +24,8 @@ import {
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
 import { getDeviceInfo } from "../../utils/device-utils.js";
+
+const upload = multer({ dest: PIPE_COMM_DIR });
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
@@ -255,6 +257,13 @@ const downloadBackupHandler = (req, res, logger) => {
   }
 };
 
+const uploadBackupHandler = (req, res, logger) => {
+  logger.info(`[${getCurrentTime()}] GET /device/upload-backup : Status 200`);
+  res.status(200).send({
+    output: "Ok",
+  });
+};
+
 const PrimistoreController = (app, logger) => {
   app.post("/password", (req, res) =>
     passwordCreationHandler(req, res, logger)
@@ -281,6 +290,9 @@ const PrimistoreController = (app, logger) => {
   );
   app.get("/device/generate-backup/download/:snapshot_name", (req, res) =>
     downloadBackupHandler(req, res, logger)
+  );
+  app.post("/device/upload-backup", upload.single("backup"), (req, res) =>
+    uploadBackupHandler(req, res, logger)
   );
 };
 
