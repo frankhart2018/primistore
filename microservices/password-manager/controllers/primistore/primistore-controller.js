@@ -25,7 +25,12 @@ import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
 import { getDeviceInfo } from "../../utils/device-utils.js";
 
-const upload = multer({ dest: PIPE_COMM_DIR });
+const upload = multer({
+  dest: PIPE_COMM_DIR,
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
@@ -260,7 +265,8 @@ const downloadBackupHandler = (req, res, logger) => {
 const uploadBackupHandler = (req, res, logger) => {
   logger.info(`[${getCurrentTime()}] GET /device/upload-backup : Status 200`);
   res.status(200).send({
-    output: "Ok",
+    output: req.file,
+    another: "ok",
   });
 };
 
