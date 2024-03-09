@@ -7,6 +7,7 @@ import {
   encryptWithAES,
   generateAESKeyIV,
   runCommand,
+  runScriptInPipe,
 } from "../../utils/command-utils.js";
 import {
   createPassword,
@@ -22,7 +23,7 @@ import {
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
-import { generateBackup, getDeviceInfo } from "../../utils/device-utils.js";
+import { getDeviceInfo } from "../../utils/device-utils.js";
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
@@ -193,7 +194,7 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
 const generateBackupHandler = (req, res, logger) => {
   const password = req.body.password;
 
-  const genBackupOutput = generateBackup(password);
+  const genBackupOutput = runScriptInPipe(password, "download-backup.sh");
   if (genBackupOutput.type === CommandOutputType.Error) {
     logger.error(
       `[${getCurrentTime()}] POST /device/generate-backup : Status 500`

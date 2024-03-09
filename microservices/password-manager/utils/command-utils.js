@@ -131,6 +131,22 @@ const runCommandInPipe = (
   return new CommandOutput(CommandOutputType.Success, outputData);
 };
 
+const runScriptInPipe = (password, scriptFileName) => {
+  const scriptPath = path.join("scripts", scriptFileName);
+  const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
+  if (copyScriptResult.type === CommandOutputType.Error) {
+    return copyScriptResult;
+  }
+
+  const newScriptPath = path.join("pipe-comm", scriptFileName);
+  const pipedCommand = new PipeCommand(
+    `PASSWORD="${password}" sh ${newScriptPath}`
+  );
+  const runScriptResult = runCommandInPipe(pipedCommand);
+  const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
+  runCommand(`rm -f ${newScriptPathOnDevice}`);
+};
+
 const generateAESKeyIV = () => {
   const key = runCommand("openssl rand -hex 32");
   const iv = runCommand("openssl rand -hex 16");
@@ -157,4 +173,5 @@ export {
   CommandOutputType,
   PipeCommand,
   PIPE_COMM_DIR,
+  runScriptInPipe,
 };
