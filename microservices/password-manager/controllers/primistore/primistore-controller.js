@@ -25,12 +25,15 @@ import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
 import { getDeviceInfo } from "../../utils/device-utils.js";
 
-const upload = multer({
-  dest: PIPE_COMM_DIR,
-  filename: function (req, file, cb) {
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, PIPE_COMM_DIR);
+  },
+  filename: (req, file, cb) => {
     cb(null, file.originalname);
   },
 });
+const upload = multer({ storage: storage });
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
