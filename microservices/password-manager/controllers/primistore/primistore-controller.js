@@ -280,7 +280,8 @@ const uploadBackupHandler = (req, res, logger) => {
       error: uploadBackupOutput.value,
     });
   } else {
-    if (uploadBackupOutput.value === uploadedFile.filename) {
+    const uploadedFileName = uploadedFile.filename.trim();
+    if (uploadedFileName === uploadedFile.filename) {
       logger.info(
         `[${getCurrentTime()}] GET /device/upload-backup : Status 200`
       );
@@ -293,7 +294,7 @@ const uploadBackupHandler = (req, res, logger) => {
         `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
       );
       res.status(500).send({
-        error: `Incorrect output from upload: ${uploadBackupOutput.value}`,
+        error: `Incorrect output from upload: ${uploadedFileName}`,
       });
     }
   }
