@@ -131,7 +131,7 @@ const runCommandInPipe = (
   return new CommandOutput(CommandOutputType.Success, outputData);
 };
 
-const runScriptInPipe = (scriptFileName, password = null) => {
+const runScriptInPipe = (scriptFileName, password = null, args = []) => {
   const scriptPath = path.join("scripts", scriptFileName);
   const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
   if (copyScriptResult.type === CommandOutputType.Error) {
@@ -139,7 +139,7 @@ const runScriptInPipe = (scriptFileName, password = null) => {
   }
 
   const newScriptPath = path.join("pipe-comm", scriptFileName);
-  let scriptRunningCommand = `sh ${newScriptPath}`;
+  let scriptRunningCommand = `sh ${newScriptPath} ${args.join(" ")}`;
   if (password !== null) {
     scriptRunningCommand = `PASSWORD="${password}" ${scriptRunningCommand}`;
   }
