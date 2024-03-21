@@ -204,7 +204,7 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
 const generateBackupHandler = (req, res, logger) => {
   const password = req.body.password;
 
-  const genBackupOutput = runScriptInPipe(password, "download-backup.sh");
+  const genBackupOutput = runScriptInPipe("download-backup.sh", password);
   if (genBackupOutput.type === CommandOutputType.Error) {
     logger.error(
       `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
@@ -266,11 +266,34 @@ const downloadBackupHandler = (req, res, logger) => {
 };
 
 const uploadBackupHandler = (req, res, logger) => {
-  logger.info(`[${getCurrentTime()}] GET /device/upload-backup : Status 200`);
-  res.status(200).send({
-    output: req.file,
-    another: "ok",
-  });
+  const uploadedFile = req.file;
+  const password = req.body.password;
+  const uploadBackupOutput = runScriptInPipe("upload-backup.sh", password);
+  if (uploadBackupOutput.type === CommandOutputType.Error) {
+    logger.error(
+      `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
+    );
+    res.status(500).send({
+      error: uploadBackupOutput.value,
+    });
+  } else {
+    if (uploadBackupOutput.value === uploadedFile.filename) {
+      logger.info(
+        `[${getCurrentTime()}] GET /device/upload-backup : Status 200`
+      );
+
+      res.status(200).send({
+        status: "ok",
+      });
+    } else {
+      logger.error(
+        `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
+      );
+      res.status(500).send({
+        error: `Incorrect output from upload: ${uploadBackupOutput.value}`,
+      });
+    }
+  }
 };
 
 const PrimistoreController = (app, logger) => {
