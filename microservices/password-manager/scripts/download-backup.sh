@@ -19,15 +19,12 @@ if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
     PIPE_COMM_DIR=$HOME/pipe-comm
 
     cd $HOME
-    mkdir -p $BACKUP_DIR
     MONGO_CONTAINER_ID=$(echo $MONGO_CONTAINER_IDS | head -n 1)
     docker_exec $MONGO_CONTAINER_ID "mongodump --host localhost --db primistore --quiet"
     sudo_uninteractive docker cp $MONGO_CONTAINER_ID:/dump . > /dev/null 2>&1
     docker_exec $MONGO_CONTAINER_ID "rm -rf /dump"
     mkdir charsets
     sudo_uninteractive cp $PRIMISTORE_DIR/*.txt charsets 2>/dev/null
-
-    BASE_BACKUP_DIR_PATH=$(basename $BACKUP_DIR)
 
     sudo_uninteractive tar czf $BACKUP_TARBALL_PATH charsets dump
     sudo_uninteractive rm -rf charsets dump
