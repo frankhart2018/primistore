@@ -145,6 +145,8 @@ const runScriptInPipe = (password, scriptFileName) => {
   const runScriptResult = runCommandInPipe(pipedCommand);
   const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
   runCommand(`rm -f ${newScriptPathOnDevice}`);
+
+  return runScriptResult;
 };
 
 const generateAESKeyIV = () => {
