@@ -268,7 +268,10 @@ const downloadBackupHandler = (req, res, logger) => {
 const uploadBackupHandler = (req, res, logger) => {
   const uploadedFile = req.file;
   const password = req.body.password;
-  const uploadBackupOutput = runScriptInPipe("upload-backup.sh", password);
+  const uploadBackupOutput = runScriptInPipe(
+    `upload-backup.sh ${uploadedFile.filename}`,
+    password
+  );
   if (uploadBackupOutput.type === CommandOutputType.Error) {
     logger.error(
       `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
