@@ -94,3 +94,21 @@ export const downloadBackup = async (backupName) => {
 
   return response;
 };
+
+export const uploadBackup = async (backupFile, password) => {
+  const formData = new FormData();
+  formData.append("backup", backupFile);
+  formData.append("password", password);
+
+  const response = await axios.post(
+    `${PASSWORD_MANAGER_API_BASE}/device/upload-backup`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      responseType: "json",
+    }
+  );
+  return response;
+};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NavBar from "../../parts/NavBar/NavBar";
 import ToggleButton from "../../parts/ToggleButton/ToggleButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import {
   downloadBackupThunk,
   generateBackupThunk,
   getDeviceInfoThunk,
+  uploadBackupThunk,
 } from "../../../services/password-thunk";
 
 const DeviceInfo = () => {
@@ -13,6 +14,8 @@ const DeviceInfo = () => {
     (state) => state.password
   );
   const [currentScale, setCurrentScale] = useState("C");
+  const backupUploadFile = useRef(null);
+  const [backupFilePath, setBackupFilePath] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -84,6 +87,22 @@ const DeviceInfo = () => {
     }
   }, [backupData, backupName]);
 
+  const uploadBackupHandler = (_e) => {
+    backupUploadFile.current.click();
+  };
+
+  useEffect(() => {
+    if (backupFilePath !== null) {
+      const password = prompt("Enter server password: ");
+      dispatch(
+        uploadBackupThunk({
+          backupFile: backupUploadFile,
+          password,
+        })
+      );
+    }
+  }, [backupFilePath, dispatch]);
+
   return (
     <div>
       <NavBar />
@@ -117,10 +136,19 @@ const DeviceInfo = () => {
           </button>
           <button
             className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-64 text-md px-5 py-2.5"
-            onClick={() => {}}
+            onClick={uploadBackupHandler}
           >
             Restore From Backup
           </button>
+          <input
+            type="file"
+            id="backup-file"
+            ref={backupUploadFile}
+            onChange={(e) => setBackupFilePath(e.target.files[0])}
+            style={{
+              display: "none",
+            }}
+          />
         </div>
       </div>
     </div>
