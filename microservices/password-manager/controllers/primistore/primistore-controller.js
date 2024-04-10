@@ -317,16 +317,16 @@ const PrimistoreController = (app, logger) => {
     deletePasswordHandler(req, res, logger)
   );
 
-  app.get("/device/device-info", (req, res) =>
+  app.get("/device/info", (req, res) =>
     deviceInfoFetchHandler(req, res, logger)
   );
-  app.post("/device/generate-backup", (req, res) =>
+  app.post("/device/backup/generate", (req, res) =>
     generateBackupHandler(req, res, logger)
   );
-  app.get("/device/generate-backup/download/:snapshot_name", (req, res) =>
+  app.get("/device/backup/download/:snapshot_name", (req, res) =>
     downloadBackupHandler(req, res, logger)
   );
-  app.post("/device/upload-backup", upload.single("backup"), (req, res) =>
+  app.post("/device/backup/upload", upload.single("backup"), (req, res) =>
     uploadBackupHandler(req, res, logger)
   );
 };
