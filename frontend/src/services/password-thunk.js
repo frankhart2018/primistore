@@ -119,3 +119,18 @@ export const downloadBackupThunk = createAsyncThunk(
     }
   }
 );
+
+export const uploadBackupThunk = createAsyncThunk(
+  "password/uploadBackup",
+  async (payload) => {
+    try {
+      const response = await passwordService.uploadBackup(
+        payload.backupFile,
+        payload.password
+      );
+      return response;
+    } catch (e) {
+      return e;
+    }
+  }
+);

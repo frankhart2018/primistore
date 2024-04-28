@@ -5,6 +5,7 @@ import {
   PipeCommand,
   runCommandInPipe,
   runCommand,
+  runScriptInPipe,
 } from "./command-utils.js";
 
 const DEVICE_INFO_PIPE_OUTPUT_PATH = path.join(
@@ -68,23 +69,4 @@ const getDeviceInfo = () => {
   return systemInfo;
 };
 
-const generateBackup = (password) => {
-  const scriptFileName = "download-backup.sh";
-  const scriptPath = path.join("scripts", scriptFileName);
-  const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
-  if (copyScriptResult.type === CommandOutputType.Error) {
-    return copyScriptResult;
-  }
-
-  const newScriptPath = path.join("pipe-comm", scriptFileName);
-  const pipedCommand = new PipeCommand(
-    `PASSWORD="${password}" sh ${newScriptPath}`
-  );
-  const runScriptResult = runCommandInPipe(pipedCommand);
-  const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
-  runCommand(`rm -f ${newScriptPathOnDevice}`);
-
-  return runScriptResult;
-};
-
-export { getDeviceInfo, generateBackup };
+export { getDeviceInfo };

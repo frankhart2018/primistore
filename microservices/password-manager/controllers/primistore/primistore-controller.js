@@ -1,12 +1,13 @@
 import fs, { existsSync } from "fs";
 import path from "path";
+import multer from "multer";
 
 import {
   CommandOutputType,
   PIPE_COMM_DIR,
   encryptWithAES,
   generateAESKeyIV,
-  runCommand,
+  runScriptInPipe,
 } from "../../utils/command-utils.js";
 import {
   createPassword,
@@ -22,7 +23,17 @@ import {
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
-import { generateBackup, getDeviceInfo } from "../../utils/device-utils.js";
+import { getDeviceInfo } from "../../utils/device-utils.js";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, PIPE_COMM_DIR);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 
 const passwordCreationHandler = async (req, res, logger) => {
   const password_uid = req.body.identifier;
@@ -193,7 +204,7 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
 const generateBackupHandler = (req, res, logger) => {
   const password = req.body.password;
 
-  const genBackupOutput = generateBackup(password);
+  const genBackupOutput = runScriptInPipe("download-backup.sh", password);
   if (genBackupOutput.type === CommandOutputType.Error) {
     logger.error(
       `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
@@ -254,6 +265,41 @@ const downloadBackupHandler = (req, res, logger) => {
   }
 };
 
+const uploadBackupHandler = (req, res, logger) => {
+  const uploadedFile = req.file;
+  const password = req.body.password;
+  const uploadedFileName = uploadedFile.filename;
+  const uploadBackupOutput = runScriptInPipe("upload-backup.sh", password, [
+    uploadedFileName,
+  ]);
+  if (uploadBackupOutput.type === CommandOutputType.Error) {
+    logger.error(
+      `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
+    );
+    res.status(500).send({
+      error: uploadBackupOutput.value,
+    });
+  } else {
+    const scriptOutputFileName = uploadBackupOutput.value.trim();
+    if (scriptOutputFileName === uploadedFileName.trim()) {
+      logger.info(
+        `[${getCurrentTime()}] GET /device/upload-backup : Status 200`
+      );
+
+      res.status(200).send({
+        status: "ok",
+      });
+    } else {
+      logger.error(
+        `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
+      );
+      res.status(500).send({
+        error: `Incorrect output from upload: ${uploadedFileName}`,
+      });
+    }
+  }
+};
+
 const PrimistoreController = (app, logger) => {
   app.post("/password", (req, res) =>
     passwordCreationHandler(req, res, logger)
@@ -272,14 +318,17 @@ const PrimistoreController = (app, logger) => {
     deletePasswordHandler(req, res, logger)
   );
 
-  app.get("/device/device-info", (req, res) =>
+  app.get("/device/info", (req, res) =>
     deviceInfoFetchHandler(req, res, logger)
   );
-  app.post("/device/generate-backup", (req, res) =>
+  app.post("/device/backup/generate", (req, res) =>
     generateBackupHandler(req, res, logger)
   );
-  app.get("/device/generate-backup/download/:snapshot_name", (req, res) =>
+  app.get("/device/backup/download/:snapshot_name", (req, res) =>
     downloadBackupHandler(req, res, logger)
+  );
+  app.post("/device/backup/upload", upload.single("file"), (req, res) =>
+    uploadBackupHandler(req, res, logger)
   );
 };
 

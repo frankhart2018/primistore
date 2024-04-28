@@ -67,15 +67,13 @@ export const deletePassword = async (passUid) => {
 };
 
 export const getDeviceInfo = async () => {
-  const response = await axios.get(
-    `${PASSWORD_MANAGER_API_BASE}/device/device-info`
-  );
+  const response = await axios.get(`${PASSWORD_MANAGER_API_BASE}/device/info`);
   return response;
 };
 
 export const generateBackup = async (password) => {
   const response = await axios.post(
-    `${PASSWORD_MANAGER_API_BASE}/device/generate-backup`,
+    `${PASSWORD_MANAGER_API_BASE}/device/backup/generate`,
     {
       password,
     }
@@ -86,11 +84,29 @@ export const generateBackup = async (password) => {
 
 export const downloadBackup = async (backupName) => {
   const response = await axios.get(
-    `${PASSWORD_MANAGER_API_BASE}/device/generate-backup/download/${backupName}`,
+    `${PASSWORD_MANAGER_API_BASE}/device/backup/download/${backupName}`,
     {
       responseType: "blob",
     }
   );
 
+  return response;
+};
+
+export const uploadBackup = async (backupFile, password) => {
+  const formData = new FormData();
+  formData.append("file", backupFile);
+  formData.append("password", password);
+
+  const response = await axios.post(
+    `${PASSWORD_MANAGER_API_BASE}/device/backup/upload`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      responseType: "json",
+    }
+  );
   return response;
 };
