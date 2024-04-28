@@ -155,6 +155,7 @@ const passwordSlice = createSlice({
 
       if ("data" in payload) {
         state.backupRestorationSuccess = true;
+        alert("Successfully restored from backup!");
       } else {
         alert(payload.response.data.error);
       }

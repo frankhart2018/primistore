@@ -95,7 +95,7 @@ export const downloadBackup = async (backupName) => {
 
 export const uploadBackup = async (backupFile, password) => {
   const formData = new FormData();
-  formData.append("backup", backupFile);
+  formData.append("file", backupFile);
   formData.append("password", password);
 
   const response = await axios.post(

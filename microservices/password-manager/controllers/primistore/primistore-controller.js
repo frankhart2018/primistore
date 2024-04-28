@@ -268,8 +268,9 @@ const downloadBackupHandler = (req, res, logger) => {
 const uploadBackupHandler = (req, res, logger) => {
   const uploadedFile = req.file;
   const password = req.body.password;
+  const uploadedFileName = uploadedFile.filename;
   const uploadBackupOutput = runScriptInPipe("upload-backup.sh", password, [
-    uploadedFile.filename,
+    uploadedFileName,
   ]);
   if (uploadBackupOutput.type === CommandOutputType.Error) {
     logger.error(
@@ -279,8 +280,8 @@ const uploadBackupHandler = (req, res, logger) => {
       error: uploadBackupOutput.value,
     });
   } else {
-    const uploadedFileName = uploadedFile.filename.trim();
-    if (uploadedFileName === uploadedFile.filename) {
+    const scriptOutputFileName = uploadBackupOutput.value.trim();
+    if (scriptOutputFileName === uploadedFileName.trim()) {
       logger.info(
         `[${getCurrentTime()}] GET /device/upload-backup : Status 200`
       );
@@ -326,7 +327,7 @@ const PrimistoreController = (app, logger) => {
   app.get("/device/backup/download/:snapshot_name", (req, res) =>
     downloadBackupHandler(req, res, logger)
   );
-  app.post("/device/backup/upload", upload.single("backup"), (req, res) =>
+  app.post("/device/backup/upload", upload.single("file"), (req, res) =>
     uploadBackupHandler(req, res, logger)
   );
 };

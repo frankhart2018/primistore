@@ -96,7 +96,7 @@ const DeviceInfo = () => {
       const password = prompt("Enter server password: ");
       dispatch(
         uploadBackupThunk({
-          backupFile: backupUploadFile,
+          backupFile: backupFilePath,
           password,
         })
       );
