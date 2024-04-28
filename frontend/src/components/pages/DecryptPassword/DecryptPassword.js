@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { decryptPasswordThunk } from "../../../services/password-thunk";
 import NavBar from "../../parts/NavBar/NavBar";
@@ -6,6 +6,7 @@ import NavBar from "../../parts/NavBar/NavBar";
 const DecryptPassword = () => {
   const { decryptedData, rawData } = useSelector((state) => state.password);
   const [pmsFile, setPmsFile] = useState(null);
+  const [stats, setStats] = useState({});
 
   const pathName = window.location.pathname;
   const passUid = pathName.split("/")[3];
@@ -20,6 +21,57 @@ const DecryptPassword = () => {
       })
     );
   };
+
+  const computeDecryptedDataStats = (decryptedData) => {
+    const length = decryptedData.length;
+    const stats = {
+      Length: length,
+      "Has uppercase": decryptedData.match(/[A-Z]/) ? "yes" : "no",
+      "Has lowercase": decryptedData.match(/[a-z]/) ? "yes" : "no",
+      "% alphabets": (
+        Object.values(
+          decryptedData
+            .trim()
+            .toLowerCase()
+            .split("")
+            .reduce(
+              (count, char) =>
+                /[a-z]/.test(char)
+                  ? { ...count, [char]: (count[char] || 0) + 1 }
+                  : count,
+              {}
+            )
+        ).reduce((sum, key) => sum + parseFloat(key), 0) / length
+      ).toFixed(2),
+      "% numbers": (
+        Object.values(
+          decryptedData
+            .trim()
+            .toLowerCase()
+            .split("")
+            .reduce(
+              (count, char) =>
+                /[0-9]/.test(char)
+                  ? { ...count, [char]: (count[char] || 0) + 1 }
+                  : count,
+              {}
+            )
+        ).reduce((sum, key) => sum + parseFloat(key), 0) / length
+      ).toFixed(2),
+    };
+
+    stats["% specials"] = (
+      1 -
+      stats["% alphabets"] -
+      stats["% numbers"]
+    ).toFixed(2);
+    return stats;
+  };
+
+  useEffect(() => {
+    if (decryptedData.length === 0) return;
+    setStats(computeDecryptedDataStats(decryptedData));
+  }, [decryptedData]);
 
   return (
     <div>
@@ -49,7 +101,7 @@ const DecryptPassword = () => {
         <p className="capitalize text-xl font-bold text-center mb-8">
           Decrypted Data
         </p>
-        <table className="border-none w-1/3 mx-auto">
+        <table className="border-none w-1/8 mx-auto">
           <tbody>
             {decryptedData.length > 0 ? (
               <tr className="border-none">
@@ -64,6 +116,22 @@ const DecryptPassword = () => {
                 <td className="border-none font-semibold text-lg">Raw:</td>
                 <td className="border-none">{rawData}</td>
               </tr>
+            ) : (
+              <></>
+            )}
+            {Object.keys(stats).length > 0 ? (
+              <>
+                <br />
+                <h3 className="font-semibold text-lg">Stats Table:</h3>
+                {Object.keys(stats).map((key, idx) => {
+                  return (
+                    <tr key={idx} className="border-none">
+                      <td className="font-semibold text-md">{key}</td>
+                      <td>{stats[key]}</td>
+                    </tr>
+                  );
+                })}
+              </>
             ) : (
               <></>
             )}
