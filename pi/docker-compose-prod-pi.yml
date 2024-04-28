@@ -1,7 +1,7 @@
 version: "3"
 services:
   frontend:
-    image: frankhart2018/primistore:frontend-v0.3
+    image: frankhart2018/primistore:frontend-v0.4
     ports:
       - "3000:3000"
     environment:
@@ -10,7 +10,7 @@ services:
       - REACT_APP_PI=true
 
   password_manager:
-    image: frankhart2018/primistore:password-manager-v0.3
+    image: frankhart2018/primistore:password-manager-v0.4
     ports:
       - "4000:4000"
     depends_on:
@@ -24,7 +24,7 @@ services:
       - ${PIPE_COMM_DIR}:/pipe-comm
 
   image_decryptor:
-    image: frankhart2018/primistore:image-decryptor-v0.3
+    image: frankhart2018/primistore:image-decryptor-v0.4
     ports:
       - "8000:8000"
     depends_on:
