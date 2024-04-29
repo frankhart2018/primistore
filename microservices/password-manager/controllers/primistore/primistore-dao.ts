@@ -1,6 +1,6 @@
 import primistoreModel from "./primistore-model.js";
 
-export const createPassword = (pass_uid, aes_key, aes_iv) => {
+export const createPassword = (pass_uid: string, aes_key: string, aes_iv: string): Promise<Document | any> => {
   let currentTime = Math.floor(Date.now() / 1000).toString();
 
   const query = { pass_uid };
@@ -18,11 +18,11 @@ export const createPassword = (pass_uid, aes_key, aes_iv) => {
   return primistoreModel.findOneAndUpdate(query, update, options);
 };
 
-export const getPasswords = () => {
+export const getPasswords = (): Promise<Document[]> => {
   return primistoreModel.find();
 };
 
-export const updatePasswordAES = (pass_uid, aes_key, aes_iv) => {
+export const updatePasswordAES = (pass_uid: string, aes_key: string, aes_iv: string): Promise<Document | null> => {
   const query = { pass_uid };
   const options = { new: true };
   const currentTime = Math.floor(Date.now() / 1000).toString();
@@ -38,7 +38,7 @@ export const updatePasswordAES = (pass_uid, aes_key, aes_iv) => {
   return primistoreModel.findOneAndUpdate(query, update, options);
 };
 
-export const updatePasswordCharset = (pass_uid) => {
+export const updatePasswordCharset = (pass_uid: string): Promise<Document | null> => {
   const query = { pass_uid };
   const options = { new: true };
   const currentTime = Math.floor(Date.now() / 1000).toString();
@@ -52,10 +52,10 @@ export const updatePasswordCharset = (pass_uid) => {
   return primistoreModel.findOneAndUpdate(query, update, options);
 };
 
-export const getPasswordByPassUid = (pass_uid) => {
+export const getPasswordByPassUid = (pass_uid: string): Promise<Document | null> => {
   return primistoreModel.findOne({ pass_uid: pass_uid });
 };
 
-export const removePasswordByPassUid = (pass_uid) => {
+export const removePasswordByPassUid = (pass_uid: string): Promise<any> => {
   return primistoreModel.deleteOne({ pass_uid: pass_uid });
 };
