@@ -85,15 +85,15 @@ Finally the app should be up and running, so easy wasn't it?
 $ mkdir charsets
 ```
 
-2. Find IP address of the host (ifconfig for macOS and Linux systems, I don't know about windows).
+2. Find IP address of the host (ifconfig for macOS and Linux systems, ipconfig for windows).
 
 3. Use docker-compose (install this if you don't already have it):
 
 ```bash
-$ IP=<IP> LOCAL_DIR=<charset-dir-path> docker-compose up -d
+$ IP=<IP> REACT_APP_PI=<true/false> LOCAL_DIR=<charset-dir-path> docker-compose up -d
 ```
 
-**Note**: For the first time it will take some time, for later runs, docker will cache things (I hope you have a high level idea of how docker works, if not google it).
+**Note**: For the first time it will take some time, for later runs, docker will cache things (I hope you have a high level idea of how docker works, if not google it). The `REACT_APP_PI` should be turned on (i.e. set to true) if the app is being run on a raspberry pi, otherwise it can be turned off (i.e. set to false)
 
 ## License
 
