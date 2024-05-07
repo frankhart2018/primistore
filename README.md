@@ -2,6 +2,29 @@
 
 Primistore is a password management application that provides a solution to secure your important (or even less important) passwords and provides suggestions regarding safe password practices.
 
+## How does it work? 
+
+### Encryption
+
+- Users generate unique [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) keys and a unique character set (i.e. a way to map characters to numbers) for each of their passwords.
+- They then use these unique keys (per password) to encrypt the password and store it as an image (details about how this image is used can be found below).
+- They then download the resulting image, that contains their encrypted password and keep it on a storage device of their choice (or in their own device).
+
+### Decryption
+
+- User will upload the image they have on their device.
+- The image will be decrypted into stream of bits (using the algorithm described below).
+- The decrypted bits are then converted to characters using the unique character set.
+- Finally they are decrypted using the AES keys and sent back to the client.
+
+### What is the server storing?
+
+- The server only stores the AES keys and unique character sets for each password that is used to encrypt and decrypt the password. It never stores the actual password image for security reasons. Thus, even if the server is compromised, the passwords are safe.
+
+### Target device
+
+- The entire app (frontend/backend) is meant to be served from a Raspberry Pi running a Ubuntu Server 22.04 LTS image. The choice was made, as PIs are cheap and can be easily used as small home servers. 
+
 ## Documentation
 
 - [Image processing algorithm for decryption](https://github.com/frankhart2018/primistore/wiki/Image-processing-algorithm-for-decryption)
