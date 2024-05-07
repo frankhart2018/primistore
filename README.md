@@ -33,6 +33,12 @@ Primistore is a password management application that provides a solution to secu
 
 ## Steps to run
 
+### Pre-Requisites
+
+- Before installing anything else, I recommend downloading and installing OpenSSL. OpenSSL is an open source library for all things encryption/hashing. It is used in this project for AES encryption/decryption. So, without OpenSSL, this application is pretty much useless. 
+
+### Install and run
+
 The project can be run either using PM2 process manager (requires installation of Node.js and PM2) or inside a docker container (nothing required other than docker). Out of the two docker is probably an easy solution for most.
 
 Both steps require you to clone the repository:
