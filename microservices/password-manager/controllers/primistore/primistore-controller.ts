@@ -1,6 +1,8 @@
 import fs, { existsSync } from "fs";
 import path from "path";
 import multer from "multer";
+import winston from "winston"
+import { Express } from 'express'
 
 import {
   CommandOutputType,
@@ -24,6 +26,7 @@ import {
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
 import { getDeviceInfo } from "../../utils/device-utils.js";
+import { Request, Response } from "express";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -35,7 +38,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-const passwordCreationHandler = async (req, res, logger) => {
+const passwordCreationHandler = async (req: Request, res: Response, logger: winston.Logger) => {
   const password_uid = req.body.identifier;
 
   const { key, iv } = generateAESKeyIV();
@@ -64,13 +67,13 @@ const passwordCreationHandler = async (req, res, logger) => {
   });
 };
 
-const getAllPasswordsHandler = async (req, res, logger) => {
+const getAllPasswordsHandler = async (req: Request, res: Response, logger: winston.Logger) => {
   const passwords = await getPasswords();
   logger.info(`[${getCurrentTime()}] GET /passwords : Status 200`);
   return res.status(200).send(passwords);
 };
 
-const rotateAESKeyIVHandler = async (req, res, logger) => {
+const rotateAESKeyIVHandler = async (req: Request, res: Response, logger: winston.Logger) => {
   const { pass_uid } = req.params;
 
   const { key, iv } = generateAESKeyIV();
@@ -103,7 +106,7 @@ const rotateAESKeyIVHandler = async (req, res, logger) => {
   });
 };
 
-const rotateCharsetHandler = async (req, res, logger) => {
+const rotateCharsetHandler = async (req: Request, res: Response, logger: winston.Logger) => {
   const { pass_uid } = req.params;
 
   const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
@@ -121,7 +124,7 @@ const rotateCharsetHandler = async (req, res, logger) => {
   });
 };
 
-const encryptPasswordHandler = async (req, res, logger) => {
+const encryptPasswordHandler = async (req: Request, res: Response, logger: winston.Logger) => {
   const { pass_uid } = req.params;
   const raw_password = req.body.password;
 
@@ -144,7 +147,7 @@ const encryptPasswordHandler = async (req, res, logger) => {
     .readFileSync(charsetPath)
     .toString("utf-8")
     .split("\n")
-    .slice(0, -1);
+    .slice(0, -1).join(" ");
   encryptedPassword = encryptWithCharset(charset, encryptedPassword.value);
 
   logger.info(
@@ -155,7 +158,7 @@ const encryptPasswordHandler = async (req, res, logger) => {
   });
 };
 
-const deletePasswordHandler = async (req, res, logger) => {
+const deletePasswordHandler = async (req: Request, res: Response, logger: winston.Logger) => {
   const { pass_uid } = req.params;
 
   const passwordDetails = await getPasswordByPassUid(pass_uid);
@@ -192,7 +195,7 @@ const deletePasswordHandler = async (req, res, logger) => {
   });
 };
 
-const deviceInfoFetchHandler = async (req, res, logger) => {
+const deviceInfoFetchHandler = async (req: Request, res: Response, logger: winston.Logger) => {
   const deviceInfo = getDeviceInfo();
 
   logger.info(`[${getCurrentTime()}] GET /device/device-info : Status 200`);
@@ -201,7 +204,7 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
   });
 };
 
-const generateBackupHandler = (req, res, logger) => {
+const generateBackupHandler = (req: Request, res: Response, logger: winston.Logger) => {
   const password = req.body.password;
 
   const genBackupOutput = runScriptInPipe("download-backup.sh", password);
@@ -233,7 +236,7 @@ const generateBackupHandler = (req, res, logger) => {
   }
 };
 
-const downloadBackupHandler = (req, res, logger) => {
+const downloadBackupHandler = (req: Request, res: Response, logger: winston.Logger) => {
   const { snapshot_name } = req.params;
 
   const snapshotPath = path.join(PIPE_COMM_DIR, snapshot_name);
@@ -265,7 +268,7 @@ const downloadBackupHandler = (req, res, logger) => {
   }
 };
 
-const uploadBackupHandler = (req, res, logger) => {
+const uploadBackupHandler = (req: Request, res: Response, logger: winston.Logger) => {
   const uploadedFile = req.file;
   const password = req.body.password;
   const uploadedFileName = uploadedFile.filename;
@@ -300,7 +303,7 @@ const uploadBackupHandler = (req, res, logger) => {
   }
 };
 
-const PrimistoreController = (app, logger) => {
+const PrimistoreController = (app: Express, logger: winston.Logger) => {
   app.post("/password", (req, res) =>
     passwordCreationHandler(req, res, logger)
   );

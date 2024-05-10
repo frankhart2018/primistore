@@ -1,0 +1,1 @@
+{"version":3,"file":"command-output.d.ts","sourceRoot":"","sources":["../src/command-output.ts"],"names":[],"mappings":"AAAA,aAAK,iBAAiB;IACpB,OAAO,IAAI;IACX,KAAK,IAAI;IACT,QAAQ,IAAI;CACb;AAED,cAAM,aAAa;IACjB,IAAI,EAAE,iBAAiB,CAAC;IACxB,KAAK,EAAE,MAAM,CAAC;gBAEF,IAAI,EAAE,iBAAiB,EAAE,KAAK,EAAE,MAAM;CAInD;AAED,OAAO,EAAE,aAAa,EAAE,iBAAiB,EAAE,CAAC"}

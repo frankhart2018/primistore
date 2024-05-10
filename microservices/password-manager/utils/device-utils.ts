@@ -7,13 +7,14 @@ import {
   runCommand,
   runScriptInPipe,
 } from "./command-utils.js";
+import { CommandOutput } from "command-executor-lib/dist/command-output.js";
 
 const DEVICE_INFO_PIPE_OUTPUT_PATH = path.join(
   PIPE_COMM_DIR,
   "device-info-output.txt"
 );
 
-const convertStringToObject = (rawOutput, keyTransformer) => {
+const convertStringToObject = (rawOutput: string, keyTransformer: StringMap) => { // is keyTransformer string array?
   const systemInfo = {};
   const lines = rawOutput.split("\n");
 
@@ -35,7 +36,7 @@ const convertStringToObject = (rawOutput, keyTransformer) => {
 };
 
 const getDeviceInfo = () => {
-  let output;
+  let output: CommandOutput;
   const command = new PipeCommand(
     "/usr/bin/landscape-sysinfo",
     "device-info-output.txt"

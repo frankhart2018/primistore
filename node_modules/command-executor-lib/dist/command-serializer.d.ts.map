@@ -1,0 +1,1 @@
+{"version":3,"file":"command-serializer.d.ts","sourceRoot":"","sources":["../src/command-serializer.ts"],"names":[],"mappings":"AAAA,UAAU,iBAAiB;IACzB,SAAS,EAAE,CAAC,OAAO,EAAE,MAAM,KAAK,MAAM,CAAC;CACxC;AAED,cAAM,cAAe,YAAW,iBAAiB;IAC/C,UAAU,EAAE,MAAM,CAAC;gBAEP,UAAU,EAAE,MAAM;IAI9B,SAAS,YAAa,MAAM,KAAG,MAAM,CAKnC;CACH;AAED,OAAO,EAAE,iBAAiB,EAAE,cAAc,EAAE,CAAC"}

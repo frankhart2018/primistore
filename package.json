@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "command-executor-lib": "^0.1.2"
+  }
+}

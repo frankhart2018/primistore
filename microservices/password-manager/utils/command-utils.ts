@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import path from "path";
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs";
+import { PipeExecuteStrategy, CommandOutputType, RegularExecuteStrategy, CommandExecutor } from "command-executor-lib"
 
 const PIPE_PATH = "/command-runner";
 const PIPE_COMM_DIR = "/pipe-comm";
@@ -8,20 +9,24 @@ const PIPE_OUTPUT_PATH = path.join(PIPE_COMM_DIR, "output.txt");
 const PIPE_OUTPUT_CACHE_MINUTES = 3;
 const PIPE_WAIT_SLEEP_TIME = 100; // milliseconds
 
-const CommandOutputType = {
-  Success: 0,
-  Error: 1,
-};
+// const CommandOutputType = {
+//   Success: 0,
+//   Error: 1,
+// };
 
 class CommandOutput {
-  constructor(type, value) {
+  type: CommandOutputType
+  value: string
+  constructor(type: CommandOutputType, value: string) {
     this.type = type;
     this.value = value;
   }
 }
 
 class PipeCommand {
-  constructor(cmd, outputPath = path.basename(PIPE_OUTPUT_PATH)) {
+  private cmd: string
+  private outputPath: string
+  constructor(cmd: string, outputPath: string = path.basename(PIPE_OUTPUT_PATH)) {
     this.cmd = cmd;
     this.outputPath = outputPath;
   }
@@ -34,7 +39,7 @@ class PipeCommand {
   };
 }
 
-const runCommand = (cmd) => {
+const runCommand = (cmd: string) => {
   try {
     const output = execSync(cmd).toString().trim();
     return new CommandOutput(CommandOutputType.Success, output);
@@ -43,12 +48,12 @@ const runCommand = (cmd) => {
   }
 };
 
-const sleep = (ms) => {
+const sleep = (ms: number) => {
   const start = Date.now();
   while (Date.now() - start < ms) {}
 };
 
-const getFileLastModified = (filePath) => {
+const getFileLastModified = (filePath: string) => {
   if (!existsSync(filePath)) {
     return -1;
   }
@@ -56,7 +61,7 @@ const getFileLastModified = (filePath) => {
   return stats.mtimeMs;
 };
 
-const getCachedOutput = (filePath) => {
+const getCachedOutput = (filePath: string) => {
   let lastModifiedCached = -1;
   let outputCached = null;
   if (existsSync(filePath)) {
@@ -83,7 +88,7 @@ const getCachedOutput = (filePath) => {
 };
 
 const runCommandInPipe = (
-  cmd,
+  cmd: PipeCommand,
   withCache = false,
   outputPath = PIPE_OUTPUT_PATH
 ) => {
@@ -131,7 +136,7 @@ const runCommandInPipe = (
   return new CommandOutput(CommandOutputType.Success, outputData);
 };
 
-const runScriptInPipe = (scriptFileName, password = null, args = []) => {
+const runScriptInPipe = (scriptFileName: string, password: string = null, args?: string[]) => {
   const scriptPath = path.join("scripts", scriptFileName);
   const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
   if (copyScriptResult.type === CommandOutputType.Error) {
@@ -161,7 +166,7 @@ const generateAESKeyIV = () => {
   };
 };
 
-const encryptWithAES = (key, iv, password) => {
+const encryptWithAES = (key: string, iv: string, password: string) => {
   const encryptedOutput = runCommand(
     `echo "${password}" | openssl aes-256-cbc -e -a -K ${key} -iv ${iv}`
   );
