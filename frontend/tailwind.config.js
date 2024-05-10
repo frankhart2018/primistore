@@ -4,7 +4,9 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    fontFamily: {
+      'courier-prime': ['Courier Prime', 'monospace'],
+    },
   },
   plugins: [],
 }
