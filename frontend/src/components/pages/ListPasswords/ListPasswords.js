@@ -105,7 +105,7 @@ const ListPasswords = () => {
   return (
     <div>
       <NavBar />
-      <div className="font-courier-prime w-5/6 mx-auto">
+      <div className="w-5/6 mx-auto">
         <div className="w-1/2 mx-auto px-4 py-8 flex flex-col justify-center items-center mb-10 border border-red-600">
           <p className="text-xl font-bold tracking-widest uppercase">Legend</p>
           <div className="flex flex-row justify-center items-center space-x-6">

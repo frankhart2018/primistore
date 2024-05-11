@@ -19,7 +19,7 @@ const CreatePassword = () => {
   return (
     <div>
       <NavBar />
-      <div className="font-courier-prime w-5/6 mx-auto py-7 flex flex-col justify-center items-center">
+      <div className="w-5/6 mx-auto py-7 flex flex-col justify-center items-center">
         <div class="mb-10 w-5/6 space-y-5">
           <label
             htmlFor="identifier"

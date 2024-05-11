@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    font-family: 'Courier Prime', monospace;
+  }
+
 @layer components {
     .defaultNavLink {
         @apply border border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-5 py-2.5 me-2 mb-2;
