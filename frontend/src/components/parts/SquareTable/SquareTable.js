@@ -4,6 +4,7 @@ import "./SquareTable.css";
 import { COLS } from "../../../utils/constants";
 
 const SquareTable = ({ rows, cols, data }) => {
+  if (!data||data.length===0) return null;
   const renderTable = () => {
     let table = [];
     for (let i = 0; i < rows; i++) {

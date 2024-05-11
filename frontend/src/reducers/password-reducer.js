@@ -38,7 +38,11 @@ const initialState = {
 const passwordSlice = createSlice({
   name: "password",
   initialState,
-  reducers: {},
+  reducers: {
+    clearEncryptedData: (state) => {
+      state.encryptedData = getZeros2DArray(ROWS, COLS);
+    }
+  },
   extraReducers: {
     [createPasswordThunk.fulfilled]: (state, action) => {
       const payload = action.payload;
@@ -162,5 +166,5 @@ const passwordSlice = createSlice({
     },
   },
 });
-
+export const { clearEncryptedData } = passwordSlice.actions;
 export default passwordSlice.reducer;
