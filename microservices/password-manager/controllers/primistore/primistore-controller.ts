@@ -43,11 +43,11 @@ const passwordCreationHandler = async (req: Request, res: Response, logger: wins
 
   const { key, iv } = generateAESKeyIV();
   if (
-    key.type === CommandOutputType.Error ||
-    iv.type === CommandOutputType.Error
+    key.type === "error" ||
+    iv.type === "error"
   ) {
-    let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
-    errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
+    let errorMessage = key.type == "error" ? key.value : "";
+    errorMessage += iv.type == "error" ? iv.value : "";
     logger.error(`[${getCurrentTime()}] POST /password : Status 500`);
     res.status(500).send({
       error: errorMessage,
@@ -78,11 +78,11 @@ const rotateAESKeyIVHandler = async (req: Request, res: Response, logger: winsto
 
   const { key, iv } = generateAESKeyIV();
   if (
-    key.type === CommandOutputType.Error ||
-    iv.type === CommandOutputType.Error
+    key.type === "error" ||
+    iv.type === "error"
   ) {
-    let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
-    errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
+    let errorMessage = key.type == "error" ? key.value : "";
+    errorMessage += iv.type == "error" ? iv.value : "";
     logger.error(
       `[${getCurrentTime()}] PUT /password/aes/${pass_uid} : Status 500`
     );
@@ -132,7 +132,7 @@ const encryptPasswordHandler = async (req: Request, res: Response, logger: winst
   const { aes_key, aes_iv } = passwordDetails;
 
   let encryptedPassword = encryptWithAES(aes_key, aes_iv, raw_password);
-  if (encryptedPassword.type == CommandOutputType.Error) {
+  if (encryptedPassword.type == "error") {
     logger.error(
       `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 500`
     );
@@ -147,7 +147,7 @@ const encryptPasswordHandler = async (req: Request, res: Response, logger: winst
     .readFileSync(charsetPath)
     .toString("utf-8")
     .split("\n")
-    .slice(0, -1).join(" ");
+    .slice(0, -1);
   encryptedPassword = encryptWithCharset(charset, encryptedPassword.value);
 
   logger.info(
@@ -208,7 +208,7 @@ const generateBackupHandler = (req: Request, res: Response, logger: winston.Logg
   const password = req.body.password;
 
   const genBackupOutput = runScriptInPipe("download-backup.sh", password);
-  if (genBackupOutput.type === CommandOutputType.Error) {
+  if (genBackupOutput.type === "error") {
     logger.error(
       `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
     );
@@ -275,7 +275,7 @@ const uploadBackupHandler = (req: Request, res: Response, logger: winston.Logger
   const uploadBackupOutput = runScriptInPipe("upload-backup.sh", password, [
     uploadedFileName,
   ]);
-  if (uploadBackupOutput.type === CommandOutputType.Error) {
+  if (uploadBackupOutput.type === "error") {
     logger.error(
       `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
     );

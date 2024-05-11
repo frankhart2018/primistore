@@ -42,9 +42,9 @@ class PipeCommand {
 const runCommand = (cmd: string) => {
   try {
     const output = execSync(cmd).toString().trim();
-    return new CommandOutput(CommandOutputType.Success, output);
+    return new CommandOutput("success", output);
   } catch (e) {
-    return new CommandOutput(CommandOutputType.Error, e.message);
+    return new CommandOutput("success", e.message);
   }
 };
 
@@ -73,7 +73,7 @@ const getCachedOutput = (filePath: string) => {
     // Return the last result, no need to run the program again
     if (diff <= PIPE_OUTPUT_CACHE_MINUTES) {
       outputCached = new CommandOutput(
-        CommandOutputType.Success,
+        "success",
         readFileSync(filePath).toString()
       );
     } else {
@@ -94,7 +94,7 @@ const runCommandInPipe = (
 ) => {
   if (!existsSync(PIPE_PATH)) {
     return new CommandOutput(
-      CommandOutputType.Error,
+      "error",
       "Cannot run command inside pipe"
     );
   }
@@ -133,13 +133,13 @@ const runCommandInPipe = (
   }
 
   const outputData = readFileSync(outputPath).toString();
-  return new CommandOutput(CommandOutputType.Success, outputData);
+  return new CommandOutput("success", outputData);
 };
 
 const runScriptInPipe = (scriptFileName: string, password: string = null, args?: string[]) => {
   const scriptPath = path.join("scripts", scriptFileName);
   const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
-  if (copyScriptResult.type === CommandOutputType.Error) {
+  if (copyScriptResult.type === "error") {
     return copyScriptResult;
   }
 
@@ -166,7 +166,7 @@ const generateAESKeyIV = () => {
   };
 };
 
-const encryptWithAES = (key: string, iv: string, password: string) => {
+const encryptWithAES = (key: string, iv: string, password: string): CommandOutput => {
   const encryptedOutput = runCommand(
     `echo "${password}" | openssl aes-256-cbc -e -a -K ${key} -iv ${iv}`
   );

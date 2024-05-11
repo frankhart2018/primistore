@@ -1,3 +1,5 @@
+import { CommandOutput } from "command-executor-lib/dist/command-output.js";
+
 const lowerCaseCharacters = Array.from({ length: 26 }, (_, index) =>
   String.fromCharCode("a".charCodeAt(0) + index)
 );
@@ -32,13 +34,14 @@ const mapNumberToPaddedBinaryString = (num: number) => {
     return num.toString(2).padStart(8, "0");
 }
 
-const encryptWithCharset = (charset: string, password: string): string => {
+const encryptWithCharset = (charset: string[], password: string): CommandOutput => {
     const binaryPassword = password.split("").map((char) => {
         const indexOfChar = charset.indexOf(char) + 1;
         return mapNumberToPaddedBinaryString(indexOfChar);
     });
 
-    return binaryPassword.join("");
+    let cmd = new CommandOutput("success", binaryPassword.join(" "));
+    return cmd;
 }
 
 export { generateCharset, encryptWithCharset };
