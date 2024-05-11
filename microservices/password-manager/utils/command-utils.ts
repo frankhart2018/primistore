@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import path from "path";
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs";
-import { PipeExecuteStrategy, CommandOutputType, RegularExecuteStrategy, CommandExecutor } from "command-executor-lib"
+import { CommandExecutor, CommandOutputType, PipeExecuteStrategy } from "command-executor-lib"
 
 const PIPE_PATH = "/command-runner";
 const PIPE_COMM_DIR = "/pipe-comm";
@@ -138,7 +138,7 @@ const runCommandInPipe = (
 
 const runScriptInPipe = (scriptFileName: string, password: string = null, args?: string[]) => {
   const scriptPath = path.join("scripts", scriptFileName);
-  const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
+  const copyScriptResult = new CommandExecutor(`cp ${scriptPath} ${PIPE_COMM_DIR}`, new PipeExecuteStrategy()).execute();
   if (copyScriptResult.type === "error") {
     return copyScriptResult;
   }
@@ -148,17 +148,16 @@ const runScriptInPipe = (scriptFileName: string, password: string = null, args?:
   if (password !== null) {
     scriptRunningCommand = `PASSWORD="${password}" ${scriptRunningCommand}`;
   }
-  const pipedCommand = new PipeCommand(scriptRunningCommand);
-  const runScriptResult = runCommandInPipe(pipedCommand);
+  const runScriptResult = new CommandExecutor(scriptRunningCommand, new PipeExecuteStrategy()).execute();
   const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
-  runCommand(`rm -f ${newScriptPathOnDevice}`);
+  new CommandExecutor(`rm -f ${newScriptPathOnDevice}`, new PipeExecuteStrategy()).execute();
 
   return runScriptResult;
 };
 
 const generateAESKeyIV = () => {
-  const key = runCommand("openssl rand -hex 32");
-  const iv = runCommand("openssl rand -hex 16");
+  const key = new CommandExecutor("openssl rand -hex 32", new PipeExecuteStrategy()).execute();
+  const iv = new CommandExecutor("openssl rand -hex 16", new PipeExecuteStrategy()).execute();
 
   return {
     key,
@@ -167,9 +166,9 @@ const generateAESKeyIV = () => {
 };
 
 const encryptWithAES = (key: string, iv: string, password: string): CommandOutput => {
-  const encryptedOutput = runCommand(
+  const encryptedOutput = new CommandExecutor(
     `echo "${password}" | openssl aes-256-cbc -e -a -K ${key} -iv ${iv}`
-  );
+  , new PipeExecuteStrategy()).execute();
 
   return encryptedOutput;
 };

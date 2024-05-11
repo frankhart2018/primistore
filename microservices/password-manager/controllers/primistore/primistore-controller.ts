@@ -5,7 +5,6 @@ import winston from "winston"
 import { Express } from 'express'
 
 import {
-  CommandOutputType,
   PIPE_COMM_DIR,
   encryptWithAES,
   generateAESKeyIV,

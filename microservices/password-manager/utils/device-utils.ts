@@ -58,7 +58,7 @@ const getDeviceInfo = () => {
   };
 
   let systemInfo = {};
-  if (output.type == CommandOutputType.Success) {
+  if (output.type == "success") {
     systemInfo = convertStringToObject(output.value, keyTransformer);
     systemInfo["CPU Temperature"] = systemInfo["CPU Temperature"].split(" ")[0];
   } else {
