@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 body {
-    font-family: 'Courier Prime', monospace;
+    overflow-x: hidden;
+    font-family: monospace;
   }
 
 @layer components {
