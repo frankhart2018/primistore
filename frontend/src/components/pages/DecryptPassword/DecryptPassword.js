@@ -73,8 +73,10 @@ const DecryptPassword = () => {
       navigator.clipboard.writeText(decryptedData);
       window.alert("Decrypted password copied to clipboard!");
     }
+    dispatch(decryptPasswordThunk({ passUid, pmsFile: null }));
     if (decryptedData.length === 0) return;
     setStats(computeDecryptedDataStats(decryptedData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [decryptedData]);
 
   return (
