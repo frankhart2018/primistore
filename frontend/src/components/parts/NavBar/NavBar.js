@@ -21,7 +21,7 @@ const NavBar = () => {
                 }
                 to={{ pathname: "/" }}
               >
-                Home
+                List Passwords
               </NavLink>
             </li>
             <li>
@@ -32,16 +32,6 @@ const NavBar = () => {
                 to={{ pathname: "/password" }}
               >
                 Create Password
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? "activeNavLink" : "defaultNavLink"
-                }
-                to={{ pathname: "/passwords" }}
-              >
-                List Passwords
               </NavLink>
             </li>
             <li>

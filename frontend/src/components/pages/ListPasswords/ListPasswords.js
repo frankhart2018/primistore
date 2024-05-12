@@ -18,7 +18,8 @@ const ListPasswords = () => {
 
   useEffect(() => {
     dispatch(fetchPasswordsThunk());
-  }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const rotateAESKeyAndIV = (passUid) => {
     const userConfirmed = window.confirm(
