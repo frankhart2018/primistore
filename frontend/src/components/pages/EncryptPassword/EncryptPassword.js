@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { COLS, ROWS } from "../../../utils/constants";
 import { encryptPasswordThunk } from "../../../services/password-thunk";
 import NavBar from "../../parts/NavBar/NavBar";
-import { clearEncryptedData } from "../../../reducers/password-reducer";
 
 const EncryptPassword = () => {
   const targetRef = useRef();
 
   const [password, setPassword] = useState("");
   const { encryptedData } = useSelector((state) => state.password);
+  const [encryptedDataLoaded, setEncryptedDataLoaded] = useState(false);
 
   const uuid = uuidv4();
 
@@ -39,10 +39,7 @@ const EncryptPassword = () => {
     } else {
       window.open(data);
     }
-    canvas.remove();
-    setPassword("");
-    dispatch(clearEncryptedData());
-    window.location.reload();
+    setEncryptedDataLoaded(false);
   };
 
   const encryptData = () => {
@@ -52,6 +49,7 @@ const EncryptPassword = () => {
         password,
       })
     );
+    setEncryptedDataLoaded(true);
   };
 
   return (
@@ -88,9 +86,9 @@ const EncryptPassword = () => {
           Download Image
         </button>
       </div>
-      <div ref={targetRef}>
+      {encryptedDataLoaded && <div ref={targetRef}>
         <SquareTable rows={ROWS} cols={COLS} data={encryptedData} />
-      </div>
+      </div>}
     </div>
   );
 };
