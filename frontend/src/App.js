@@ -3,7 +3,6 @@
 // import { COLS, ROWS } from "./utils/constants";
 // import { CHAR2CODE } from "./utils/charset";
 import { Route, Routes } from "react-router";
-import MainMenu from "./components/pages/MainMenu/MainMenu";
 import { configureStore } from "@reduxjs/toolkit";
 import passwordReducer from "./reducers/password-reducer";
 import { Provider } from "react-redux";
@@ -32,9 +31,8 @@ const App = () => {
     <div className="bg-white h-[100vh] w-[100vw]">
       <Provider store={store}>
         <Routes>
-          <Route path="/" element={<MainMenu />} />
+          <Route path="/" element={<ListPasswords />} />
           <Route path="/password" element={<CreatePassword />} />
-          <Route path="/passwords" element={<ListPasswords />} />
           <Route
             path="/password/encrypt/:pass_uid"
             element={<EncryptPassword />}
