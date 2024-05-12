@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { COLS, ROWS } from "../../../utils/constants";
 import { encryptPasswordThunk } from "../../../services/password-thunk";
 import NavBar from "../../parts/NavBar/NavBar";
+import { clearEncryptedData } from "../../../reducers/password-reducer";
 
 const EncryptPassword = () => {
   const targetRef = useRef();
@@ -38,6 +39,10 @@ const EncryptPassword = () => {
     } else {
       window.open(data);
     }
+    canvas.remove();
+    setPassword("");
+    dispatch(clearEncryptedData());
+    window.location.reload();
   };
 
   const encryptData = () => {
