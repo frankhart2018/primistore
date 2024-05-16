@@ -3,10 +3,7 @@ import path from "path";
 import multer from "multer";
 
 import {
-  CommandOutputType,
   PIPE_COMM_DIR,
-  encryptWithAES,
-  generateAESKeyIV,
   runScriptInPipe,
 } from "../../utils/command-utils.js";
 import {
@@ -24,6 +21,11 @@ import {
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
 import { getDeviceInfo } from "../../utils/device-utils.js";
+import {
+  encryptWithAES,
+  generateAESKeyIV,
+} from "../../utils/encryption-utils.js";
+import { CommandOutputType } from "command-executor-lib";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

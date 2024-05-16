@@ -1,12 +1,10 @@
 import path from "path";
 import {
-  CommandOutputType,
   PIPE_COMM_DIR,
   PipeCommand,
   runCommandInPipe,
-  runCommand,
-  runScriptInPipe,
 } from "./command-utils.js";
+import { CommandOutputType } from "command-executor-lib";
 
 const DEVICE_INFO_PIPE_OUTPUT_PATH = path.join(
   PIPE_COMM_DIR,

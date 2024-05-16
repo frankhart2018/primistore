@@ -1,24 +1,12 @@
-import { execSync } from "child_process";
 import path from "path";
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs";
+import { CommandExecutor, CommandOutputType, RegularExecuteStrategy, CommandOutput } from "command-executor-lib";
 
 const PIPE_PATH = "/command-runner";
 const PIPE_COMM_DIR = "/pipe-comm";
 const PIPE_OUTPUT_PATH = path.join(PIPE_COMM_DIR, "output.txt");
 const PIPE_OUTPUT_CACHE_MINUTES = 3;
 const PIPE_WAIT_SLEEP_TIME = 100; // milliseconds
-
-const CommandOutputType = {
-  Success: 0,
-  Error: 1,
-};
-
-class CommandOutput {
-  constructor(type, value) {
-    this.type = type;
-    this.value = value;
-  }
-}
 
 class PipeCommand {
   constructor(cmd, outputPath = path.basename(PIPE_OUTPUT_PATH)) {
@@ -33,15 +21,6 @@ class PipeCommand {
     });
   };
 }
-
-const runCommand = (cmd) => {
-  try {
-    const output = execSync(cmd).toString().trim();
-    return new CommandOutput(CommandOutputType.Success, output);
-  } catch (e) {
-    return new CommandOutput(CommandOutputType.Error, e.message);
-  }
-};
 
 const sleep = (ms) => {
   const start = Date.now();
@@ -132,8 +111,11 @@ const runCommandInPipe = (
 };
 
 const runScriptInPipe = (scriptFileName, password = null, args = []) => {
+  const executorStrategy = new RegularExecuteStrategy();
+  const executor = new CommandExecutor(executorStrategy);
+
   const scriptPath = path.join("scripts", scriptFileName);
-  const copyScriptResult = runCommand(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
+  const copyScriptResult = executor.execute(`cp ${scriptPath} ${PIPE_COMM_DIR}`);
   if (copyScriptResult.type === CommandOutputType.Error) {
     return copyScriptResult;
   }
@@ -146,35 +128,13 @@ const runScriptInPipe = (scriptFileName, password = null, args = []) => {
   const pipedCommand = new PipeCommand(scriptRunningCommand);
   const runScriptResult = runCommandInPipe(pipedCommand);
   const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
-  runCommand(`rm -f ${newScriptPathOnDevice}`);
+  executor.execute(`rm -f ${newScriptPathOnDevice}`);
 
   return runScriptResult;
 };
 
-const generateAESKeyIV = () => {
-  const key = runCommand("openssl rand -hex 32");
-  const iv = runCommand("openssl rand -hex 16");
-
-  return {
-    key,
-    iv,
-  };
-};
-
-const encryptWithAES = (key, iv, password) => {
-  const encryptedOutput = runCommand(
-    `echo "${password}" | openssl aes-256-cbc -e -a -K ${key} -iv ${iv}`
-  );
-
-  return encryptedOutput;
-};
-
 export {
-  runCommand,
   runCommandInPipe,
-  generateAESKeyIV,
-  encryptWithAES,
-  CommandOutputType,
   PipeCommand,
   PIPE_COMM_DIR,
   runScriptInPipe,
