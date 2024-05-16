@@ -18,7 +18,7 @@ const encryptWithAES = (key: string, iv: string, password: string) => {
   const executor = new CommandExecutor(executeStrategy);
 
   return executor.execute(
-    `echo "${password}" | openssl enc -aes-256-cbc -a -K ${key} -iv ${iv}`
+    `echo "${password}" | openssl enc -aes-256-cbc -a -K ${key} -iv ${iv}`,
   );
 };
 
