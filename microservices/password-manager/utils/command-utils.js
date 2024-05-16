@@ -1,9 +1,9 @@
 import path from "path";
 import { existsSync, readFileSync, statSync, writeFileSync } from "fs";
-import { CommandExecutor, CommandOutputType, RegularExecuteStrategy, CommandOutput } from "command-executor-lib";
+import { CommandExecutor, CommandOutputType, RegularExecuteStrategy, CommandOutput, PipeExecuteStrategy } from "command-executor-lib";
 
-const PIPE_PATH = "/command-runner";
-const PIPE_COMM_DIR = "/pipe-comm";
+const PIPE_PATH = process.env.PIPE_PATH || "./command-runner";
+const PIPE_COMM_DIR = process.env.PIPE_COMM_DIR || "./pipe-comm";
 const PIPE_OUTPUT_PATH = path.join(PIPE_COMM_DIR, "output.txt");
 const PIPE_OUTPUT_CACHE_MINUTES = 3;
 const PIPE_WAIT_SLEEP_TIME = 100; // milliseconds
@@ -125,8 +125,15 @@ const runScriptInPipe = (scriptFileName, password = null, args = []) => {
   if (password !== null) {
     scriptRunningCommand = `PASSWORD="${password}" ${scriptRunningCommand}`;
   }
-  const pipedCommand = new PipeCommand(scriptRunningCommand);
-  const runScriptResult = runCommandInPipe(pipedCommand);
+
+  const pipeExecutorStrategty = PipeExecuteStrategy.builder()
+    .withPipePath(PIPE_PATH)
+    .withCache(false) 
+    .withOutputPath(PIPE_OUTPUT_PATH)
+    .build();
+  const pipeExecutor = new CommandExecutor(pipeExecutorStrategty);
+  console.log(`Running script: ${scriptRunningCommand}`);
+  const runScriptResult = pipeExecutor.execute(scriptRunningCommand);
   const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
   executor.execute(`rm -f ${newScriptPathOnDevice}`);
 
