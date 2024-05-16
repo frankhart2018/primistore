@@ -13,8 +13,20 @@ import {
   uploadBackupThunk,
 } from "../services/password-thunk";
 import { COLS, ROWS } from "../utils/constants";
+interface Password {
+  pass_uid: string;
+  aes_last_rotated: string;
+  charset_last_rotated :string;
+  
+}
+interface UpdatedPassword {
+  pass_uid: string;
+  aes_last_rotated: string;
+  
 
-const getZeros2DArray = (rows, cols) => {
+}
+
+const getZeros2DArray = (rows:number, cols:number) => {
   let data = [];
   for (let i = 0; i < rows * cols; i++) {
     data.push(0);
@@ -23,7 +35,22 @@ const getZeros2DArray = (rows, cols) => {
   return data;
 };
 
-const initialState = {
+interface DeviceInfo {
+  
+  [key: string]: any; 
+}
+interface InitialState {
+  created: boolean;
+  passwords: Password[];
+  encryptedData: number[];
+  decryptedData: string;
+  rawData: string;
+  deviceInfo: DeviceInfo;
+  backupName: string | null;
+  backupData: any | null;
+  backupRestorationSuccess: boolean;
+}
+const initialState:InitialState = {
   created: false,
   passwords: [],
   encryptedData: getZeros2DArray(ROWS, COLS),
@@ -44,16 +71,16 @@ const passwordSlice = createSlice({
     }
   },
   extraReducers: {
-    [createPasswordThunk.fulfilled]: (state, action) => {
+    [createPasswordThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
       const msg =
         "data" in payload ? payload.data.status : payload.response.data.error;
       alert(msg);
     },
-    [fetchPasswordsThunk.fulfilled]: (state, action) => {
+    [fetchPasswordsThunk.fulfilled.toString()]: (state, action) => {
       state.passwords = action.payload.data;
     },
-    [rotateAESKeyAndIVThunk.fulfilled]: (state, action) => {
+    [rotateAESKeyAndIVThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -69,7 +96,7 @@ const passwordSlice = createSlice({
         alert(payload.response.data.error);
       }
     },
-    [rotateCharsetThunk.fulfilled]: (state, action) => {
+    [rotateCharsetThunk.fulfilled.toString()]: (state, action) => {
       alert("Charset rotated successfully");
       const updatedPassword = action.payload.data.password;
       for (let i = 0; i < state.passwords.length; i++) {
@@ -79,20 +106,20 @@ const passwordSlice = createSlice({
         }
       }
     },
-    [encryptPasswordThunk.fulfilled]: (state, action) => {
+    [encryptPasswordThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
 
       if ("data" in payload) {
         const encryptedPasswordArr = action.payload.data.encryptedPassword
           .split("")
-          .map((char) => {
+          .map((char:string) => {
             return parseInt(char);
           });
 
         const aimLength = ROWS * COLS;
         const paddedArray = Array(aimLength).fill(0);
         encryptedPasswordArr.forEach(
-          (value, index) => (paddedArray[index] = value)
+          (value:number, index:number) => (paddedArray[index] = value)
         );
 
         state.encryptedData = paddedArray;
@@ -100,7 +127,7 @@ const passwordSlice = createSlice({
         alert(payload.response.data.error);
       }
     },
-    [decryptPasswordThunk.fulfilled]: (state, action) => {
+    [decryptPasswordThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -110,7 +137,7 @@ const passwordSlice = createSlice({
         alert(payload.response.data.error);
       }
     },
-    [deletePasswordThunk.fulfilled]: (state, action) => {
+    [deletePasswordThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -127,7 +154,7 @@ const passwordSlice = createSlice({
         alert(payload.response.data.error);
       }
     },
-    [getDeviceInfoThunk.fulfilled]: (state, action) => {
+    [getDeviceInfoThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -136,7 +163,7 @@ const passwordSlice = createSlice({
         state.deviceInfo = {};
       }
     },
-    [generateBackupThunk.fulfilled]: (state, action) => {
+    [generateBackupThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -145,7 +172,7 @@ const passwordSlice = createSlice({
         alert(payload.response.data.error);
       }
     },
-    [downloadBackupThunk.fulfilled]: (state, action) => {
+    [downloadBackupThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -154,7 +181,7 @@ const passwordSlice = createSlice({
         alert(payload.response.data.error);
       }
     },
-    [uploadBackupThunk.fulfilled]: (state, action) => {
+    [uploadBackupThunk.fulfilled.toString()]: (state, action) => {
       const payload = action.payload;
 
       if ("data" in payload) {

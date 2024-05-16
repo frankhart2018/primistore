@@ -9,21 +9,37 @@ import {
   uploadBackupThunk,
 } from "../../../services/password-thunk";
 
+interface PasswordState {
+  deviceInfo: string;
+  backupData: string;
+  backupName: string;
+}
+interface RootPassword {
+  password: PasswordState;
+}
+
 const DeviceInfo = () => {
-  const { deviceInfo, backupData, backupName } = useSelector(
-    (state) => state.password
+  const backupName: string = useSelector<RootPassword, string>(
+    (state) => state.password.backupName
+  );
+
+  const deviceInfo: string = useSelector<RootPassword, string>(
+    (state) => state.password.deviceInfo
+  );
+  const backupData: any = useSelector<RootPassword, string>(
+    (state) => state.password.backupData
   );
   const [currentScale, setCurrentScale] = useState("C");
-  const backupUploadFile = useRef(null);
-  const [backupFilePath, setBackupFilePath] = useState(null);
+  const backupUploadFile = useRef<HTMLInputElement>(null);
+  const [backupFilePath, setBackupFilePath] = useState<File | null>(null);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
-  const convertCToF = (tempVal) => {
+  const convertCToF = (tempVal: number) => {
     return ((9 * tempVal) / 5 + 32).toFixed(1);
   };
 
-  const formatTemp = (tempVal) => {
+  const formatTemp = (tempVal: any) => {
     let convertedTempVal = tempVal;
     if (tempVal !== "Cannot determine" && currentScale === "F") {
       convertedTempVal = convertCToF(tempVal);
@@ -33,7 +49,7 @@ const DeviceInfo = () => {
       : tempVal;
   };
 
-  const handleScaleToggle = (isChecked) => {
+  const handleScaleToggle = (isChecked: boolean) => {
     setCurrentScale(isChecked ? "F" : "C");
   };
 
@@ -87,8 +103,12 @@ const DeviceInfo = () => {
     }
   }, [backupData, backupName]);
 
-  const uploadBackupHandler = (_e) => {
-    backupUploadFile.current.click();
+  const uploadBackupHandler = (
+    _e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    if (backupUploadFile.current) {
+      backupUploadFile.current.click();
+    }
   };
 
   useEffect(() => {
@@ -144,7 +164,11 @@ const DeviceInfo = () => {
             type="file"
             id="backup-file"
             ref={backupUploadFile}
-            onChange={(e) => setBackupFilePath(e.target.files[0])}
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                setBackupFilePath(e.target.files[0]);
+              }
+            }}
             style={{
               display: "none",
             }}

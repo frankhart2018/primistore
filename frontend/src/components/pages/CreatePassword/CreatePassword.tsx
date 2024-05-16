@@ -4,9 +4,9 @@ import { createPasswordThunk } from "../../../services/password-thunk";
 import NavBar from "../../parts/NavBar/NavBar";
 
 const CreatePassword = () => {
-  let [identifier, setIdentifier] = useState("");
+  let [identifier, setIdentifier] = useState<string>("");
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
   const generatePassword = () => {
     dispatch(
@@ -20,7 +20,7 @@ const CreatePassword = () => {
     <div>
       <NavBar />
       <div className="w-5/6 mx-auto py-7 flex flex-col justify-center items-center">
-        <div class="mb-10 w-5/6 space-y-5">
+        <div className="mb-10 w-5/6 space-y-5">
           <label
             htmlFor="identifier"
             className="block mb-2 text-md font-medium text-gray-900 capitalize"
@@ -32,7 +32,9 @@ const CreatePassword = () => {
             id="identifier"
             className="bg-transparent border border-gray-950 text-gray-900 text-md rounded-lg block w-full p-2.5"
             value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setIdentifier(e.target.value)
+            }
           />
         </div>
         <button

@@ -8,21 +8,29 @@ import { COLS, ROWS } from "../../../utils/constants";
 import { encryptPasswordThunk } from "../../../services/password-thunk";
 import NavBar from "../../parts/NavBar/NavBar";
 
+interface PasswordState {
+  encryptedData: string;
+}
+interface RootPassword {
+  password: PasswordState;
+}
 const EncryptPassword = () => {
-  const targetRef = useRef();
+  const targetRef = useRef<any>(null);
 
   const [password, setPassword] = useState("");
-  const { encryptedData } = useSelector((state) => state.password);
+  const encryptedData: string = useSelector<RootPassword, string>(
+    (state) => state.password.encryptedData
+  );
   const [encryptedDataLoaded, setEncryptedDataLoaded] = useState(false);
 
-  const uuid = uuidv4();
+  const uuid: any = uuidv4();
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
   const pathName = window.location.pathname;
   const passUid = pathName.split("/")[3];
 
-  const handleDownloadImage = async (uuid) => {
+  const handleDownloadImage = async (uuid: any) => {
     const element = targetRef.current;
     const canvas = await html2canvas(element);
 
@@ -86,9 +94,11 @@ const EncryptPassword = () => {
           Download Image
         </button>
       </div>
-      {encryptedDataLoaded && <div ref={targetRef}>
-        <SquareTable rows={ROWS} cols={COLS} data={encryptedData} />
-      </div>}
+      {encryptedDataLoaded && (
+        <div ref={targetRef}>
+          <SquareTable rows={ROWS} cols={COLS} data={encryptedData} />
+        </div>
+      )}
     </div>
   );
 };

@@ -5,7 +5,11 @@ import {
   PASSWORD_MANAGER_API_BASE,
 } from "../utils/constants";
 
-export const createPassword = async (passwordUid) => {
+interface passUid{
+  passUid:string;
+}
+
+export const createPassword = async (passwordUid:passUid) => {
   const response = await axios.post(`${PASSWORD_MANAGER_API_BASE}/password`, {
     identifier: passwordUid,
   });
@@ -18,21 +22,21 @@ export const fetchPasswords = async () => {
   return response;
 };
 
-export const rotateAESKeyAndIV = async (passUid) => {
+export const rotateAESKeyAndIV = async (passUid:passUid) => {
   const response = await axios.put(
     `${PASSWORD_MANAGER_API_BASE}/password/aes/${passUid}`
   );
   return response;
 };
 
-export const rotateCharset = async (passUid) => {
+export const rotateCharset = async (passUid:passUid) => {
   const response = await axios.put(
     `${PASSWORD_MANAGER_API_BASE}/password/charset/${passUid}`
   );
   return response;
 };
 
-export const encryptPassword = async (passUid, password) => {
+export const encryptPassword = async (passUid:passUid, password:string) => {
   const response = await axios.post(
     `${PASSWORD_MANAGER_API_BASE}/password/encrypt/${passUid}`,
     {
@@ -42,7 +46,7 @@ export const encryptPassword = async (passUid, password) => {
   return response;
 };
 
-export const decryptPassword = async (passUid, pmsFile) => {
+export const decryptPassword = async (passUid:passUid, pmsFile:File) => {
   const formData = new FormData();
   formData.append("file", pmsFile);
 
@@ -59,7 +63,7 @@ export const decryptPassword = async (passUid, pmsFile) => {
   return response;
 };
 
-export const deletePassword = async (passUid) => {
+export const deletePassword = async (passUid:passUid) => {
   const response = await axios.delete(
     `${PASSWORD_MANAGER_API_BASE}/password/${passUid}`
   );
@@ -71,7 +75,7 @@ export const getDeviceInfo = async () => {
   return response;
 };
 
-export const generateBackup = async (password) => {
+export const generateBackup = async (password:string) => {
   const response = await axios.post(
     `${PASSWORD_MANAGER_API_BASE}/device/backup/generate`,
     {
@@ -82,7 +86,7 @@ export const generateBackup = async (password) => {
   return response;
 };
 
-export const downloadBackup = async (backupName) => {
+export const downloadBackup = async (backupName:string) => {
   const response = await axios.get(
     `${PASSWORD_MANAGER_API_BASE}/device/backup/download/${backupName}`,
     {
@@ -93,7 +97,7 @@ export const downloadBackup = async (backupName) => {
   return response;
 };
 
-export const uploadBackup = async (backupFile, password) => {
+export const uploadBackup = async (backupFile:File, password:string) => {
   const formData = new FormData();
   formData.append("file", backupFile);
   formData.append("password", password);
