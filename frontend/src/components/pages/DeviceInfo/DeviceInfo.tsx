@@ -59,11 +59,13 @@ const DeviceInfo = () => {
 
   const downloadBackupHandler = () => {
     const password = prompt("Enter server password: ");
-    dispatch(
-      generateBackupThunk({
-        password,
-      })
-    );
+    if (password != null) {
+      dispatch(
+        generateBackupThunk({
+          password,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -114,12 +116,14 @@ const DeviceInfo = () => {
   useEffect(() => {
     if (backupFilePath !== null) {
       const password = prompt("Enter server password: ");
-      dispatch(
-        uploadBackupThunk({
-          backupFile: backupFilePath,
-          password,
-        })
-      );
+      if (password != null) {
+        dispatch(
+          uploadBackupThunk({
+            backupFile: backupFilePath,
+            password,
+          })
+        );
+      }
     }
   }, [backupFilePath, dispatch]);
 

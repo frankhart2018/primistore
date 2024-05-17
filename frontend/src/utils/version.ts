@@ -1,5 +1,5 @@
-import * as  packageJson from "../../package.json";
+import  packageInfo from "../../package.json";
 
-const VERSION = packageJson.version;
+const VERSION = packageInfo.version;
 
-export { VERSION };
+export default VERSION ;

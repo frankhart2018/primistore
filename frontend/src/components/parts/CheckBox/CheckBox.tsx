@@ -3,8 +3,8 @@ import React, { useState } from "react";
 interface CheckBoxInterface {
   initialValue: boolean;
   label: string;
-  count: number;
-  parentUpdateCallback: (a: number, b: boolean, c: string) => {};
+  count: string;
+  parentUpdateCallback: any;
 }
 const CheckBox = ({
   initialValue,

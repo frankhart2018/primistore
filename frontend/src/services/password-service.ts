@@ -5,11 +5,8 @@ import {
   PASSWORD_MANAGER_API_BASE,
 } from "../utils/constants";
 
-interface passUid{
-  passUid:string;
-}
 
-export const createPassword = async (passwordUid:passUid) => {
+export const createPassword = async (passwordUid:string) => {
   const response = await axios.post(`${PASSWORD_MANAGER_API_BASE}/password`, {
     identifier: passwordUid,
   });
@@ -22,21 +19,21 @@ export const fetchPasswords = async () => {
   return response;
 };
 
-export const rotateAESKeyAndIV = async (passUid:passUid) => {
+export const rotateAESKeyAndIV = async (passUid:string) => {
   const response = await axios.put(
     `${PASSWORD_MANAGER_API_BASE}/password/aes/${passUid}`
   );
   return response;
 };
 
-export const rotateCharset = async (passUid:passUid) => {
+export const rotateCharset = async (passUid:string) => {
   const response = await axios.put(
     `${PASSWORD_MANAGER_API_BASE}/password/charset/${passUid}`
   );
   return response;
 };
 
-export const encryptPassword = async (passUid:passUid, password:string) => {
+export const encryptPassword = async (passUid:string, password:string) => {
   const response = await axios.post(
     `${PASSWORD_MANAGER_API_BASE}/password/encrypt/${passUid}`,
     {
@@ -46,7 +43,7 @@ export const encryptPassword = async (passUid:passUid, password:string) => {
   return response;
 };
 
-export const decryptPassword = async (passUid:passUid, pmsFile:File) => {
+export const decryptPassword = async (passUid:string, pmsFile:File) => {
   const formData = new FormData();
   formData.append("file", pmsFile);
 
@@ -63,7 +60,7 @@ export const decryptPassword = async (passUid:passUid, pmsFile:File) => {
   return response;
 };
 
-export const deletePassword = async (passUid:passUid) => {
+export const deletePassword = async (passUid:string) => {
   const response = await axios.delete(
     `${PASSWORD_MANAGER_API_BASE}/password/${passUid}`
   );

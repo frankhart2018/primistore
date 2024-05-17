@@ -18,7 +18,7 @@ const EncryptPassword = () => {
   const targetRef = useRef<any>(null);
 
   const [password, setPassword] = useState("");
-  const encryptedData: string = useSelector<RootPassword, string>(
+  const encryptedData: any = useSelector<RootPassword, string>(
     (state) => state.password.encryptedData
   );
   const [encryptedDataLoaded, setEncryptedDataLoaded] = useState(false);

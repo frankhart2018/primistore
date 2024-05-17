@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 interface NumericInputInterface {
-  initialValue: string | readonly string[] | undefined;
+  initialValue: number;
   label: string;
   count: number;
-  parentUpdateCallback: (a: number, b: boolean, c: string) => {};
+  parentUpdateCallback: any;
 }
 const NumericInput = ({
   initialValue,

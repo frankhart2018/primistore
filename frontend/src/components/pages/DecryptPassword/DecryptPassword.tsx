@@ -36,12 +36,14 @@ const DecryptPassword = () => {
   const dispatch = useDispatch<any>();
 
   const decryptData = () => {
-    dispatch(
-      decryptPasswordThunk({
-        passUid,
-        pmsFile,
-      })
-    );
+    if (pmsFile != null) {
+      dispatch(
+        decryptPasswordThunk({
+          passUid,
+          pmsFile,
+        })
+      );
+    }
   };
 
   const computeDecryptedDataStats = (decryptedData: string) => {

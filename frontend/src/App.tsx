@@ -11,7 +11,7 @@ import EncryptPassword from "./components/pages/EncryptPassword/EncryptPassword"
 import DecryptPassword from "./components/pages/DecryptPassword/DecryptPassword";
 import CreatePassword from "./components/pages/CreatePassword/CreatePassword";
 import GeneratePassword from "./components/pages/GeneratePassword/GeneratePassword";
-import { VERSION } from "./utils/version";
+import VERSION from "./utils/version";
 import DeviceInfo from "./components/pages/DeviceInfo/DeviceInfo";
 
 const store = configureStore({
