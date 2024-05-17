@@ -20,4 +20,4 @@ RUN apk --no-cache add openssl
 EXPOSE 4000
 
 # Command to run your application
-CMD ["node", "app.js"]
+CMD ["npm", "start"]
