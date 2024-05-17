@@ -39,10 +39,10 @@ const DeviceInfo = () => {
     return ((9 * tempVal) / 5 + 32).toFixed(1);
   };
 
-  const formatTemp = (tempVal: any) => {
+  const formatTemp = (tempVal: number | string) => {
     let convertedTempVal = tempVal;
     if (tempVal !== "Cannot determine" && currentScale === "F") {
-      convertedTempVal = convertCToF(tempVal);
+      convertedTempVal = convertCToF(Number(tempVal));
     }
     return tempVal !== "Cannot determine"
       ? `${convertedTempVal}°${currentScale}`

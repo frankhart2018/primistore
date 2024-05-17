@@ -87,11 +87,11 @@ const DecryptPassword = () => {
   };
 
   useEffect(() => {
-    if (typeof decryptedData == "string" && decryptedData.length > 0) {
+    if (decryptedData.length > 0) {
       navigator.clipboard.writeText(decryptedData);
       window.alert("Decrypted password copied to clipboard!");
     }
-    if (typeof decryptedData == "string" && decryptedData.length === 0) return;
+    if (decryptedData.length === 0) return;
     setStats(computeDecryptedDataStats(decryptedData));
   }, [decryptedData]);
 

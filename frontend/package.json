@@ -43,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/html2canvas": "^1.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.11",
