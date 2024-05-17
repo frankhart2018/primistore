@@ -1,4 +1,4 @@
-const shuffleString = (inputString) => {
+const shuffleString = (inputString:string) => {
   let charArray = inputString.split("");
   for (let i = charArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -7,14 +7,15 @@ const shuffleString = (inputString) => {
   return charArray.join("");
 };
 
-const generateSafePassword = (
-  length,
-  alphabetsPercent,
-  numbersPercent,
-  specialsPercent,
-  allowUppercase,
-  allowLowercase,
-  specials
+
+const generateSafePassword= (
+  length:number,
+  alphabetsPercent:number,
+  numbersPercent:number,
+  specialsPercent:number,
+  allowUppercase:boolean,
+  allowLowercase:boolean,
+  specials:string[]
 ) => {
   const uppercase = allowUppercase
     ? Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i))

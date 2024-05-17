@@ -1,9 +1,20 @@
 import React, { useState } from "react";
 
-const CheckBox = ({ initialValue, label, count, parentUpdateCallback }) => {
+interface CheckBoxInterface {
+  initialValue: boolean;
+  label: string;
+  count: string;
+  parentUpdateCallback: any;
+}
+const CheckBox = ({
+  initialValue,
+  label,
+  count,
+  parentUpdateCallback,
+}: CheckBoxInterface) => {
   const [checkboxValue, setCheckboxValue] = useState(initialValue);
 
-  const updateCheckboxValue = (e) => {
+  const updateCheckboxValue = () => {
     setCheckboxValue(!checkboxValue);
     parentUpdateCallback(count, !checkboxValue, "checkbox");
   };

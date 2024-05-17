@@ -5,28 +5,40 @@ import { generateSafePassword } from "../../../utils/password";
 import CheckBox from "../../parts/CheckBox/CheckBox";
 import UserSpecialChars from "../../parts/UserSpecialChars/UserSpecialChars";
 
+interface SpecialCharsComponent {
+  provideSpecialChars: () => string[];
+}
+type ValueType = number | boolean;
+type UpdateType = "numeric" | "checkbox";
+
 const GeneratePassword = () => {
   const [numericValues, setNumericValues] = useState({ 0: 100 });
   const [checkboxValues, setCheckboxValues] = useState({});
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [passwordLength, setPasswordLength] = useState(0);
 
-  const childValueUpdateCallback = (count, value, type) => {
+  const childValueUpdateCallback = (
+    count: number,
+    value: ValueType,
+    type: UpdateType
+  ) => {
     if (type === "numeric") {
       setNumericValues({ ...numericValues, [count]: value });
     } else if (type === "checkbox") {
       setCheckboxValues({ ...checkboxValues, [count]: value });
     }
   };
-
-  const getObjKeyOrDefault = (obj, key, default_) => {
+  const getObjKeyOrDefault = (obj: any, key: any, default_: any) => {
     return obj.hasOwnProperty(key) ? obj[key] : default_;
   };
 
   const generatePasswordHandler = () => {
     setGeneratedPassword("");
     let values = Object.values(numericValues);
-    const valuesSum = values.reduce((acc, val) => acc + parseInt(val), 0);
+    const valuesSum = values.reduce(
+      (acc, val) => acc + parseInt(String(val)),
+      0
+    );
 
     let errVals = [];
     if (valuesSum !== 100) {
@@ -49,22 +61,23 @@ const GeneratePassword = () => {
     if (errVals.length > 0) {
       alert(errVals.join("\n"));
     } else {
-      const specialChars = specialCharsChildRef.current.provideSpecialChars();
-
-      const safePassword = generateSafePassword(
-        passwordLength,
-        values[0],
-        values[1],
-        values[2],
-        uppercase,
-        lowercase,
-        specialChars
-      );
-      setGeneratedPassword(safePassword);
+      if (specialCharsChildRef.current) {
+        const specialChars = specialCharsChildRef.current.provideSpecialChars();
+        const safePassword = generateSafePassword(
+          passwordLength,
+          values[0],
+          values[1],
+          values[2],
+          uppercase,
+          lowercase,
+          specialChars
+        );
+        setGeneratedPassword(safePassword);
+      }
     }
   };
 
-  const specialCharsChildRef = useRef();
+  const specialCharsChildRef = useRef<SpecialCharsComponent | null>(null);
 
   return (
     <div>
