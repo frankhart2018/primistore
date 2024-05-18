@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 
-import primistoreSchema from "./primistore-schema.js";
+import passwordSchema from "./password-schema.js";
+import policySchema from "./policy-schema.js";
 
-const primistoreModel = mongoose.model("PrimistoreModel", primistoreSchema);
+const passwordModel = mongoose.model("PrimistoreModel", passwordSchema);
+const policyModel = mongoose.model("PolicyModel", policySchema);
 
-export default primistoreModel;
+export { passwordModel, policyModel };

@@ -12,7 +12,7 @@ const CreatePassword = () => {
     dispatch(
       createPasswordThunk({
         identifier,
-      })
+      }),
     );
   };
 

@@ -67,12 +67,12 @@ const CHARSET = [
   " ",
 ];
 
-const CODE2CHAR = CHARSET.reduce((acc:any, char:string, index:number) => {
+const CODE2CHAR = CHARSET.reduce((acc: any, char: string, index: number) => {
   acc[(index + 1).toString(2).padStart(8, "0")] = char;
   return acc;
 }, {});
 
-const CHAR2CODE = CHARSET.reduce((acc:any, char:string, index:number) => {
+const CHAR2CODE = CHARSET.reduce((acc: any, char: string, index: number) => {
   acc[char] = (index + 1).toString(2).padStart(8, "0");
   return acc;
 }, {});

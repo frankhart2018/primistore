@@ -10,6 +10,7 @@ import {
 } from "../../utils/command-utils.js";
 import {
   createPassword,
+  createPolicy,
   getPasswordByPassUid,
   getPasswords,
   removePasswordByPassUid,
@@ -188,7 +189,7 @@ const encryptPasswordHandler = async (
     `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 200`,
   );
   res.status(200).send({
-    "encryptedPassword": charsetEncryptedPassword,
+    encryptedPassword: charsetEncryptedPassword,
   });
 };
 
@@ -345,7 +346,29 @@ const uploadBackupHandler = (req: Request, res: Response, logger: Logger) => {
   }
 };
 
+const createPolicyHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
+  const { policy_name, update_window_min, update_window_max } = req.body;
+
+  const policy = await createPolicy(
+    policy_name,
+    update_window_min,
+    update_window_max,
+  );
+
+  logger.info(`[${getCurrentTime()}] POST /policy : Status 200`);
+  res.status(200).send({
+    policy,
+  });
+};
+
 const PrimistoreController = (app: Application, logger: Logger) => {
+  //////////////////////////////////////////
+  // Password Endpoints
+  //////////////////////////////////////////
   app.post("/password", (req, res) =>
     passwordCreationHandler(req, res, logger),
   );
@@ -363,6 +386,9 @@ const PrimistoreController = (app: Application, logger: Logger) => {
     deletePasswordHandler(req, res, logger),
   );
 
+  //////////////////////////////////////////
+  // Device Admin Endpoints
+  //////////////////////////////////////////
   app.get("/device/info", (req, res) =>
     deviceInfoFetchHandler(req, res, logger),
   );
@@ -375,6 +401,11 @@ const PrimistoreController = (app: Application, logger: Logger) => {
   app.post("/device/backup/upload", upload.single("file"), (req, res) =>
     uploadBackupHandler(req, res, logger),
   );
+
+  //////////////////////////////////////////
+  // Policy Endpoints
+  //////////////////////////////////////////
+  app.post("/policy", (req, res) => createPolicyHandler(req, res, logger));
 };
 
 export default PrimistoreController;

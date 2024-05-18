@@ -20,7 +20,7 @@ const GeneratePassword = () => {
   const childValueUpdateCallback = (
     count: number,
     value: ValueType,
-    type: UpdateType
+    type: UpdateType,
   ) => {
     if (type === "numeric") {
       setNumericValues({ ...numericValues, [count]: value });
@@ -37,13 +37,13 @@ const GeneratePassword = () => {
     let values = Object.values(numericValues);
     const valuesSum = values.reduce(
       (acc, val) => acc + parseInt(String(val)),
-      0
+      0,
     );
 
     let errVals = [];
     if (valuesSum !== 100) {
       errVals.push(
-        `The percentages must add up to 100%, current sum is ${valuesSum}%`
+        `The percentages must add up to 100%, current sum is ${valuesSum}%`,
       );
     }
 
@@ -70,7 +70,7 @@ const GeneratePassword = () => {
           values[2],
           uppercase,
           lowercase,
-          specialChars
+          specialChars,
         );
         setGeneratedPassword(safePassword);
       }

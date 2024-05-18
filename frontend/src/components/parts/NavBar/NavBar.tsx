@@ -44,6 +44,16 @@ const NavBar = () => {
                 Generate Password
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? "activeNavLink" : "defaultNavLink"
+                }
+                to={{ pathname: "/policy" }}
+              >
+                Create Policy
+              </NavLink>
+            </li>
             {process.env.REACT_APP_PI === "true" ? (
               <li>
                 <NavLink

@@ -19,7 +19,7 @@ const EncryptPassword = () => {
 
   const [password, setPassword] = useState("");
   const encryptedData: any = useSelector<RootPassword, string>(
-    (state) => state.password.encryptedData
+    (state) => state.password.encryptedData,
   );
   const [encryptedDataLoaded, setEncryptedDataLoaded] = useState(false);
 
@@ -55,7 +55,7 @@ const EncryptPassword = () => {
       encryptPasswordThunk({
         passUid,
         password,
-      })
+      }),
     );
     setEncryptedDataLoaded(true);
   };
