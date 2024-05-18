@@ -11,14 +11,12 @@ const CreatePassword = () => {
   const dispatch = useDispatch<any>();
 
   const generatePassword = () => {
-    console.log(policies);
-    console.log("Policy:", policy);
-
-    // dispatch(
-    //   createPasswordThunk({
-    //     identifier,
-    //   })
-    // );
+    dispatch(
+      createPasswordThunk({
+        identifier,
+        policy,
+      })
+    );
   };
 
   useEffect(() => {

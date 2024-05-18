@@ -1,5 +1,6 @@
 interface PasswordPayload {
   identifier: string;
+  policy: string;
 }
 interface RotateAESKeyAndIVPayload {
   passUid: string;
