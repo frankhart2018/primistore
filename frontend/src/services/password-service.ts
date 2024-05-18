@@ -5,9 +5,10 @@ import {
   PASSWORD_MANAGER_API_BASE,
 } from "../utils/constants";
 
-export const createPassword = async (passwordUid: string) => {
+export const createPassword = async (passwordUid: string, policy_id: string) => {
   const response = await axios.post(`${PASSWORD_MANAGER_API_BASE}/password`, {
     identifier: passwordUid,
+    policy_id,
   });
 
   return response;
@@ -122,5 +123,10 @@ export const createPolicy = async (
     update_window_max: updateWindowMax,
   });
 
+  return response;
+};
+
+export const fetchPolicies = async () => {
+  const response = await axios.get(`${PASSWORD_MANAGER_API_BASE}/policy`);
   return response;
 };

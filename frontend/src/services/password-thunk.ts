@@ -17,7 +17,7 @@ export const createPasswordThunk = createAsyncThunk(
   "password/createPassword",
   async (payload: PasswordPayload) => {
     try {
-      const response = await passwordService.createPassword(payload.identifier);
+      const response = await passwordService.createPassword(payload.identifier, payload.policy);
       return response;
     } catch (e) {
       return e;
@@ -155,6 +155,18 @@ export const createPolicyThunk = createAsyncThunk(
         payload.updateWindowMin,
         payload.updateWindowMax,
       );
+      return response;
+    } catch (e) {
+      return e;
+    }
+  },
+);
+
+export const fetchPoliciesThunk = createAsyncThunk(
+  "password/fetchPolicies",
+  async () => {
+    try {
+      const response = await passwordService.fetchPolicies();
       return response;
     } catch (e) {
       return e;

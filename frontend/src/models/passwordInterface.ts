@@ -1,5 +1,6 @@
 interface PasswordPayload {
   identifier: string;
+  policy: string;
 }
 interface RotateAESKeyAndIVPayload {
   passUid: string;
@@ -44,6 +45,13 @@ interface DeviceInfo {
   [key: string]: any;
 }
 
+interface Policy {
+  _id: string;
+  policy_name: string;
+  update_window_min: number;
+  update_window_max: number;
+}
+
 interface InitialState {
   created: boolean;
   passwords: Password[];
@@ -54,6 +62,7 @@ interface InitialState {
   backupName: string | null;
   backupData: any | null;
   backupRestorationSuccess: boolean;
+  policies: Policy[] | null;
 }
 
 export {
