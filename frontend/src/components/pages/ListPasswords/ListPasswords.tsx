@@ -11,19 +11,6 @@ import "./ListPasswords.css";
 import NavBar from "../../parts/NavBar/NavBar";
 import { NavLink } from "react-router-dom";
 
-interface PasswordState {
-  passwords: string[];
-}
-
-interface RootState {
-  password: PasswordState;
-}
-interface Password {
-  pass_uid: string;
-  aes_last_rotated: string;
-  charset_last_rotated: any;
-}
-
 const ListPasswords = () => {
   const { passwords } = useSelector((state: any) => state.password);
 

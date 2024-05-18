@@ -3,12 +3,13 @@ import React from "react";
 import "./SquareTable.css";
 import { COLS } from "../../../utils/constants";
 
-interface SquareTable {
+interface SquareTableProps {
   rows: number;
   cols: number;
   data: string[];
 }
-const SquareTable = ({ rows, cols, data }: SquareTable) => {
+
+const SquareTable = ({ rows, cols, data }: SquareTableProps) => {
   if (!data || data.length === 0) return null;
   const renderTable = () => {
     let table = [];

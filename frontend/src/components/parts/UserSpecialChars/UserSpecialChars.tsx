@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState, Ref } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { DEFAULT_SPECIAL_CHARS } from "../../../utils/constants";
 
 interface UserSpecialCharsProps {
