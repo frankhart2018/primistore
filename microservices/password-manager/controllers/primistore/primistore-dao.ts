@@ -6,6 +6,7 @@ export const createPassword = (
   pass_uid: string,
   aes_key: string,
   aes_iv: string,
+  policy_id: string,
 ): Promise<IPassword | any> => {
   let currentTime = Math.floor(Date.now() / 1000).toString();
 
@@ -17,6 +18,7 @@ export const createPassword = (
       aes_iv,
       aes_last_rotated: currentTime,
       charset_last_rotated: currentTime,
+      policy_id,
     },
   };
 

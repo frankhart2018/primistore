@@ -56,7 +56,7 @@ const passwordCreationHandler = async (
   res: Response,
   logger: Logger,
 ) => {
-  const password_uid = req.body.identifier;
+  const {identifier, policy_id} = req.body;
 
   const { key, iv } = generateAESKeyIV();
   if (
@@ -73,10 +73,10 @@ const passwordCreationHandler = async (
   }
 
   const charset = generateCharset();
-  const charset_path = path.join(PRIMISTORE_DIR, `charset-${password_uid}.txt`);
+  const charset_path = path.join(PRIMISTORE_DIR, `charset-${identifier}.txt`);
   fs.writeFileSync(charset_path, charset);
 
-  await createPassword(password_uid, key.value, iv.value);
+  await createPassword(identifier, key.value, iv.value, policy_id);
 
   logger.info(`[${getCurrentTime()}] POST /password : Status 200`);
   res.status(200).send({
