@@ -9,6 +9,7 @@ import {
 
 const PIPE_PATH = process.env.PIPE_PATH || "./command-runner";
 const PIPE_COMM_DIR = process.env.PIPE_COMM_DIR || "./pipe-comm";
+const HOST_PIPE_COMM_DIR = process.env.HOST_PIPE_COMM_DIR || PIPE_COMM_DIR;
 const PIPE_OUTPUT_PATH = path.join(PIPE_COMM_DIR, "output.txt");
 const DEVICE_INFO_PIPE_OUTPUT_PATH = path.join(
   PIPE_COMM_DIR,
@@ -31,7 +32,7 @@ const runScriptInPipe = (
     return copyScriptResult;
   }
 
-  const newScriptPath = path.join("pipe-comm", scriptFileName);
+  const newScriptPath = path.join(HOST_PIPE_COMM_DIR, scriptFileName);
   let scriptRunningCommand = `sh ${newScriptPath} ${args.join(" ")}`;
   if (password !== null) {
     scriptRunningCommand = `PASSWORD="${password}" ${scriptRunningCommand}`;
@@ -43,7 +44,6 @@ const runScriptInPipe = (
     .withOutputPath(PIPE_OUTPUT_PATH)
     .build();
   const pipeExecutor = new CommandExecutor(pipeExecutorStrategty);
-  console.log(`Running script: ${scriptRunningCommand}`);
   const runScriptResult = pipeExecutor.execute(scriptRunningCommand);
   const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
   executor.execute(`rm -f ${newScriptPathOnDevice}`);

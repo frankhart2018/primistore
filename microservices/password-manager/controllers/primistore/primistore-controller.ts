@@ -29,6 +29,8 @@ import {
 import { CommandOutputType } from "command-executor-lib";
 import { Logger } from "winston";
 
+const LOCAL_DIR = process.env.LOCAL_DIR || PRIMISTORE_DIR;
+
 const storage = multer.diskStorage({
   destination: (
     req: Request,
@@ -186,7 +188,7 @@ const encryptPasswordHandler = async (
     `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 200`,
   );
   res.status(200).send({
-    charsetEncryptedPassword,
+    "encryptedPassword": charsetEncryptedPassword,
   });
 };
 
@@ -205,7 +207,7 @@ const deletePasswordHandler = async (
     return;
   }
 
-  const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
+  const charsetPath = path.join(LOCAL_DIR, `charset-${pass_uid}.txt`);
   try {
     fs.unlinkSync(charsetPath);
   } catch (err) {

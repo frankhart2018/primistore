@@ -8,6 +8,7 @@ import {
   getDeviceInfoThunk,
   uploadBackupThunk,
 } from "../../../services/password-thunk";
+import { clearBackupInfo } from "../../../reducers/password-reducer";
 
 const DeviceInfo = () => {
   const { deviceInfo, backupData, backupName } = useSelector(
@@ -84,8 +85,10 @@ const DeviceInfo = () => {
       } catch (e) {
         alert(`Error downloading file: ${e}`);
       }
+
+      dispatch(clearBackupInfo());
     }
-  }, [backupData, backupName]);
+  }, [backupData, backupName, dispatch]);
 
   const uploadBackupHandler = (_e) => {
     backupUploadFile.current.click();
