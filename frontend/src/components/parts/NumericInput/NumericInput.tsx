@@ -1,9 +1,19 @@
 import React, { useState } from "react";
-
-const NumericInput = ({ initialValue, label, count, parentUpdateCallback }) => {
+interface NumericInputInterface {
+  initialValue: number;
+  label: string;
+  count: number;
+  parentUpdateCallback: any;
+}
+const NumericInput = ({
+  initialValue,
+  label,
+  count,
+  parentUpdateCallback,
+}: NumericInputInterface) => {
   const [numericValue, setNumericValue] = useState(initialValue);
 
-  const onUpdateValue = (e) => {
+  const onUpdateValue = (e: React.ChangeEvent<any>) => {
     const thisVal = e.target.value;
     setNumericValue(thisVal);
     parentUpdateCallback(count, thisVal, "numeric");

@@ -11,17 +11,30 @@ import "./ListPasswords.css";
 import NavBar from "../../parts/NavBar/NavBar";
 import { NavLink } from "react-router-dom";
 
-const ListPasswords = () => {
-  const { passwords } = useSelector((state) => state.password);
+interface PasswordState {
+  passwords: string[];
+}
 
-  const dispatch = useDispatch();
+interface RootState {
+  password: PasswordState;
+}
+interface Password {
+  pass_uid: string;
+  aes_last_rotated: string;
+  charset_last_rotated: any;
+}
+
+const ListPasswords = () => {
+  const { passwords } = useSelector((state: any) => state.password);
+
+  const dispatch = useDispatch<any>();
 
   useEffect(() => {
     dispatch(fetchPasswordsThunk());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const rotateAESKeyAndIV = (passUid) => {
+  const rotateAESKeyAndIV = (passUid: string) => {
     const userConfirmed = window.confirm(
       "Have you copied your current password?"
     );
@@ -37,7 +50,7 @@ const ListPasswords = () => {
     }
   };
 
-  const rotateCharset = (passUid) => {
+  const rotateCharset = (passUid: string) => {
     const userConfirmed = window.confirm(
       "Have you copied your current password?"
     );
@@ -53,7 +66,7 @@ const ListPasswords = () => {
     }
   };
 
-  const dateDiffInDays = (date1, date2) => {
+  const dateDiffInDays = (date1: Date, date2: Date) => {
     const oneDayMs = 24 * 60 * 60 * 1000;
 
     const utcDate1 = Date.UTC(
@@ -72,14 +85,14 @@ const ListPasswords = () => {
     return Math.floor(timeDiff / oneDayMs);
   };
 
-  const daysSinceLastRotated = (unixEpochTimeString) => {
+  const daysSinceLastRotated = (unixEpochTimeString: string) => {
     const then = new Date(parseInt(unixEpochTimeString) * 1000);
     const now = new Date(Date.now());
 
     return dateDiffInDays(now, then);
   };
 
-  const getClassByDays = (days) => {
+  const getClassByDays = (days: number) => {
     if (days > 30) {
       return "red text-center";
     } else if (days > 20 && days <= 30) {
@@ -89,7 +102,7 @@ const ListPasswords = () => {
     }
   };
 
-  const deletePassword = (passUid) => {
+  const deletePassword = (passUid: string) => {
     const userConfirmed = window.confirm(`Deleting password for ${passUid}`);
 
     if (userConfirmed === true) {
@@ -132,7 +145,7 @@ const ListPasswords = () => {
             </tr>
           </thead>
           <tbody>
-            {passwords.map((password_obj, idx) => {
+            {passwords.map((password_obj: any, idx: number) => {
               return (
                 <tr key={idx}>
                   <td className="text-center font-bold">{idx + 1}</td>

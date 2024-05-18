@@ -10,31 +10,47 @@ import {
 } from "../../../services/password-thunk";
 import { clearBackupInfo } from "../../../reducers/password-reducer";
 
+interface PasswordState {
+  deviceInfo: string;
+  backupData: string;
+  backupName: string;
+}
+interface RootPassword {
+  password: PasswordState;
+}
+
 const DeviceInfo = () => {
-  const { deviceInfo, backupData, backupName } = useSelector(
-    (state) => state.password
+  const backupName: string = useSelector<RootPassword, string>(
+    (state) => state.password.backupName
+  );
+
+  const deviceInfo: string = useSelector<RootPassword, string>(
+    (state) => state.password.deviceInfo
+  );
+  const backupData: any = useSelector<RootPassword, string>(
+    (state) => state.password.backupData
   );
   const [currentScale, setCurrentScale] = useState("C");
-  const backupUploadFile = useRef(null);
-  const [backupFilePath, setBackupFilePath] = useState(null);
+  const backupUploadFile = useRef<HTMLInputElement>(null);
+  const [backupFilePath, setBackupFilePath] = useState<File | null>(null);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
-  const convertCToF = (tempVal) => {
+  const convertCToF = (tempVal: number) => {
     return ((9 * tempVal) / 5 + 32).toFixed(1);
   };
 
-  const formatTemp = (tempVal) => {
+  const formatTemp = (tempVal: number | string) => {
     let convertedTempVal = tempVal;
     if (tempVal !== "Cannot determine" && currentScale === "F") {
-      convertedTempVal = convertCToF(tempVal);
+      convertedTempVal = convertCToF(Number(tempVal));
     }
     return tempVal !== "Cannot determine"
       ? `${convertedTempVal}°${currentScale}`
       : tempVal;
   };
 
-  const handleScaleToggle = (isChecked) => {
+  const handleScaleToggle = (isChecked: boolean) => {
     setCurrentScale(isChecked ? "F" : "C");
   };
 
@@ -44,11 +60,13 @@ const DeviceInfo = () => {
 
   const downloadBackupHandler = () => {
     const password = prompt("Enter server password: ");
-    dispatch(
-      generateBackupThunk({
-        password,
-      })
-    );
+    if (password != null) {
+      dispatch(
+        generateBackupThunk({
+          password,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -90,19 +108,25 @@ const DeviceInfo = () => {
     }
   }, [backupData, backupName, dispatch]);
 
-  const uploadBackupHandler = (_e) => {
-    backupUploadFile.current.click();
+  const uploadBackupHandler = (
+    _e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    if (backupUploadFile.current) {
+      backupUploadFile.current.click();
+    }
   };
 
   useEffect(() => {
     if (backupFilePath !== null) {
       const password = prompt("Enter server password: ");
-      dispatch(
-        uploadBackupThunk({
-          backupFile: backupFilePath,
-          password,
-        })
-      );
+      if (password != null) {
+        dispatch(
+          uploadBackupThunk({
+            backupFile: backupFilePath,
+            password,
+          })
+        );
+      }
     }
   }, [backupFilePath, dispatch]);
 
@@ -147,7 +171,11 @@ const DeviceInfo = () => {
             type="file"
             id="backup-file"
             ref={backupUploadFile}
-            onChange={(e) => setBackupFilePath(e.target.files[0])}
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                setBackupFilePath(e.target.files[0]);
+              }
+            }}
             style={{
               display: "none",
             }}
