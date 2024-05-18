@@ -11,13 +11,11 @@ import {
   rotateCharsetThunk,
   downloadBackupThunk,
   uploadBackupThunk,
-  
 } from "../services/password-thunk";
 import { InitialState } from "../models/passwordInterface";
 import { COLS, ROWS } from "../utils/constants";
 
-
-const getZeros2DArray = (rows:number, cols:number) => {
+const getZeros2DArray = (rows: number, cols: number) => {
   let data = [];
   for (let i = 0; i < rows * cols; i++) {
     data.push(0);
@@ -26,8 +24,7 @@ const getZeros2DArray = (rows:number, cols:number) => {
   return data;
 };
 
-
-const initialState:InitialState = {
+const initialState: InitialState = {
   created: false,
   passwords: [],
   encryptedData: getZeros2DArray(ROWS, COLS),
@@ -39,8 +36,6 @@ const initialState:InitialState = {
   backupRestorationSuccess: false,
 };
 
-
-
 const passwordSlice = createSlice({
   name: "password",
   initialState,
@@ -51,140 +46,169 @@ const passwordSlice = createSlice({
     clearBackupInfo: (state) => {
       state.backupName = null;
       state.backupData = null;
-    }
+    },
   },
-  extraReducers:builder=> {
-    builder.addCase(createPasswordThunk.fulfilled.toString(),(action:any) => {
+  extraReducers: (builder) => {
+    builder.addCase(createPasswordThunk.fulfilled.toString(), (action: any) => {
       const payload = action.payload;
       const msg =
         "data" in payload ? payload.data.status : payload.response.data.error;
       alert(msg);
-    })
-    ,
-     builder.addCase(fetchPasswordsThunk.fulfilled.toString(),(state, action:any) => {
-      state.passwords = action.payload.data;
-    })
-     ,
-     builder.addCase(rotateAESKeyAndIVThunk.fulfilled.toString(),(state, action:any) => {
-      const payload = action.payload;
+    });
 
-      if ("data" in payload) {
-        alert("AES Key and IV rotated successfully");
-        const updatedPassword = payload.data.password;
+    builder.addCase(
+      fetchPasswordsThunk.fulfilled.toString(),
+      (state, action: any) => {
+        state.passwords = action.payload.data;
+      }
+    );
+
+    builder.addCase(
+      rotateAESKeyAndIVThunk.fulfilled.toString(),
+      (state, action: any) => {
+        const payload = action.payload;
+
+        if ("data" in payload) {
+          alert("AES Key and IV rotated successfully");
+          const updatedPassword = payload.data.password;
+          for (let i = 0; i < state.passwords.length; i++) {
+            if (state.passwords[i].pass_uid === updatedPassword.pass_uid) {
+              state.passwords[i].aes_last_rotated =
+                updatedPassword.aes_last_rotated;
+            }
+          }
+        } else {
+          alert(payload.response.data.error);
+        }
+      }
+    );
+
+    builder.addCase(
+      rotateCharsetThunk.fulfilled.toString(),
+      (state, action: any) => {
+        alert("Charset rotated successfully");
+        const updatedPassword = action.payload.data.password;
         for (let i = 0; i < state.passwords.length; i++) {
           if (state.passwords[i].pass_uid === updatedPassword.pass_uid) {
-            state.passwords[i].aes_last_rotated =
-              updatedPassword.aes_last_rotated;
+            state.passwords[i].charset_last_rotated =
+              updatedPassword.charset_last_rotated;
           }
         }
-      } else {
-        alert(payload.response.data.error);
       }
-    })
-    ,
-    builder.addCase(rotateCharsetThunk.fulfilled.toString(),(state, action:any) => {
-      alert("Charset rotated successfully");
-      const updatedPassword = action.payload.data.password;
-      for (let i = 0; i < state.passwords.length; i++) {
-        if (state.passwords[i].pass_uid === updatedPassword.pass_uid) {
-          state.passwords[i].charset_last_rotated =
-            updatedPassword.charset_last_rotated;
+    );
+
+    builder.addCase(
+      encryptPasswordThunk.fulfilled.toString(),
+      (state, action: any) => {
+        const payload = action.payload;
+
+        if ("data" in payload) {
+          const encryptedPasswordArr = action.payload.data.encryptedPassword
+            .split("")
+            .map((char: string) => {
+              return parseInt(char);
+            });
+
+          const aimLength = ROWS * COLS;
+          const paddedArray = Array(aimLength).fill(0);
+          encryptedPasswordArr.forEach(
+            (value: number, index: number) => (paddedArray[index] = value)
+          );
+
+          state.encryptedData = paddedArray;
+        } else {
+          alert(payload.response.data.error);
         }
       }
-    })
-     ,
-     builder.addCase(encryptPasswordThunk.fulfilled.toString(),(state, action:any) => {
-      const payload = action.payload;
+    );
 
-      if ("data" in payload) {
-        const encryptedPasswordArr = action.payload.data.encryptedPassword
-          .split("")
-          .map((char:string) => {
-            return parseInt(char);
-          });
+    builder.addCase(
+      decryptPasswordThunk.fulfilled.toString(),
+      (state, action: any) => {
+        const payload = action.payload;
 
-        const aimLength = ROWS * COLS;
-        const paddedArray = Array(aimLength).fill(0);
-        encryptedPasswordArr.forEach(
-          (value:number, index:number) => (paddedArray[index] = value)
-        );
-
-        state.encryptedData = paddedArray;
-      } else {
-        alert(payload.response.data.error);
+        if ("data" in payload) {
+          state.decryptedData = action.payload.data.decrypted;
+          state.rawData = action.payload.data.raw;
+        } else {
+          alert(payload.response.data.error);
+        }
       }
-    })
-     ,
-     builder.addCase(decryptPasswordThunk.fulfilled.toString(),(state, action:any) => {
-      const payload = action.payload;
+    );
 
-      if ("data" in payload) {
-        state.decryptedData = action.payload.data.decrypted;
-        state.rawData = action.payload.data.raw;
-      } else {
-        alert(payload.response.data.error);
-      }
-    })
-     ,
-     builder.addCase(deletePasswordThunk.fulfilled.toString(),(state, action:any) => {
-      const payload = action.payload;
+    builder.addCase(
+      deletePasswordThunk.fulfilled.toString(),
+      (state, action: any) => {
+        const payload = action.payload;
 
-      if ("data" in payload) {
-        alert(`Status: ${payload.data.status}`);
-        let newPasswords = [];
-        const deletedPassUid = payload.data.pass_uid;
-        for (let i = 0; i < state.passwords.length; i++) {
-          if (state.passwords[i].pass_uid !== deletedPassUid) {
-            newPasswords.push({ ...state.passwords[i] });
+        if ("data" in payload) {
+          alert(`Status: ${payload.data.status}`);
+          let newPasswords = [];
+          const deletedPassUid = payload.data.pass_uid;
+          for (let i = 0; i < state.passwords.length; i++) {
+            if (state.passwords[i].pass_uid !== deletedPassUid) {
+              newPasswords.push({ ...state.passwords[i] });
+            }
           }
+          state.passwords = newPasswords;
+        } else {
+          alert(payload.response.data.error);
         }
-        state.passwords = newPasswords;
-      } else {
-        alert(payload.response.data.error);
       }
-    })
-     ,
-     builder.addCase(getDeviceInfoThunk.fulfilled.toString(),(state, action:any) => {
-      const payload = action.payload;
+    );
 
-      if ("data" in payload) {
-        state.deviceInfo = payload.data.info;
-      } else {
-        state.deviceInfo = {};
-      }
-    })
-     ,
-     builder.addCase(generateBackupThunk.fulfilled.toString(),(state, action:any) => {
-      const payload = action.payload;
+    builder.addCase(
+      getDeviceInfoThunk.fulfilled.toString(),
+      (state, action: any) => {
+        const payload = action.payload;
 
-      if ("data" in payload) {
-        state.backupName = payload.data.output;
-      } else {
-        alert(payload.response.data.error);
+        if ("data" in payload) {
+          state.deviceInfo = payload.data.info;
+        } else {
+          state.deviceInfo = {};
+        }
       }
-    })
-    ,
-    builder.addCase(downloadBackupThunk.fulfilled.toString(),(state, action:any) => {
-      const payload = action.payload;
+    );
 
-      if ("data" in payload) {
-        state.backupData = payload.data;
-      } else {
-        alert(payload.response.data.error);
-      }
-    })
-     ,
-     builder.addCase(uploadBackupThunk.fulfilled.toString(),(state, action:any) => {
-      const payload = action.payload;
+    builder.addCase(
+      generateBackupThunk.fulfilled.toString(),
+      (state, action: any) => {
+        const payload = action.payload;
 
-      if ("data" in payload) {
-        state.backupRestorationSuccess = true;
-        alert("Successfully restored from backup!");
-      } else {
-        alert(payload.response.data.error);
+        if ("data" in payload) {
+          state.backupName = payload.data.output;
+        } else {
+          alert(payload.response.data.error);
+        }
       }
-    })
-    
+    );
+
+    builder.addCase(
+      downloadBackupThunk.fulfilled.toString(),
+      (state, action: any) => {
+        const payload = action.payload;
+
+        if ("data" in payload) {
+          state.backupData = payload.data;
+        } else {
+          alert(payload.response.data.error);
+        }
+      }
+    );
+
+    builder.addCase(
+      uploadBackupThunk.fulfilled.toString(),
+      (state, action: any) => {
+        const payload = action.payload;
+
+        if ("data" in payload) {
+          state.backupRestorationSuccess = true;
+          alert("Successfully restored from backup!");
+        } else {
+          alert(payload.response.data.error);
+        }
+      }
+    );
   },
 });
 export const { clearEncryptedData, clearBackupInfo } = passwordSlice.actions;
