@@ -1,13 +1,15 @@
 #!/bin/bash
 
+PIPE_COMM_DIR=$HOME/pipe-comm
+ASKPASS_SCRIPT=$PIPE_COMM_DIR/askpass.sh
+
 sudo_uninteractive() {
-    echo "$PASSWORD" | sudo -S $@
+    SUDO_ASKPASS="$ASKPASS_SCRIPT" sudo -A -k $@
 }
 
-MONGO_CONTAINER_IDS=$(echo "$PASSWORD" | sudo -S docker ps -q --filter "ancestor=mongo:bionic")
+MONGO_CONTAINER_IDS=$(sudo_uninteractive docker ps -q --filter "ancestor=mongo:bionic")
 MONGO_CONTAINER_COUNTS=$(echo $MONGO_CONTAINER_IDS | wc -l)
 if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
-    PIPE_COMM_DIR=$HOME/pipe-comm
     BACKUP_TARBALL_NAME=$1
     BACKUP_TARBALL_PATH=$PIPE_COMM_DIR/$BACKUP_TARBALL_NAME
     CHARSETS_DIR_PATH=charsets
