@@ -32,5 +32,5 @@ PrimistoreController(app, logger);
 
 const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
 app.listen(port, process.env.HOST || "127.0.0.1", () => {
-    createDirectoriesIfNotExistSync(PRIMISTORE_DIR);
+  createDirectoriesIfNotExistSync(PRIMISTORE_DIR);
 });

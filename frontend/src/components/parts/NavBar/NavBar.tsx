@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { VERSION } from "../../../utils/version";
+import VERSION from "../../../utils/version";
 
 const NavBar = () => {
   return (

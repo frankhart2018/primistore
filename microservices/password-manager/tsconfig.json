@@ -1,12 +1,12 @@
 {
-    "compilerOptions": {
-        "module": "NodeNext",
-        "target": "es2019",
-        "declaration": true,
-        "sourceMap": true,
-        "outDir": "./dist",
-        "allowJs": true,
-        "moduleResolution": "NodeNext"
-    },
-    "include": ["**/*"],
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "es2019",
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "allowJs": true,
+    "moduleResolution": "NodeNext"
+  },
+  "include": ["**/*"]
 }

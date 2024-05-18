@@ -20,6 +20,10 @@ services:
     environment:
       - HOST=0.0.0.0
       - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
+      - PIPE_PATH=/command-runner
+      - PIPE_COMM_DIR=/pipe-comm
+      - HOST_PIPE_COMM_DIR=${PIPE_COMM_DIR}
+      - LOCAL_DIR=/root/.primistore
     volumes:
       - ${LOCAL_DIR}:/root/.primistore
       - ${PIPE_PATH}:/command-runner

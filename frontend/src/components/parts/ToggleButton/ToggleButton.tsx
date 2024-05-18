@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 
-const ToggleButton = ({ leftOption, rightOption, parentUpdateCallback }) => {
+interface ToggleButtonInterface {
+  leftOption: string;
+  rightOption: string;
+  parentUpdateCallback: any;
+}
+const ToggleButton = ({
+  leftOption,
+  rightOption,
+  parentUpdateCallback,
+}: ToggleButtonInterface) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheckboxChange = () => {

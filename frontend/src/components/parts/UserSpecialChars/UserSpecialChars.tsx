@@ -1,25 +1,42 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, { forwardRef, useImperativeHandle, useState, Ref } from "react";
 import { DEFAULT_SPECIAL_CHARS } from "../../../utils/constants";
 
-const UserSpecialChars = forwardRef(
+interface UserSpecialCharsProps {
+  initialValue: boolean;
+  label: string;
+  count: string;
+  parentUpdateCallback: any;
+}
+
+interface SpecialCharsRef {
+  provideSpecialChars: () => string[];
+}
+
+const UserSpecialChars = forwardRef<SpecialCharsRef, UserSpecialCharsProps>(
   ({ initialValue, label, count, parentUpdateCallback }, ref) => {
     const [optionDisplayCheckBoxValue, setOptionDisplayCheckBoxValue] =
       useState(false);
     const [newSpecialChar, setNewSpecialChar] = useState("");
-
-    const updateCheckboxValue = (_e, char) => {
-      setSpecialChars({ ...specialChars, [char]: !specialChars[char] });
-      parentUpdateCallback(count, !specialChars[char], "checkbox");
-    };
-
-    const [specialChars, setSpecialChars] = useState(
-      DEFAULT_SPECIAL_CHARS.reduce((acc, symbol) => {
+    const [specialChars, setSpecialChars] = useState<{
+      [key: string]: boolean;
+    }>(
+      DEFAULT_SPECIAL_CHARS.reduce((acc: any, symbol: any) => {
         acc[symbol] = initialValue;
         return acc;
       }, {})
     );
 
-    const textBoxOnKeyDownHandler = (e) => {
+    const updateCheckboxValue = (
+      _e: React.ChangeEvent<HTMLInputElement>,
+      char: string
+    ) => {
+      setSpecialChars({ ...specialChars, [char]: !specialChars[char] });
+      parentUpdateCallback(Number(count), !specialChars[char], "checkbox");
+    };
+
+    const textBoxOnKeyDownHandler = (
+      e: React.KeyboardEvent<HTMLInputElement>
+    ) => {
       if (e.key === "Enter") {
         if (newSpecialChar.length !== 1) {
           alert("The length of special character must be 1!");

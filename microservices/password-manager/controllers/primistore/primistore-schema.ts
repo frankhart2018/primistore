@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 
-const schema = new mongoose.Schema(
+interface IPassword {
+  aes_key: string;
+  aes_iv: string;
+  aes_last_rotated: string;
+  pass_uid: string;
+  charset_last_rotated: string;
+}
+
+const schema = new mongoose.Schema<IPassword>(
   {
     aes_key: String,
     aes_iv: String,
@@ -10,7 +18,8 @@ const schema = new mongoose.Schema(
   },
   {
     collection: "passwords",
-  }
+  },
 );
 
 export default schema;
+export { IPassword };

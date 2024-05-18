@@ -14,7 +14,7 @@ const getCurrentTime = (): string => {
   };
 
   const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-    currentDate
+    currentDate,
   );
 
   return formattedDate;

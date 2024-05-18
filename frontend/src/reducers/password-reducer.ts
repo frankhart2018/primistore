@@ -11,10 +11,13 @@ import {
   rotateCharsetThunk,
   downloadBackupThunk,
   uploadBackupThunk,
+  
 } from "../services/password-thunk";
+import { InitialState } from "../models/passwordInterface";
 import { COLS, ROWS } from "../utils/constants";
 
-const getZeros2DArray = (rows, cols) => {
+
+const getZeros2DArray = (rows:number, cols:number) => {
   let data = [];
   for (let i = 0; i < rows * cols; i++) {
     data.push(0);
@@ -23,7 +26,8 @@ const getZeros2DArray = (rows, cols) => {
   return data;
 };
 
-const initialState = {
+
+const initialState:InitialState = {
   created: false,
   passwords: [],
   encryptedData: getZeros2DArray(ROWS, COLS),
@@ -35,25 +39,33 @@ const initialState = {
   backupRestorationSuccess: false,
 };
 
+
+
 const passwordSlice = createSlice({
   name: "password",
   initialState,
   reducers: {
     clearEncryptedData: (state) => {
       state.encryptedData = getZeros2DArray(ROWS, COLS);
+    },
+    clearBackupInfo: (state) => {
+      state.backupName = null;
+      state.backupData = null;
     }
   },
-  extraReducers: {
-    [createPasswordThunk.fulfilled]: (state, action) => {
+  extraReducers:builder=> {
+    builder.addCase(createPasswordThunk.fulfilled.toString(),(action:any) => {
       const payload = action.payload;
       const msg =
         "data" in payload ? payload.data.status : payload.response.data.error;
       alert(msg);
-    },
-    [fetchPasswordsThunk.fulfilled]: (state, action) => {
+    })
+    ,
+     builder.addCase(fetchPasswordsThunk.fulfilled.toString(),(state, action:any) => {
       state.passwords = action.payload.data;
-    },
-    [rotateAESKeyAndIVThunk.fulfilled]: (state, action) => {
+    })
+     ,
+     builder.addCase(rotateAESKeyAndIVThunk.fulfilled.toString(),(state, action:any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -68,8 +80,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    },
-    [rotateCharsetThunk.fulfilled]: (state, action) => {
+    })
+    ,
+    builder.addCase(rotateCharsetThunk.fulfilled.toString(),(state, action:any) => {
       alert("Charset rotated successfully");
       const updatedPassword = action.payload.data.password;
       for (let i = 0; i < state.passwords.length; i++) {
@@ -78,29 +91,31 @@ const passwordSlice = createSlice({
             updatedPassword.charset_last_rotated;
         }
       }
-    },
-    [encryptPasswordThunk.fulfilled]: (state, action) => {
+    })
+     ,
+     builder.addCase(encryptPasswordThunk.fulfilled.toString(),(state, action:any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
         const encryptedPasswordArr = action.payload.data.encryptedPassword
           .split("")
-          .map((char) => {
+          .map((char:string) => {
             return parseInt(char);
           });
 
         const aimLength = ROWS * COLS;
         const paddedArray = Array(aimLength).fill(0);
         encryptedPasswordArr.forEach(
-          (value, index) => (paddedArray[index] = value)
+          (value:number, index:number) => (paddedArray[index] = value)
         );
 
         state.encryptedData = paddedArray;
       } else {
         alert(payload.response.data.error);
       }
-    },
-    [decryptPasswordThunk.fulfilled]: (state, action) => {
+    })
+     ,
+     builder.addCase(decryptPasswordThunk.fulfilled.toString(),(state, action:any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -109,8 +124,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    },
-    [deletePasswordThunk.fulfilled]: (state, action) => {
+    })
+     ,
+     builder.addCase(deletePasswordThunk.fulfilled.toString(),(state, action:any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -126,8 +142,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    },
-    [getDeviceInfoThunk.fulfilled]: (state, action) => {
+    })
+     ,
+     builder.addCase(getDeviceInfoThunk.fulfilled.toString(),(state, action:any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -135,8 +152,9 @@ const passwordSlice = createSlice({
       } else {
         state.deviceInfo = {};
       }
-    },
-    [generateBackupThunk.fulfilled]: (state, action) => {
+    })
+     ,
+     builder.addCase(generateBackupThunk.fulfilled.toString(),(state, action:any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -144,8 +162,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    },
-    [downloadBackupThunk.fulfilled]: (state, action) => {
+    })
+    ,
+    builder.addCase(downloadBackupThunk.fulfilled.toString(),(state, action:any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -153,8 +172,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    },
-    [uploadBackupThunk.fulfilled]: (state, action) => {
+    })
+     ,
+     builder.addCase(uploadBackupThunk.fulfilled.toString(),(state, action:any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -163,8 +183,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    },
+    })
+    
   },
 });
-export const { clearEncryptedData } = passwordSlice.actions;
+export const { clearEncryptedData, clearBackupInfo } = passwordSlice.actions;
 export default passwordSlice.reducer;
