@@ -16,5 +16,11 @@ COPY . .
 # Expose the port that your React app will run on
 EXPOSE 3000
 
-# Command to run your application
-CMD ["npm", "start"]
+# Build the app
+RUN npm run build
+
+# Install serve
+RUN npm install -g serve
+
+# Serve the app
+CMD ["serve", "-s", "build", "-l", "3000"]
