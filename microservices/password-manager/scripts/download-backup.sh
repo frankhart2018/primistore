@@ -1,14 +1,17 @@
 #!/bin/bash
 
+PIPE_COMM_DIR=$HOME/pipe-comm
+ASKPASS_SCRIPT=$PIPE_COMM_DIR/askpass.sh
+
 sudo_uninteractive() {
-    echo "$PASSWORD" | sudo -S $@
+    SUDO_ASKPASS="$ASKPASS_SCRIPT" sudo -A -k $@
 }
 
 docker_exec() {
     sudo_uninteractive docker exec $1 $2
 }
 
-MONGO_CONTAINER_IDS=$(echo "$PASSWORD" | sudo -S docker ps -q --filter "ancestor=mongo:bionic")
+MONGO_CONTAINER_IDS=$(sudo_uninteractive docker ps -q --filter "ancestor=mongo:bionic")
 MONGO_CONTAINER_COUNTS=$(echo $MONGO_CONTAINER_IDS | wc -l)
 if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
     CURRENT_TIME=$(date +'%d-%m-%Y-%s')
@@ -16,14 +19,13 @@ if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
     BACKUP_TARBALL_PATH=$BACKUP_DIR.tar.gz
     PRIMISTORE_DIR=$HOME/.primistore
     PRIMISTORE_TARBALL_PATH=primistore-backup-$CURRENT_TIME.tar.gz
-    PIPE_COMM_DIR=$HOME/pipe-comm
 
     cd $HOME
     MONGO_CONTAINER_ID=$(echo $MONGO_CONTAINER_IDS | head -n 1)
     docker_exec $MONGO_CONTAINER_ID "mongodump --host localhost --db primistore --quiet"
     sudo_uninteractive docker cp $MONGO_CONTAINER_ID:/dump . > /dev/null 2>&1
     docker_exec $MONGO_CONTAINER_ID "rm -rf /dump"
-    mkdir charsets
+    mkdir -p charsets
     sudo_uninteractive cp $PRIMISTORE_DIR/*.txt charsets 2>/dev/null
 
     sudo_uninteractive tar czf $BACKUP_TARBALL_PATH charsets dump

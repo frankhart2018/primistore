@@ -6,6 +6,7 @@ import {
   PipeExecuteStrategy,
   CommandOutput,
 } from "command-executor-lib";
+import { chmodSync } from "fs";
 
 const PIPE_PATH = process.env.PIPE_PATH || "./command-runner";
 const PIPE_COMM_DIR = process.env.PIPE_COMM_DIR || "./pipe-comm";
@@ -24,15 +25,28 @@ const runScriptInPipe = (
   const executorStrategy = new RegularExecuteStrategy();
   const executor = new CommandExecutor(executorStrategy);
 
-  const scriptPath = path.join("scripts", scriptFileName);
-  const copyScriptResult = executor.execute(
-    `cp ${scriptPath} ${PIPE_COMM_DIR}`,
-  );
+  const copyScriptToSharedVolume = (scriptFileName: string) => {
+    const scriptPath = path.join("scripts", scriptFileName);
+    chmodSync(scriptPath, 0o777);
+    const copyScriptResult = executor.execute(
+      `cp ${scriptPath} ${PIPE_COMM_DIR}`,
+    );
+
+    return copyScriptResult;
+  };
+
+  const copyScriptResult = copyScriptToSharedVolume(scriptFileName);
   if (copyScriptResult.type === CommandOutputType.Error) {
     return copyScriptResult;
   }
 
+  const askPassCopyResult = copyScriptToSharedVolume("askpass.sh");
+  if (askPassCopyResult.type === CommandOutputType.Error) {
+    return askPassCopyResult;
+  }
+
   const newScriptPath = path.join(HOST_PIPE_COMM_DIR, scriptFileName);
+
   let scriptRunningCommand = `sh ${newScriptPath} ${args.join(" ")}`;
   if (password !== null) {
     scriptRunningCommand = `PASSWORD="${password}" ${scriptRunningCommand}`;
@@ -45,8 +59,12 @@ const runScriptInPipe = (
     .build();
   const pipeExecutor = new CommandExecutor(pipeExecutorStrategty);
   const runScriptResult = pipeExecutor.execute(scriptRunningCommand);
+
   const newScriptPathOnDevice = path.join(PIPE_COMM_DIR, scriptFileName);
+  const newAskPassPathOnDevice = path.join(PIPE_COMM_DIR, "askpass.sh");
+
   executor.execute(`rm -f ${newScriptPathOnDevice}`);
+  executor.execute(`rm -f ${newAskPassPathOnDevice}`);
 
   return runScriptResult;
 };
