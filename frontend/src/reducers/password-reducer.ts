@@ -49,7 +49,7 @@ const passwordSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(createPasswordThunk.fulfilled.toString(), (action: any) => {
+    builder.addCase(createPasswordThunk.fulfilled.toString(), (state, action: any) => {
       const payload = action.payload;
       const msg =
         "data" in payload ? payload.data.status : payload.response.data.error;

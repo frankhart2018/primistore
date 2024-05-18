@@ -6,6 +6,7 @@ import {
   PipeExecuteStrategy,
   CommandOutput,
 } from "command-executor-lib";
+import { chmodSync } from "fs";
 
 const PIPE_PATH = process.env.PIPE_PATH || "./command-runner";
 const PIPE_COMM_DIR = process.env.PIPE_COMM_DIR || "./pipe-comm";
@@ -26,6 +27,7 @@ const runScriptInPipe = (
 
   const copyScriptToSharedVolume = (scriptFileName: string) => {
     const scriptPath = path.join("scripts", scriptFileName);
+    chmodSync(scriptPath, 0o777);
     const copyScriptResult = executor.execute(
       `cp ${scriptPath} ${PIPE_COMM_DIR}`,
     );

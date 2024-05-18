@@ -25,7 +25,7 @@ if [ "$MONGO_CONTAINER_COUNTS" -eq "1" ]; then
     docker_exec $MONGO_CONTAINER_ID "mongodump --host localhost --db primistore --quiet"
     sudo_uninteractive docker cp $MONGO_CONTAINER_ID:/dump . > /dev/null 2>&1
     docker_exec $MONGO_CONTAINER_ID "rm -rf /dump"
-    mkdir charsets
+    mkdir -p charsets
     sudo_uninteractive cp $PRIMISTORE_DIR/*.txt charsets 2>/dev/null
 
     sudo_uninteractive tar czf $BACKUP_TARBALL_PATH charsets dump
