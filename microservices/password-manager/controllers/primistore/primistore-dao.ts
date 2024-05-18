@@ -93,3 +93,7 @@ export const createPolicy = (
   const options = { upsert: true, new: true };
   return policyModel.findOneAndUpdate(query, update, options);
 };
+
+export const getPolicies = (): Promise<IPolicy[]> => {
+  return policyModel.find();
+}

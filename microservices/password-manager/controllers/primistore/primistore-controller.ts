@@ -13,6 +13,7 @@ import {
   createPolicy,
   getPasswordByPassUid,
   getPasswords,
+  getPolicies,
   removePasswordByPassUid,
   updatePasswordAES,
   updatePasswordCharset,
@@ -365,6 +366,16 @@ const createPolicyHandler = async (
   });
 };
 
+const getAllPoliciesHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
+  const policies = await getPolicies();
+  logger.info(`[${getCurrentTime()}] GET /policy : Status 200`);
+  return res.status(200).send(policies);
+};
+
 const PrimistoreController = (app: Application, logger: Logger) => {
   //////////////////////////////////////////
   // Password Endpoints
@@ -406,6 +417,7 @@ const PrimistoreController = (app: Application, logger: Logger) => {
   // Policy Endpoints
   //////////////////////////////////////////
   app.post("/policy", (req, res) => createPolicyHandler(req, res, logger));
+  app.get("/policy", (req, res) => getAllPoliciesHandler(req, res, logger));
 };
 
 export default PrimistoreController;
