@@ -20,14 +20,14 @@ export const fetchPasswords = async () => {
 
 export const rotateAESKeyAndIV = async (passUid: string) => {
   const response = await axios.put(
-    `${PASSWORD_MANAGER_API_BASE}/password/aes/${passUid}`
+    `${PASSWORD_MANAGER_API_BASE}/password/aes/${passUid}`,
   );
   return response;
 };
 
 export const rotateCharset = async (passUid: string) => {
   const response = await axios.put(
-    `${PASSWORD_MANAGER_API_BASE}/password/charset/${passUid}`
+    `${PASSWORD_MANAGER_API_BASE}/password/charset/${passUid}`,
   );
   return response;
 };
@@ -37,7 +37,7 @@ export const encryptPassword = async (passUid: string, password: string) => {
     `${PASSWORD_MANAGER_API_BASE}/password/encrypt/${passUid}`,
     {
       password,
-    }
+    },
   );
   return response;
 };
@@ -54,14 +54,14 @@ export const decryptPassword = async (passUid: string, pmsFile: File) => {
         "Content-Type": "multipart/form-data",
       },
       responseType: "json",
-    }
+    },
   );
   return response;
 };
 
 export const deletePassword = async (passUid: string) => {
   const response = await axios.delete(
-    `${PASSWORD_MANAGER_API_BASE}/password/${passUid}`
+    `${PASSWORD_MANAGER_API_BASE}/password/${passUid}`,
   );
   return response;
 };
@@ -76,7 +76,7 @@ export const generateBackup = async (password: string) => {
     `${PASSWORD_MANAGER_API_BASE}/device/backup/generate`,
     {
       password,
-    }
+    },
   );
 
   return response;
@@ -87,7 +87,7 @@ export const downloadBackup = async (backupName: string) => {
     `${PASSWORD_MANAGER_API_BASE}/device/backup/download/${backupName}`,
     {
       responseType: "blob",
-    }
+    },
   );
 
   return response;
@@ -106,7 +106,7 @@ export const uploadBackup = async (backupFile: File, password: string) => {
         "Content-Type": "multipart/form-data",
       },
       responseType: "json",
-    }
+    },
   );
   return response;
 };
@@ -114,12 +114,12 @@ export const uploadBackup = async (backupFile: File, password: string) => {
 export const createPolicy = async (
   policyName: string,
   updateWindowMin: number,
-  updateWindowMax: number
+  updateWindowMax: number,
 ) => {
   const response = await axios.post(`${PASSWORD_MANAGER_API_BASE}/policy`, {
-    "policy_name": policyName,
-    "update_window_min": updateWindowMin,
-    "update_window_max": updateWindowMax,
+    policy_name: policyName,
+    update_window_min: updateWindowMin,
+    update_window_max: updateWindowMax,
   });
 
   return response;

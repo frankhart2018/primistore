@@ -1,5 +1,5 @@
-import  packageInfo from "../../package.json";
+import packageInfo from "../../package.json";
 
 const VERSION = packageInfo.version;
 
-export default VERSION ;
+export default VERSION;

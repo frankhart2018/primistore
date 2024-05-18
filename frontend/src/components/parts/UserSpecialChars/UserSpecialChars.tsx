@@ -23,19 +23,19 @@ const UserSpecialChars = forwardRef<SpecialCharsRef, UserSpecialCharsProps>(
       DEFAULT_SPECIAL_CHARS.reduce((acc: any, symbol: any) => {
         acc[symbol] = initialValue;
         return acc;
-      }, {})
+      }, {}),
     );
 
     const updateCheckboxValue = (
       _e: React.ChangeEvent<HTMLInputElement>,
-      char: string
+      char: string,
     ) => {
       setSpecialChars({ ...specialChars, [char]: !specialChars[char] });
       parentUpdateCallback(Number(count), !specialChars[char], "checkbox");
     };
 
     const textBoxOnKeyDownHandler = (
-      e: React.KeyboardEvent<HTMLInputElement>
+      e: React.KeyboardEvent<HTMLInputElement>,
     ) => {
       if (e.key === "Enter") {
         if (newSpecialChar.length !== 1) {
@@ -119,7 +119,7 @@ const UserSpecialChars = forwardRef<SpecialCharsRef, UserSpecialCharsProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 export default UserSpecialChars;

@@ -189,7 +189,7 @@ const encryptPasswordHandler = async (
     `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 200`,
   );
   res.status(200).send({
-    "encryptedPassword": charsetEncryptedPassword,
+    encryptedPassword: charsetEncryptedPassword,
   });
 };
 
@@ -346,10 +346,18 @@ const uploadBackupHandler = (req: Request, res: Response, logger: Logger) => {
   }
 };
 
-const createPolicyHandler = async (req: Request, res: Response, logger: Logger) => {
+const createPolicyHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
   const { policy_name, update_window_min, update_window_max } = req.body;
 
-  const policy = await createPolicy(policy_name, update_window_min, update_window_max);
+  const policy = await createPolicy(
+    policy_name,
+    update_window_min,
+    update_window_max,
+  );
 
   logger.info(`[${getCurrentTime()}] POST /policy : Status 200`);
   res.status(200).send({

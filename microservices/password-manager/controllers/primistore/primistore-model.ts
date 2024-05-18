@@ -6,7 +6,4 @@ import policySchema from "./policy-schema.js";
 const passwordModel = mongoose.model("PrimistoreModel", passwordSchema);
 const policyModel = mongoose.model("PolicyModel", policySchema);
 
-export {
-    passwordModel,
-    policyModel,
-};
+export { passwordModel, policyModel };

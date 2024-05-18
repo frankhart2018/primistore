@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 interface IPolicy {
-    policy_name: string;
-    update_window_min: number;
-    update_window_max: number;
+  policy_name: string;
+  update_window_min: number;
+  update_window_max: number;
 }
 
 const schema = new mongoose.Schema<any>(

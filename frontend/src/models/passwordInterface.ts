@@ -34,7 +34,6 @@ interface CreatePolicyThunk {
   updateWindowMax: number;
 }
 
-
 interface Password {
   pass_uid: string;
   aes_last_rotated: string;

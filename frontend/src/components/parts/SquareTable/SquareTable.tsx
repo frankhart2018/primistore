@@ -22,7 +22,7 @@ const SquareTable = ({ rows, cols, data }: SquareTable) => {
             ) : (
               <span className="whiteFont">•</span>
             )}
-          </td>
+          </td>,
         );
       }
       table.push(<tr key={i}>{tds}</tr>);

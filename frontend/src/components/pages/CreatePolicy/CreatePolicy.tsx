@@ -21,19 +21,22 @@ const CreatePolicy = () => {
     }
 
     if (updateWindowMin >= updateWindowMax) {
-      errors += "Update Window Min should be strictly less than Update Window Max\n";
+      errors +=
+        "Update Window Min should be strictly less than Update Window Max\n";
     }
 
     if (errors) {
-        alert(errors);
-        return;
+      alert(errors);
+      return;
     }
 
-    dispatch(createPolicyThunk({
+    dispatch(
+      createPolicyThunk({
         policyName,
         updateWindowMin,
-        updateWindowMax
-    }));
+        updateWindowMax,
+      }),
+    );
   };
 
   return (

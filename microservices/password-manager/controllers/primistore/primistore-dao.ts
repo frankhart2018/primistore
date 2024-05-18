@@ -5,7 +5,7 @@ import { IPolicy } from "./policy-schema.js";
 export const createPassword = (
   pass_uid: string,
   aes_key: string,
-  aes_iv: string
+  aes_iv: string,
 ): Promise<IPassword | any> => {
   let currentTime = Math.floor(Date.now() / 1000).toString();
 
@@ -31,7 +31,7 @@ export const getPasswords = (): Promise<IPassword[]> => {
 export const updatePasswordAES = (
   pass_uid: string,
   aes_key: string,
-  aes_iv: string
+  aes_iv: string,
 ): Promise<IPassword | null> => {
   const query = { pass_uid };
   const options = { new: true };
@@ -49,7 +49,7 @@ export const updatePasswordAES = (
 };
 
 export const updatePasswordCharset = (
-  pass_uid: string
+  pass_uid: string,
 ): Promise<IPassword | null> => {
   const query = { pass_uid };
   const options = { new: true };
@@ -65,13 +65,13 @@ export const updatePasswordCharset = (
 };
 
 export const getPasswordByPassUid = (
-  pass_uid: string
+  pass_uid: string,
 ): Promise<IPassword | null> => {
   return passwordModel.findOne({ pass_uid: pass_uid });
 };
 
 export const removePasswordByPassUid = (
-  pass_uid: string
+  pass_uid: string,
 ): Promise<IPassword | {}> => {
   return passwordModel.deleteOne({ pass_uid: pass_uid });
 };
@@ -79,7 +79,7 @@ export const removePasswordByPassUid = (
 export const createPolicy = (
   policy_name: string,
   update_window_min: number,
-  update_window_max: number
+  update_window_max: number,
 ): Promise<IPolicy | any> => {
   const query = { policy_name };
   const update = {

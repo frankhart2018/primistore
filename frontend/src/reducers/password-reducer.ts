@@ -102,7 +102,7 @@ const passwordSlice = createSlice({
         const aimLength = ROWS * COLS;
         const paddedArray = Array(aimLength).fill(0);
         encryptedPasswordArr.forEach(
-          (value: number, index: number) => (paddedArray[index] = value)
+          (value: number, index: number) => (paddedArray[index] = value),
         );
 
         state.encryptedData = paddedArray;
