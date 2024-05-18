@@ -12,6 +12,7 @@ import {
   downloadBackupThunk,
   uploadBackupThunk,
   createPolicyThunk,
+  fetchPoliciesThunk,
 } from "../services/password-thunk";
 import { InitialState } from "../models/passwordInterface";
 import { COLS, ROWS } from "../utils/constants";
@@ -35,6 +36,7 @@ const initialState: InitialState = {
   backupName: null,
   backupData: null,
   backupRestorationSuccess: false,
+  policies: null,
 };
 
 const passwordSlice = createSlice({
@@ -186,6 +188,16 @@ const passwordSlice = createSlice({
 
       if ("data" in payload) {
         alert("Policy created successfully");
+      } else {
+        alert(payload.response.data.error);
+      }
+    });
+
+    builder.addCase(fetchPoliciesThunk.fulfilled, (state, action: any) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        state.policies = payload.data;
       } else {
         alert(payload.response.data.error);
       }

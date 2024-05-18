@@ -161,3 +161,15 @@ export const createPolicyThunk = createAsyncThunk(
     }
   },
 );
+
+export const fetchPoliciesThunk = createAsyncThunk(
+  "password/fetchPolicies",
+  async () => {
+    try {
+      const response = await passwordService.fetchPolicies();
+      return response;
+    } catch (e) {
+      return e;
+    }
+  },
+);

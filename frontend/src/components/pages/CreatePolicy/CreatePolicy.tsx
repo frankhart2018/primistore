@@ -45,14 +45,14 @@ const CreatePolicy = () => {
       <div className="w-5/6 mx-auto py-7 flex flex-col justify-center items-center">
         <div className="mb-10 w-5/6 space-y-5">
           <label
-            htmlFor="identifier"
+            htmlFor="name"
             className="block mb-2 text-md font-medium text-gray-900 capitalize"
           >
             Policy Name (should be unique)
           </label>
           <input
             type="text"
-            id="identifier"
+            id="name"
             className="bg-transparent border border-gray-950 text-gray-900 text-md rounded-lg block w-full p-2.5"
             value={policyName}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -62,14 +62,14 @@ const CreatePolicy = () => {
         </div>
         <div className="mb-10 w-5/6 space-y-5">
           <label
-            htmlFor="identifier"
+            htmlFor="min"
             className="block mb-2 text-md font-medium text-gray-900 capitalize"
           >
             Update Window Min
           </label>
           <input
             type="number"
-            id="identifier"
+            id="min"
             min={0}
             className="bg-transparent border border-gray-950 text-gray-900 text-md rounded-lg block w-full p-2.5"
             value={updateWindowMin}
@@ -80,14 +80,14 @@ const CreatePolicy = () => {
         </div>
         <div className="mb-10 w-5/6 space-y-5">
           <label
-            htmlFor="identifier"
+            htmlFor="max"
             className="block mb-2 text-md font-medium text-gray-900 capitalize"
           >
             Update Window Max
           </label>
           <input
             type="number"
-            id="identifier"
+            id="max"
             min={0}
             className="bg-transparent border border-gray-950 text-gray-900 text-md rounded-lg block w-full p-2.5"
             value={updateWindowMax}
