@@ -47,6 +47,10 @@ const passwordSlice = createSlice({
   reducers: {
     clearEncryptedData: (state) => {
       state.encryptedData = getZeros2DArray(ROWS, COLS);
+    },
+    clearBackupInfo: (state) => {
+      state.backupName = null;
+      state.backupData = null;
     }
   },
   extraReducers:builder=> {
@@ -183,5 +187,5 @@ const passwordSlice = createSlice({
     
   },
 });
-export const { clearEncryptedData } = passwordSlice.actions;
+export const { clearEncryptedData, clearBackupInfo } = passwordSlice.actions;
 export default passwordSlice.reducer;

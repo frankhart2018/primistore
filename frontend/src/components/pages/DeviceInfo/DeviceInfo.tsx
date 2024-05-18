@@ -8,6 +8,7 @@ import {
   getDeviceInfoThunk,
   uploadBackupThunk,
 } from "../../../services/password-thunk";
+import { clearBackupInfo } from "../../../reducers/password-reducer";
 
 interface PasswordState {
   deviceInfo: string;
@@ -102,8 +103,10 @@ const DeviceInfo = () => {
       } catch (e) {
         alert(`Error downloading file: ${e}`);
       }
+
+      dispatch(clearBackupInfo());
     }
-  }, [backupData, backupName]);
+  }, [backupData, backupName, dispatch]);
 
   const uploadBackupHandler = (
     _e: React.MouseEvent<HTMLButtonElement, MouseEvent>

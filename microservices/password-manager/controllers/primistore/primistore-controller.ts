@@ -1,12 +1,11 @@
 import fs, { existsSync } from "fs";
+import { Application, Request, Response } from "express";
 import path from "path";
 import multer from "multer";
 
 import {
-  CommandOutputType,
   PIPE_COMM_DIR,
-  encryptWithAES,
-  generateAESKeyIV,
+  getDeviceInfo,
   runScriptInPipe,
 } from "../../utils/command-utils.js";
 import {
@@ -23,19 +22,38 @@ import {
 } from "../../utils/charset-utils.js";
 import { PRIMISTORE_DIR } from "../../utils/path-utils.js";
 import { getCurrentTime } from "../../utils/date-utils.js";
-import { getDeviceInfo } from "../../utils/device-utils.js";
+import {
+  encryptWithAES,
+  generateAESKeyIV,
+} from "../../utils/encryption-utils.js";
+import { CommandOutputType } from "command-executor-lib";
+import { Logger } from "winston";
+
+const LOCAL_DIR = process.env.LOCAL_DIR || PRIMISTORE_DIR;
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, destination: string) => void,
+  ): void => {
     cb(null, PIPE_COMM_DIR);
   },
-  filename: (req, file, cb) => {
+  filename: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, filename: string) => void,
+  ): void => {
     cb(null, file.originalname);
   },
 });
 const upload = multer({ storage: storage });
 
-const passwordCreationHandler = async (req, res, logger) => {
+const passwordCreationHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
   const password_uid = req.body.identifier;
 
   const { key, iv } = generateAESKeyIV();
@@ -64,13 +82,21 @@ const passwordCreationHandler = async (req, res, logger) => {
   });
 };
 
-const getAllPasswordsHandler = async (req, res, logger) => {
+const getAllPasswordsHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
   const passwords = await getPasswords();
   logger.info(`[${getCurrentTime()}] GET /passwords : Status 200`);
   return res.status(200).send(passwords);
 };
 
-const rotateAESKeyIVHandler = async (req, res, logger) => {
+const rotateAESKeyIVHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
   const { pass_uid } = req.params;
 
   const { key, iv } = generateAESKeyIV();
@@ -81,7 +107,7 @@ const rotateAESKeyIVHandler = async (req, res, logger) => {
     let errorMessage = key.type == CommandOutputType.Error ? key.value : "";
     errorMessage += iv.type == CommandOutputType.Error ? iv.value : "";
     logger.error(
-      `[${getCurrentTime()}] PUT /password/aes/${pass_uid} : Status 500`
+      `[${getCurrentTime()}] PUT /password/aes/${pass_uid} : Status 500`,
     );
     res.status(500).send({
       error: errorMessage,
@@ -92,18 +118,22 @@ const rotateAESKeyIVHandler = async (req, res, logger) => {
   const updatedPassword = await updatePasswordAES(
     pass_uid,
     key.value,
-    iv.value
+    iv.value,
   );
 
   logger.info(
-    `[${getCurrentTime()}] PUT /password/aes/${pass_uid} : Status 200`
+    `[${getCurrentTime()}] PUT /password/aes/${pass_uid} : Status 200`,
   );
   res.status(200).send({
     password: updatedPassword,
   });
 };
 
-const rotateCharsetHandler = async (req, res, logger) => {
+const rotateCharsetHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
   const { pass_uid } = req.params;
 
   const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
@@ -113,7 +143,7 @@ const rotateCharsetHandler = async (req, res, logger) => {
   const updatedPassword = await updatePasswordCharset(pass_uid);
 
   logger.info(
-    `[${getCurrentTime()}] PUT /password/charset/${pass_uid} : Status 200`
+    `[${getCurrentTime()}] PUT /password/charset/${pass_uid} : Status 200`,
   );
   res.status(200).send({
     updatedCharset: charset,
@@ -121,7 +151,11 @@ const rotateCharsetHandler = async (req, res, logger) => {
   });
 };
 
-const encryptPasswordHandler = async (req, res, logger) => {
+const encryptPasswordHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
   const { pass_uid } = req.params;
   const raw_password = req.body.password;
 
@@ -131,7 +165,7 @@ const encryptPasswordHandler = async (req, res, logger) => {
   let encryptedPassword = encryptWithAES(aes_key, aes_iv, raw_password);
   if (encryptedPassword.type == CommandOutputType.Error) {
     logger.error(
-      `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 500`
+      `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 500`,
     );
     res.status(500).send({
       error: encryptedPassword.value,
@@ -145,17 +179,24 @@ const encryptPasswordHandler = async (req, res, logger) => {
     .toString("utf-8")
     .split("\n")
     .slice(0, -1);
-  encryptedPassword = encryptWithCharset(charset, encryptedPassword.value);
+  const charsetEncryptedPassword = encryptWithCharset(
+    charset,
+    encryptedPassword.value,
+  );
 
   logger.info(
-    `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 200`
+    `[${getCurrentTime()}] POST /password/encrypt/${pass_uid} : Status 200`,
   );
   res.status(200).send({
-    encryptedPassword,
+    "encryptedPassword": charsetEncryptedPassword,
   });
 };
 
-const deletePasswordHandler = async (req, res, logger) => {
+const deletePasswordHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
   const { pass_uid } = req.params;
 
   const passwordDetails = await getPasswordByPassUid(pass_uid);
@@ -166,12 +207,12 @@ const deletePasswordHandler = async (req, res, logger) => {
     return;
   }
 
-  const charsetPath = path.join(PRIMISTORE_DIR, `charset-${pass_uid}.txt`);
+  const charsetPath = path.join(LOCAL_DIR, `charset-${pass_uid}.txt`);
   try {
     fs.unlinkSync(charsetPath);
   } catch (err) {
     logger.error(
-      `[${getCurrentTime()}] DELETE /password/${pass_uid} : Status 500`
+      `[${getCurrentTime()}] DELETE /password/${pass_uid} : Status 500`,
     );
     res.status(500).send({
       error: err.message,
@@ -182,7 +223,7 @@ const deletePasswordHandler = async (req, res, logger) => {
   const output = await removePasswordByPassUid(pass_uid);
 
   logger.info(
-    `[${getCurrentTime()}] DELETE /password/${pass_uid} : Status 200`
+    `[${getCurrentTime()}] DELETE /password/${pass_uid} : Status 200`,
   );
   res.status(200).send({
     status: output.hasOwnProperty("acknowledged")
@@ -192,7 +233,11 @@ const deletePasswordHandler = async (req, res, logger) => {
   });
 };
 
-const deviceInfoFetchHandler = async (req, res, logger) => {
+const deviceInfoFetchHandler = async (
+  req: Request,
+  res: Response,
+  logger: Logger,
+) => {
   const deviceInfo = getDeviceInfo();
 
   logger.info(`[${getCurrentTime()}] GET /device/device-info : Status 200`);
@@ -201,13 +246,13 @@ const deviceInfoFetchHandler = async (req, res, logger) => {
   });
 };
 
-const generateBackupHandler = (req, res, logger) => {
+const generateBackupHandler = (req: Request, res: Response, logger: Logger) => {
   const password = req.body.password;
 
   const genBackupOutput = runScriptInPipe("download-backup.sh", password);
   if (genBackupOutput.type === CommandOutputType.Error) {
     logger.error(
-      `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
+      `[${getCurrentTime()}] POST /device/generate-backup : Status 500`,
     );
     res.status(500).send({
       error: genBackupOutput.value,
@@ -217,14 +262,14 @@ const generateBackupHandler = (req, res, logger) => {
     const snapshotPath = path.join(PIPE_COMM_DIR, snapshotName);
     if (!existsSync(snapshotPath)) {
       logger.error(
-        `[${getCurrentTime()}] POST /device/generate-backup : Status 500`
+        `[${getCurrentTime()}] POST /device/generate-backup : Status 500`,
       );
       res.status(500).send({
         error: `Snapshot ${snapshotPath} does not exist!`,
       });
     } else {
       logger.info(
-        `[${getCurrentTime()}] POST /device/generate-backup : Status 200`
+        `[${getCurrentTime()}] POST /device/generate-backup : Status 200`,
       );
       res.status(200).send({
         output: snapshotName,
@@ -233,13 +278,13 @@ const generateBackupHandler = (req, res, logger) => {
   }
 };
 
-const downloadBackupHandler = (req, res, logger) => {
+const downloadBackupHandler = (req: Request, res: Response, logger: Logger) => {
   const { snapshot_name } = req.params;
 
   const snapshotPath = path.join(PIPE_COMM_DIR, snapshot_name);
   if (!existsSync(snapshotPath)) {
     logger.error(
-      `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`
+      `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`,
     );
     res.status(500).send({
       error: `Snapshot ${snapshot_name} does not exist!`,
@@ -248,7 +293,7 @@ const downloadBackupHandler = (req, res, logger) => {
     res.download(snapshotPath, snapshot_name, (err) => {
       if (err) {
         logger.error(
-          `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`
+          `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 500`,
         );
 
         // Handle error, for example:
@@ -258,14 +303,14 @@ const downloadBackupHandler = (req, res, logger) => {
         });
       } else {
         logger.info(
-          `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 200`
+          `[${getCurrentTime()}] GET /device/generate-backup/download/${snapshot_name} : Status 200`,
         );
       }
     });
   }
 };
 
-const uploadBackupHandler = (req, res, logger) => {
+const uploadBackupHandler = (req: Request, res: Response, logger: Logger) => {
   const uploadedFile = req.file;
   const password = req.body.password;
   const uploadedFileName = uploadedFile.filename;
@@ -274,7 +319,7 @@ const uploadBackupHandler = (req, res, logger) => {
   ]);
   if (uploadBackupOutput.type === CommandOutputType.Error) {
     logger.error(
-      `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
+      `[${getCurrentTime()}] POST /device/upload-backup : Status 500`,
     );
     res.status(500).send({
       error: uploadBackupOutput.value,
@@ -283,7 +328,7 @@ const uploadBackupHandler = (req, res, logger) => {
     const scriptOutputFileName = uploadBackupOutput.value.trim();
     if (scriptOutputFileName === uploadedFileName.trim()) {
       logger.info(
-        `[${getCurrentTime()}] GET /device/upload-backup : Status 200`
+        `[${getCurrentTime()}] GET /device/upload-backup : Status 200`,
       );
 
       res.status(200).send({
@@ -291,7 +336,7 @@ const uploadBackupHandler = (req, res, logger) => {
       });
     } else {
       logger.error(
-        `[${getCurrentTime()}] POST /device/upload-backup : Status 500`
+        `[${getCurrentTime()}] POST /device/upload-backup : Status 500`,
       );
       res.status(500).send({
         error: `Incorrect output from upload: ${uploadedFileName}`,
@@ -300,35 +345,35 @@ const uploadBackupHandler = (req, res, logger) => {
   }
 };
 
-const PrimistoreController = (app, logger) => {
+const PrimistoreController = (app: Application, logger: Logger) => {
   app.post("/password", (req, res) =>
-    passwordCreationHandler(req, res, logger)
+    passwordCreationHandler(req, res, logger),
   );
   app.get("/passwords", (req, res) => getAllPasswordsHandler(req, res, logger));
   app.put("/password/aes/:pass_uid", (req, res) =>
-    rotateAESKeyIVHandler(req, res, logger)
+    rotateAESKeyIVHandler(req, res, logger),
   );
   app.put("/password/charset/:pass_uid", (req, res) =>
-    rotateCharsetHandler(req, res, logger)
+    rotateCharsetHandler(req, res, logger),
   );
   app.post("/password/encrypt/:pass_uid", (req, res) =>
-    encryptPasswordHandler(req, res, logger)
+    encryptPasswordHandler(req, res, logger),
   );
   app.delete("/password/:pass_uid", (req, res) =>
-    deletePasswordHandler(req, res, logger)
+    deletePasswordHandler(req, res, logger),
   );
 
   app.get("/device/info", (req, res) =>
-    deviceInfoFetchHandler(req, res, logger)
+    deviceInfoFetchHandler(req, res, logger),
   );
   app.post("/device/backup/generate", (req, res) =>
-    generateBackupHandler(req, res, logger)
+    generateBackupHandler(req, res, logger),
   );
   app.get("/device/backup/download/:snapshot_name", (req, res) =>
-    downloadBackupHandler(req, res, logger)
+    downloadBackupHandler(req, res, logger),
   );
   app.post("/device/backup/upload", upload.single("file"), (req, res) =>
-    uploadBackupHandler(req, res, logger)
+    uploadBackupHandler(req, res, logger),
   );
 };
 

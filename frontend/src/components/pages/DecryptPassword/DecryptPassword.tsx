@@ -87,10 +87,6 @@ const DecryptPassword = () => {
   };
 
   useEffect(() => {
-    if (decryptedData.length > 0) {
-      navigator.clipboard.writeText(decryptedData);
-      window.alert("Decrypted password copied to clipboard!");
-    }
     if (decryptedData.length === 0) return;
     setStats(computeDecryptedDataStats(decryptedData));
   }, [decryptedData]);

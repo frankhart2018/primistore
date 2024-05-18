@@ -1,6 +1,7 @@
 from pathlib import Path
 import subprocess
 import json
+import os
 
 
 PIPE_PATH = Path.home() / "command-runner"
@@ -20,7 +21,7 @@ while True:
         command_obj["cmd"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     output, error = process.communicate()
-    output_path = PIPE_OUTPUT_DIR / command_obj["outputPath"]
+    output_path = PIPE_OUTPUT_DIR / os.path.basename(command_obj["outputPath"])
 
     with open(output_path, "w") as f:
         result = error.decode() if error else output.decode()
