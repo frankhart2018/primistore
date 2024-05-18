@@ -27,7 +27,6 @@ Primistore is a password management application that provides a solution to secu
 
 ## Documentation
 
-- [Image‐Decryption Microservice Design](https://github.com/anglerfishlyy/primistore/wiki/%23-Image%E2%80%90Decryption-Microservice-Design).
 - [Image processing algorithm for decryption](https://github.com/frankhart2018/primistore/wiki/Image-processing-algorithm-for-decryption)
 - [Instructions to use the app](https://github.com/frankhart2018/primistore/wiki/How-to-use-the-app%3F)
 - [Overview of codebase](https://github.com/frankhart2018/primistore/wiki/Codebase)
