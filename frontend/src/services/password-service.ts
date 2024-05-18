@@ -5,8 +5,7 @@ import {
   PASSWORD_MANAGER_API_BASE,
 } from "../utils/constants";
 
-
-export const createPassword = async (passwordUid:string) => {
+export const createPassword = async (passwordUid: string) => {
   const response = await axios.post(`${PASSWORD_MANAGER_API_BASE}/password`, {
     identifier: passwordUid,
   });
@@ -19,21 +18,21 @@ export const fetchPasswords = async () => {
   return response;
 };
 
-export const rotateAESKeyAndIV = async (passUid:string) => {
+export const rotateAESKeyAndIV = async (passUid: string) => {
   const response = await axios.put(
     `${PASSWORD_MANAGER_API_BASE}/password/aes/${passUid}`
   );
   return response;
 };
 
-export const rotateCharset = async (passUid:string) => {
+export const rotateCharset = async (passUid: string) => {
   const response = await axios.put(
     `${PASSWORD_MANAGER_API_BASE}/password/charset/${passUid}`
   );
   return response;
 };
 
-export const encryptPassword = async (passUid:string, password:string) => {
+export const encryptPassword = async (passUid: string, password: string) => {
   const response = await axios.post(
     `${PASSWORD_MANAGER_API_BASE}/password/encrypt/${passUid}`,
     {
@@ -43,7 +42,7 @@ export const encryptPassword = async (passUid:string, password:string) => {
   return response;
 };
 
-export const decryptPassword = async (passUid:string, pmsFile:File) => {
+export const decryptPassword = async (passUid: string, pmsFile: File) => {
   const formData = new FormData();
   formData.append("file", pmsFile);
 
@@ -60,7 +59,7 @@ export const decryptPassword = async (passUid:string, pmsFile:File) => {
   return response;
 };
 
-export const deletePassword = async (passUid:string) => {
+export const deletePassword = async (passUid: string) => {
   const response = await axios.delete(
     `${PASSWORD_MANAGER_API_BASE}/password/${passUid}`
   );
@@ -72,7 +71,7 @@ export const getDeviceInfo = async () => {
   return response;
 };
 
-export const generateBackup = async (password:string) => {
+export const generateBackup = async (password: string) => {
   const response = await axios.post(
     `${PASSWORD_MANAGER_API_BASE}/device/backup/generate`,
     {
@@ -83,7 +82,7 @@ export const generateBackup = async (password:string) => {
   return response;
 };
 
-export const downloadBackup = async (backupName:string) => {
+export const downloadBackup = async (backupName: string) => {
   const response = await axios.get(
     `${PASSWORD_MANAGER_API_BASE}/device/backup/download/${backupName}`,
     {
@@ -94,7 +93,7 @@ export const downloadBackup = async (backupName:string) => {
   return response;
 };
 
-export const uploadBackup = async (backupFile:File, password:string) => {
+export const uploadBackup = async (backupFile: File, password: string) => {
   const formData = new FormData();
   formData.append("file", backupFile);
   formData.append("password", password);
@@ -109,5 +108,19 @@ export const uploadBackup = async (backupFile:File, password:string) => {
       responseType: "json",
     }
   );
+  return response;
+};
+
+export const createPolicy = async (
+  policyName: string,
+  updateWindowMin: number,
+  updateWindowMax: number
+) => {
+  const response = await axios.post(`${PASSWORD_MANAGER_API_BASE}/policy`, {
+    "policy_name": policyName,
+    "update_window_min": updateWindowMin,
+    "update_window_max": updateWindowMax,
+  });
+
   return response;
 };

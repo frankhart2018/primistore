@@ -7,7 +7,8 @@ DecryptPasswordThunk,
 DeletePasswordThunk,
 GenerateBackupThunk,
 DownloadBackupThunk,
-UploadBackupThunk } from "../models/passwordInterface";
+UploadBackupThunk, 
+CreatePolicyThunk} from "../models/passwordInterface";
 import * as passwordService from "./password-service";
 
 export const createPasswordThunk = createAsyncThunk(
@@ -135,6 +136,22 @@ export const uploadBackupThunk = createAsyncThunk(
       const response = await passwordService.uploadBackup(
         payload.backupFile,
         payload.password
+      );
+      return response;
+    } catch (e) {
+      return e;
+    }
+  }
+);
+
+export const createPolicyThunk = createAsyncThunk(
+  "password/createPolicy",
+  async (payload:CreatePolicyThunk) => {
+    try {
+      const response = await passwordService.createPolicy(
+        payload.policyName,
+        payload.updateWindowMin,
+        payload.updateWindowMax
       );
       return response;
     } catch (e) {
