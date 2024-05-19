@@ -3,6 +3,10 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        - REACT_APP_PASSWORD_MANAGER_API_BASE=http://${IP}:4000
+        - REACT_APP_IMAGE_DECRYPTOR_API_BASE=http://${IP}:8000
+        - REACT_APP_PI=${REACT_APP_PI}
     ports:
       - "3000:3000"
     environment:
