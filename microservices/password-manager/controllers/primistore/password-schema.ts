@@ -6,6 +6,7 @@ interface IPassword {
   aes_last_rotated: string;
   pass_uid: string;
   charset_last_rotated: string;
+  policy_id: string;
 }
 
 const schema = new mongoose.Schema<IPassword>(
@@ -15,6 +16,7 @@ const schema = new mongoose.Schema<IPassword>(
     aes_last_rotated: String,
     pass_uid: String,
     charset_last_rotated: String,
+    policy_id: String,
   },
   {
     collection: "passwords",

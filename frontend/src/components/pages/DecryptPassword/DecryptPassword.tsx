@@ -21,10 +21,10 @@ interface Stats {
 
 const DecryptPassword = () => {
   const decryptedData: string = useSelector<RootState, string>(
-    (state) => state.password.decryptedData
+    (state) => state.password.decryptedData,
   );
   const rawData: string = useSelector<RootState, string>(
-    (state) => state.password.rawData
+    (state) => state.password.rawData,
   );
 
   const [pmsFile, setPmsFile] = useState<File | null>(null);
@@ -41,7 +41,7 @@ const DecryptPassword = () => {
         decryptPasswordThunk({
           passUid,
           pmsFile,
-        })
+        }),
       );
     }
   };
@@ -57,7 +57,7 @@ const DecryptPassword = () => {
           /[a-z]/.test(char)
             ? { ...count, [char]: (count[char] || 0) + 1 }
             : count,
-        {}
+        {},
       );
 
     const stats: Stats = {
@@ -67,13 +67,13 @@ const DecryptPassword = () => {
       "% alphabets": (
         Object.values(decryptedData).reduce(
           (sum, key) => sum + parseFloat(key),
-          0
+          0,
         ) / length
       ).toFixed(2),
       "% numbers": (
         Object.values(transformedData).reduce(
           (sum, key) => sum + parseFloat(String(key)),
-          0
+          0,
         ) / length
       ).toFixed(2),
     };

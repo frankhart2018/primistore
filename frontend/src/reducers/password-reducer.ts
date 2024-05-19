@@ -11,13 +11,14 @@ import {
   rotateCharsetThunk,
   downloadBackupThunk,
   uploadBackupThunk,
-  
+  createPolicyThunk,
+  fetchPoliciesThunk,
+  fetchPolicyByIdThunk,
 } from "../services/password-thunk";
 import { InitialState } from "../models/passwordInterface";
 import { COLS, ROWS } from "../utils/constants";
 
-
-const getZeros2DArray = (rows:number, cols:number) => {
+const getZeros2DArray = (rows: number, cols: number) => {
   let data = [];
   for (let i = 0; i < rows * cols; i++) {
     data.push(0);
@@ -26,8 +27,7 @@ const getZeros2DArray = (rows:number, cols:number) => {
   return data;
 };
 
-
-const initialState:InitialState = {
+const initialState: InitialState = {
   created: false,
   passwords: [],
   encryptedData: getZeros2DArray(ROWS, COLS),
@@ -37,9 +37,9 @@ const initialState:InitialState = {
   backupName: null,
   backupData: null,
   backupRestorationSuccess: false,
+  policies: null,
+  policy_map: {},
 };
-
-
 
 const passwordSlice = createSlice({
   name: "password",
@@ -51,21 +51,21 @@ const passwordSlice = createSlice({
     clearBackupInfo: (state) => {
       state.backupName = null;
       state.backupData = null;
-    }
+    },
   },
-  extraReducers:builder=> {
-    builder.addCase(createPasswordThunk.fulfilled.toString(),(action:any) => {
+  extraReducers: (builder) => {
+    builder.addCase(createPasswordThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
       const msg =
         "data" in payload ? payload.data.status : payload.response.data.error;
       alert(msg);
-    })
-    ,
-     builder.addCase(fetchPasswordsThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(fetchPasswordsThunk.fulfilled, (state, action: any) => {
       state.passwords = action.payload.data;
-    })
-     ,
-     builder.addCase(rotateAESKeyAndIVThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(rotateAESKeyAndIVThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -80,9 +80,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    })
-    ,
-    builder.addCase(rotateCharsetThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(rotateCharsetThunk.fulfilled, (state, action: any) => {
       alert("Charset rotated successfully");
       const updatedPassword = action.payload.data.password;
       for (let i = 0; i < state.passwords.length; i++) {
@@ -91,31 +91,31 @@ const passwordSlice = createSlice({
             updatedPassword.charset_last_rotated;
         }
       }
-    })
-     ,
-     builder.addCase(encryptPasswordThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(encryptPasswordThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
         const encryptedPasswordArr = action.payload.data.encryptedPassword
           .split("")
-          .map((char:string) => {
+          .map((char: string) => {
             return parseInt(char);
           });
 
         const aimLength = ROWS * COLS;
         const paddedArray = Array(aimLength).fill(0);
         encryptedPasswordArr.forEach(
-          (value:number, index:number) => (paddedArray[index] = value)
+          (value: number, index: number) => (paddedArray[index] = value),
         );
 
         state.encryptedData = paddedArray;
       } else {
         alert(payload.response.data.error);
       }
-    })
-     ,
-     builder.addCase(decryptPasswordThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(decryptPasswordThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -124,9 +124,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    })
-     ,
-     builder.addCase(deletePasswordThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(deletePasswordThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -142,9 +142,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    })
-     ,
-     builder.addCase(getDeviceInfoThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(getDeviceInfoThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -152,9 +152,9 @@ const passwordSlice = createSlice({
       } else {
         state.deviceInfo = {};
       }
-    })
-     ,
-     builder.addCase(generateBackupThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(generateBackupThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -162,9 +162,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    })
-    ,
-    builder.addCase(downloadBackupThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(downloadBackupThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -172,9 +172,9 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    })
-     ,
-     builder.addCase(uploadBackupThunk.fulfilled.toString(),(state, action:any) => {
+    });
+
+    builder.addCase(uploadBackupThunk.fulfilled, (state, action: any) => {
       const payload = action.payload;
 
       if ("data" in payload) {
@@ -183,8 +183,38 @@ const passwordSlice = createSlice({
       } else {
         alert(payload.response.data.error);
       }
-    })
-    
+    });
+
+    builder.addCase(createPolicyThunk.fulfilled, (state, action: any) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        alert("Policy created successfully");
+      } else {
+        alert(payload.response.data.error);
+      }
+    });
+
+    builder.addCase(fetchPoliciesThunk.fulfilled, (state, action: any) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        state.policies = payload.data;
+      } else {
+        alert(payload.response.data.error);
+      }
+    });
+
+    builder.addCase(fetchPolicyByIdThunk.fulfilled, (state, action: any) => {
+      const payload = action.payload;
+
+      if ("data" in payload) {
+        const data = payload.data;
+        state.policy_map[data._id] = payload.data;
+      } else {
+        alert(payload.response.data.error);
+      }
+    });
   },
 });
 export const { clearEncryptedData, clearBackupInfo } = passwordSlice.actions;

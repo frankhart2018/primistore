@@ -1,10 +1,12 @@
-import primistoreModel from "./primistore-model.js";
-import { IPassword } from "./primistore-schema.js";
+import { passwordModel, policyModel } from "./primistore-model.js";
+import { IPassword } from "./password-schema.js";
+import { IPolicy } from "./policy-schema.js";
 
 export const createPassword = (
   pass_uid: string,
   aes_key: string,
   aes_iv: string,
+  policy_id: string,
 ): Promise<IPassword | any> => {
   let currentTime = Math.floor(Date.now() / 1000).toString();
 
@@ -16,15 +18,16 @@ export const createPassword = (
       aes_iv,
       aes_last_rotated: currentTime,
       charset_last_rotated: currentTime,
+      policy_id,
     },
   };
 
   const options = { upsert: true };
-  return primistoreModel.findOneAndUpdate(query, update, options);
+  return passwordModel.findOneAndUpdate(query, update, options);
 };
 
 export const getPasswords = (): Promise<IPassword[]> => {
-  return primistoreModel.find();
+  return passwordModel.find();
 };
 
 export const updatePasswordAES = (
@@ -44,7 +47,7 @@ export const updatePasswordAES = (
     },
   };
 
-  return primistoreModel.findOneAndUpdate(query, update, options);
+  return passwordModel.findOneAndUpdate(query, update, options);
 };
 
 export const updatePasswordCharset = (
@@ -60,17 +63,43 @@ export const updatePasswordCharset = (
     },
   };
 
-  return primistoreModel.findOneAndUpdate(query, update, options);
+  return passwordModel.findOneAndUpdate(query, update, options);
 };
 
 export const getPasswordByPassUid = (
   pass_uid: string,
 ): Promise<IPassword | null> => {
-  return primistoreModel.findOne({ pass_uid: pass_uid });
+  return passwordModel.findOne({ pass_uid: pass_uid });
 };
 
 export const removePasswordByPassUid = (
   pass_uid: string,
 ): Promise<IPassword | {}> => {
-  return primistoreModel.deleteOne({ pass_uid: pass_uid });
+  return passwordModel.deleteOne({ pass_uid: pass_uid });
 };
+
+export const createPolicy = (
+  policy_name: string,
+  update_window_min: number,
+  update_window_max: number,
+): Promise<IPolicy | any> => {
+  const query = { policy_name };
+  const update = {
+    $setOnInsert: {
+      policy_name,
+      update_window_min,
+      update_window_max,
+    },
+  };
+
+  const options = { upsert: true, new: true };
+  return policyModel.findOneAndUpdate(query, update, options);
+};
+
+export const getPolicies = (): Promise<IPolicy[]> => {
+  return policyModel.find();
+}
+
+export const getPolicyById = (policy_id: string): Promise<IPolicy | null> => {
+  return policyModel.findOne({ _id: policy_id });
+}

@@ -21,14 +21,14 @@ interface RootPassword {
 
 const DeviceInfo = () => {
   const backupName: string = useSelector<RootPassword, string>(
-    (state) => state.password.backupName
+    (state) => state.password.backupName,
   );
 
   const deviceInfo: string = useSelector<RootPassword, string>(
-    (state) => state.password.deviceInfo
+    (state) => state.password.deviceInfo,
   );
   const backupData: any = useSelector<RootPassword, string>(
-    (state) => state.password.backupData
+    (state) => state.password.backupData,
   );
   const [currentScale, setCurrentScale] = useState("C");
   const backupUploadFile = useRef<HTMLInputElement>(null);
@@ -64,7 +64,7 @@ const DeviceInfo = () => {
       dispatch(
         generateBackupThunk({
           password,
-        })
+        }),
       );
     }
   };
@@ -72,18 +72,18 @@ const DeviceInfo = () => {
   useEffect(() => {
     if (backupName !== null) {
       let shouldDownload = window.confirm(
-        `Generated backup: ${backupName}. Download it?`
+        `Generated backup: ${backupName}. Download it?`,
       );
 
       if (shouldDownload) {
         dispatch(
           downloadBackupThunk({
             backupName,
-          })
+          }),
         );
       } else {
         alert(
-          "Cancelling download, thanks for wasting compute on generating backup!"
+          "Cancelling download, thanks for wasting compute on generating backup!",
         );
       }
     }
@@ -109,7 +109,7 @@ const DeviceInfo = () => {
   }, [backupData, backupName, dispatch]);
 
   const uploadBackupHandler = (
-    _e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    _e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     if (backupUploadFile.current) {
       backupUploadFile.current.click();
@@ -124,7 +124,7 @@ const DeviceInfo = () => {
           uploadBackupThunk({
             backupFile: backupFilePath,
             password,
-          })
+          }),
         );
       }
     }
