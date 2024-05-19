@@ -99,3 +99,7 @@ export const createPolicy = (
 export const getPolicies = (): Promise<IPolicy[]> => {
   return policyModel.find();
 }
+
+export const getPolicyById = (policy_id: string): Promise<IPolicy | null> => {
+  return policyModel.findOne({ _id: policy_id });
+}
