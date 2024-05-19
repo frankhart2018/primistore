@@ -34,11 +34,15 @@ interface CreatePolicyThunk {
   updateWindowMin: number;
   updateWindowMax: number;
 }
+interface FetchPolicyByIdThunk {
+  policyId: string;
+}
 
 interface Password {
   pass_uid: string;
   aes_last_rotated: string;
   charset_last_rotated: string;
+  policy_id: string;
 }
 
 interface DeviceInfo {
@@ -52,6 +56,10 @@ interface Policy {
   update_window_max: number;
 }
 
+type PolicyMap = {
+  [id: string]: Policy;
+};
+
 interface InitialState {
   created: boolean;
   passwords: Password[];
@@ -63,6 +71,7 @@ interface InitialState {
   backupData: any | null;
   backupRestorationSuccess: boolean;
   policies: Policy[] | null;
+  policy_map: PolicyMap;
 }
 
 export {
@@ -77,4 +86,6 @@ export {
   UploadBackupThunk,
   InitialState,
   CreatePolicyThunk,
+  FetchPolicyByIdThunk,
+  Password,
 };

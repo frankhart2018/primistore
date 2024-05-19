@@ -10,6 +10,7 @@ import {
   DownloadBackupThunk,
   UploadBackupThunk,
   CreatePolicyThunk,
+  FetchPolicyByIdThunk,
 } from "../models/passwordInterface";
 import * as passwordService from "./password-service";
 
@@ -17,12 +18,15 @@ export const createPasswordThunk = createAsyncThunk(
   "password/createPassword",
   async (payload: PasswordPayload) => {
     try {
-      const response = await passwordService.createPassword(payload.identifier, payload.policy);
+      const response = await passwordService.createPassword(
+        payload.identifier,
+        payload.policy
+      );
       return response;
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const fetchPasswordsThunk = createAsyncThunk(
@@ -30,7 +34,7 @@ export const fetchPasswordsThunk = createAsyncThunk(
   async () => {
     const response = await passwordService.fetchPasswords();
     return response;
-  },
+  }
 );
 
 export const rotateAESKeyAndIVThunk = createAsyncThunk(
@@ -42,7 +46,7 @@ export const rotateAESKeyAndIVThunk = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const rotateCharsetThunk = createAsyncThunk(
@@ -50,7 +54,7 @@ export const rotateCharsetThunk = createAsyncThunk(
   async (payload: RotateCharsetThunk) => {
     const response = await passwordService.rotateCharset(payload.passUid);
     return response;
-  },
+  }
 );
 
 export const encryptPasswordThunk = createAsyncThunk(
@@ -59,13 +63,13 @@ export const encryptPasswordThunk = createAsyncThunk(
     try {
       const response = await passwordService.encryptPassword(
         payload.passUid,
-        payload.password,
+        payload.password
       );
       return response;
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const decryptPasswordThunk = createAsyncThunk(
@@ -74,13 +78,13 @@ export const decryptPasswordThunk = createAsyncThunk(
     try {
       const response = await passwordService.decryptPassword(
         payload.passUid,
-        payload.pmsFile,
+        payload.pmsFile
       );
       return response;
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const deletePasswordThunk = createAsyncThunk(
@@ -92,7 +96,7 @@ export const deletePasswordThunk = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const getDeviceInfoThunk = createAsyncThunk(
@@ -104,7 +108,7 @@ export const getDeviceInfoThunk = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const generateBackupThunk = createAsyncThunk(
@@ -116,7 +120,7 @@ export const generateBackupThunk = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const downloadBackupThunk = createAsyncThunk(
@@ -128,7 +132,7 @@ export const downloadBackupThunk = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const uploadBackupThunk = createAsyncThunk(
@@ -137,13 +141,13 @@ export const uploadBackupThunk = createAsyncThunk(
     try {
       const response = await passwordService.uploadBackup(
         payload.backupFile,
-        payload.password,
+        payload.password
       );
       return response;
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const createPolicyThunk = createAsyncThunk(
@@ -153,13 +157,13 @@ export const createPolicyThunk = createAsyncThunk(
       const response = await passwordService.createPolicy(
         payload.policyName,
         payload.updateWindowMin,
-        payload.updateWindowMax,
+        payload.updateWindowMax
       );
       return response;
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const fetchPoliciesThunk = createAsyncThunk(
@@ -171,5 +175,17 @@ export const fetchPoliciesThunk = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  },
+  }
+);
+
+export const fetchPolicyByIdThunk = createAsyncThunk(
+  "password/fetchPolicyById",
+  async (payload: FetchPolicyByIdThunk, { getState }) => {
+    try {
+      const response = await passwordService.fetchPolicyById(payload.policyId);
+      return response;
+    } catch (e) {
+      return e;
+    }
+  }
 );
