@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deletePasswordThunk,
   fetchPasswordsThunk,
+  fetchPolicyByIdThunk,
   rotateAESKeyAndIVThunk,
   rotateCharsetThunk,
 } from "../../../services/password-thunk";
@@ -10,9 +11,10 @@ import {
 import "./ListPasswords.css";
 import NavBar from "../../parts/NavBar/NavBar";
 import { NavLink } from "react-router-dom";
+import { Password } from "../../../models/passwordInterface";
 
 const ListPasswords = () => {
-  const { passwords } = useSelector((state: any) => state.password);
+  const { passwords, policy_map } = useSelector((state: any) => state.password);
 
   const dispatch = useDispatch<any>();
 
@@ -23,14 +25,14 @@ const ListPasswords = () => {
 
   const rotateAESKeyAndIV = (passUid: string) => {
     const userConfirmed = window.confirm(
-      "Have you copied your current password?",
+      "Have you copied your current password?"
     );
 
     if (userConfirmed) {
       dispatch(
         rotateAESKeyAndIVThunk({
           passUid,
-        }),
+        })
       );
     } else {
       alert("Cancelling AES Key and IV rotation!");
@@ -39,14 +41,14 @@ const ListPasswords = () => {
 
   const rotateCharset = (passUid: string) => {
     const userConfirmed = window.confirm(
-      "Have you copied your current password?",
+      "Have you copied your current password?"
     );
 
     if (userConfirmed === true) {
       dispatch(
         rotateCharsetThunk({
           passUid,
-        }),
+        })
       );
     } else {
       alert("Cancelling Charset rotation!");
@@ -59,12 +61,12 @@ const ListPasswords = () => {
     const utcDate1 = Date.UTC(
       date1.getFullYear(),
       date1.getMonth(),
-      date1.getDate(),
+      date1.getDate()
     );
     const utcDate2 = Date.UTC(
       date2.getFullYear(),
       date2.getMonth(),
-      date2.getDate(),
+      date2.getDate()
     );
 
     const timeDiff = Math.abs(utcDate2 - utcDate1);
@@ -79,10 +81,12 @@ const ListPasswords = () => {
     return dateDiffInDays(now, then);
   };
 
-  const getClassByDays = (days: number) => {
-    if (days > 30) {
+  const getClassByDays = (days: number, policy_id: string) => {
+    const policy = policy_map[policy_id];
+
+    if (days > policy.update_window_max) {
       return "red text-center";
-    } else if (days > 20 && days <= 30) {
+    } else if (days > policy.update_window_min && days <= policy.update_window_max) {
       return "yellow text-center";
     } else {
       return "green text-center";
@@ -96,12 +100,24 @@ const ListPasswords = () => {
       dispatch(
         deletePasswordThunk({
           passUid,
-        }),
+        })
       );
     } else {
       alert(`Retaining password for ${passUid}`);
     }
   };
+
+  useEffect(() => {
+    if (passwords.length > 0) {
+      passwords.forEach((password_obj: Password) => {
+        dispatch(
+          fetchPolicyByIdThunk({
+            policyId: password_obj.policy_id,
+          })
+        );
+      });
+    }
+  }, [passwords, dispatch]);
 
   return (
     <div>
@@ -132,7 +148,7 @@ const ListPasswords = () => {
             </tr>
           </thead>
           <tbody>
-            {passwords.map((password_obj: any, idx: number) => {
+            {(Object.keys(policy_map).length > 0 && passwords.length > 0) && passwords.map((password_obj: any, idx: number) => {
               return (
                 <tr key={idx}>
                   <td className="text-center font-bold">{idx + 1}</td>
@@ -140,6 +156,7 @@ const ListPasswords = () => {
                   <td
                     className={getClassByDays(
                       daysSinceLastRotated(password_obj.aes_last_rotated),
+                      password_obj.policy_id
                     )}
                   >
                     <button
@@ -159,6 +176,7 @@ const ListPasswords = () => {
                   <td
                     className={getClassByDays(
                       daysSinceLastRotated(password_obj.charset_last_rotated),
+                      password_obj.policy_id
                     )}
                   >
                     <button
@@ -171,7 +189,7 @@ const ListPasswords = () => {
                       <span>
                         <strong>Last rotated:</strong>{" "}
                         {daysSinceLastRotated(
-                          password_obj.charset_last_rotated,
+                          password_obj.charset_last_rotated
                         )}{" "}
                         day(s) ago
                       </span>

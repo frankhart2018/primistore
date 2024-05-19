@@ -130,3 +130,10 @@ export const fetchPolicies = async () => {
   const response = await axios.get(`${PASSWORD_MANAGER_API_BASE}/policy`);
   return response;
 };
+
+export const fetchPolicyById = async (policyId: string) => {
+  const response = await axios.get(
+    `${PASSWORD_MANAGER_API_BASE}/policy/${policyId}`,
+  );
+  return response;
+}
