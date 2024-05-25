@@ -1,4 +1,9 @@
-# PrimiStore
+# 
+<div align="center">
+  <h1>Primistore</h1>
+  <h2>Locally hosted password management tool for You </h2>
+</div>
+
 
 Primistore is a password management application that provides a solution to secure your important (or even less important) passwords and provides suggestions regarding safe password practices.
 
@@ -25,11 +30,19 @@ Primistore is a password management application that provides a solution to secu
 
 - The entire app (frontend/backend) is meant to be served from a Raspberry Pi running a Ubuntu Server 22.04 LTS image. The choice was made, as PIs are cheap and can be easily used as small home servers. 
 
-## Documentation
+<hr>
+
+## Documentation 🔗
 
 - [Image processing algorithm for decryption](https://github.com/frankhart2018/primistore/wiki/Image-processing-algorithm-for-decryption)
 - [Instructions to use the app](https://github.com/frankhart2018/primistore/wiki/How-to-use-the-app%3F)
 - [Overview of codebase](https://github.com/frankhart2018/primistore/wiki/Codebase)
+
+<hr>
+
+<div>
+  <h2><img src="https://github.com/Meetjain1/wanderlust/assets/133582566/90f3930e-5a12-4a4e-8ac9-0dc7d5396adb" width="35" height="35"> Ready to Contribute ?</h2>
+</div>
 
 ## Steps to run
 
@@ -126,6 +139,59 @@ $ IP=<IP> REACT_APP_PI=<true/false> LOCAL_DIR=<charset-dir-path> docker-compose 
 
 **Note**: For the first time it will take some time, for later runs, docker will cache things (I hope you have a high level idea of how docker works, if not google it). The `REACT_APP_PI` should be turned on (i.e. set to true) if the app is being run on a raspberry pi, otherwise it can be turned off (i.e. set to false)
 
-## License
+<hr>
 
-This project is licensed under [MIT License](https://github.com/frankhart2018/primistore/blob/master/LICENSE).
+<!-- Open Source Programs -->
+  <div>
+    <h2><img src="https://github.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/blob/master/Emojis/Hand%20gestures/Flexed%20Biceps.png?raw=true" width="35" height="35" > Open Source Programs</h2>
+  </div>
+
+  <table border="1" cellpadding="10">
+        <tr>
+            <td rowspan="2">
+                <img src="https://github.com/Meetjain1/wanderlust/assets/133582566/21b2bc42-bdd5-487a-a083-1b262c2f6d9b" alt="GSSOC Logo" width="100" height="55">
+            </td>
+            <td>
+                <strong>GSSOC 2024</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                This project is a proud participant in GirlScript Summer of Code. We extend a warm welcome to the community to contribute and enhance Primistore.
+            </td>
+        </tr>
+    </table>
+
+<hr>
+
+<!-- Code of conduct -->
+<div>
+<h2><img src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Handshake.png" width="35" height="35"> Code of Conduct</h2>
+</div>
+
+Please note that this project is released with a [Contributor Code of Conduct](./CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+<hr>
+
+<!-- License -->
+<div>
+<h2><img src = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20with%20Curl.png" width="35" height="35"> License</h2>
+</div>
+
+This project is licensed under the [MIT License](./LICENSE).
+
+<hr>
+
+ <!-- Cotributors -->
+<div>
+  <h2><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Red%20Heart.png" width="35" height="35"> Contributors</h2>
+</div>
+
+Your contributions to our project are immensely appreciated! Thank you for helping to enhance Primistore. 😊
+
+<center>
+<a href="https://github.com/frankhart2018/primistore/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=frankhart2018/primistore" />
+</a>
+</center>
+
