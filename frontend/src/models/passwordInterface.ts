@@ -34,9 +34,6 @@ interface CreatePolicyThunk {
   updateWindowMin: number;
   updateWindowMax: number;
 }
-interface FetchPolicyByIdThunk {
-  policyId: string;
-}
 interface PasswordPolicyIdThunk {
   passUid: string;
 }
@@ -79,7 +76,6 @@ interface InitialState {
   backupRestorationSuccess: boolean;
   policies: Policy[] | null;
   policyMap: PolicyMap;
-  loadedPoliciesCount: number;
   currentPolicy: Policy | null;
 }
 
@@ -95,7 +91,6 @@ export {
   UploadBackupThunk,
   InitialState,
   CreatePolicyThunk,
-  FetchPolicyByIdThunk,
   Password,
   PasswordPolicyIdThunk,
   PasswordPolicyUpdateThunk,

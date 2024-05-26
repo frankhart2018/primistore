@@ -117,5 +117,5 @@ export const getPolicies = (): Promise<IPolicy[]> => {
 };
 
 export const getPolicyById = (policy_id: string): Promise<IPolicy | null> => {
-  return policyModel.findOne({ _id: policy_id });
+  return policyModel.findOne({ _id: policy_id }, { _id: 0 });
 };

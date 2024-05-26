@@ -13,7 +13,6 @@ import {
   uploadBackupThunk,
   createPolicyThunk,
   fetchPoliciesThunk,
-  fetchPolicyByIdThunk,
   getPasswordPolicyIdThunk,
 } from "../services/password-thunk";
 import { InitialState } from "../models/passwordInterface";
@@ -40,7 +39,6 @@ const initialState: InitialState = {
   backupRestorationSuccess: false,
   policies: null,
   policyMap: {},
-  loadedPoliciesCount: 0,
   currentPolicy: null,
 };
 
@@ -65,9 +63,8 @@ const passwordSlice = createSlice({
     });
 
     builder.addCase(fetchPasswordsThunk.fulfilled, (state, action: any) => {
-      state.passwords = action.payload.data;
-      state.policyMap = {};
-      state.loadedPoliciesCount = 0;
+      state.passwords = action.payload.data.passwords;
+      state.policyMap = action.payload.data.policies;
     });
 
     builder.addCase(rotateAESKeyAndIVThunk.fulfilled, (state, action: any) => {
@@ -205,18 +202,6 @@ const passwordSlice = createSlice({
 
       if ("data" in payload) {
         state.policies = payload.data;
-      } else {
-        alert(payload.response.data.error);
-      }
-    });
-
-    builder.addCase(fetchPolicyByIdThunk.fulfilled, (state, action: any) => {
-      const payload = action.payload;
-
-      if ("data" in payload) {
-        const data = payload.data;
-        state.policyMap[data._id] = payload.data;
-        state.loadedPoliciesCount += 1;
       } else {
         alert(payload.response.data.error);
       }

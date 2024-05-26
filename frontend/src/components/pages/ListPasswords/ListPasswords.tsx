@@ -2,16 +2,14 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPasswordsThunk,
-  fetchPolicyByIdThunk,
 } from "../../../services/password-thunk";
 
 import "./ListPasswords.css";
 import NavBar from "../../parts/NavBar/NavBar";
 import { NavLink } from "react-router-dom";
-import { Password } from "../../../models/passwordInterface";
 
 const ListPasswords = () => {
-  const { passwords, policyMap, loadedPoliciesCount } = useSelector((state: any) => state.password);
+  const { passwords, policyMap } = useSelector((state: any) => state.password);
 
   const dispatch = useDispatch<any>();
 
@@ -61,18 +59,6 @@ const ListPasswords = () => {
     }
   };
 
-  useEffect(() => {
-    if (passwords.length > 0) {
-      passwords.forEach((password_obj: Password) => {
-        dispatch(
-          fetchPolicyByIdThunk({
-            policyId: password_obj.policy_id,
-          }),
-        );
-      });
-    }
-  }, [passwords, dispatch]);
-
   return (
     <div>
       <NavBar />
@@ -102,7 +88,7 @@ const ListPasswords = () => {
             </tr>
           </thead>
           <tbody>
-            {passwords.length > 0 && passwords.length === loadedPoliciesCount &&
+            {passwords.length > 0 &&
               passwords.map((password_obj: any, idx: number) => {
                 return (
                   <tr key={idx}>

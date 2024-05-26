@@ -92,8 +92,18 @@ const getAllPasswordsHandler = async (
   logger: Logger,
 ) => {
   const passwords = await getPasswords();
+  const policyMap = {};
+  for (const password of passwords) {
+    if (!(password.policy_id in policyMap)) {
+      policyMap[password.policy_id] = await getPolicyById(password.policy_id);
+    }
+  }
+
   logger.info(`[${getCurrentTime()}] GET /passwords : Status 200`);
-  return res.status(200).send(passwords);
+  res.status(200).send({
+    passwords: passwords,
+    policies: policyMap,
+  });
 };
 
 const rotateAESKeyIVHandler = async (
@@ -378,18 +388,6 @@ const getAllPoliciesHandler = async (
   return res.status(200).send(policies);
 };
 
-const getPolicyByIdHandler = async (
-  req: Request,
-  res: Response,
-  logger: Logger,
-) => {
-  const { policy_id } = req.params;
-
-  const policy = await getPolicyById(policy_id);
-  logger.info(`[${getCurrentTime()}] GET /policy/${policy_id} : Status 200`);
-  return res.status(200).send(policy);
-};
-
 const getPolicyIdForPasswordHandler = async (
   req: Request,
   res: Response,
@@ -482,9 +480,6 @@ const PrimistoreController = (app: Application, logger: Logger) => {
   //////////////////////////////////////////
   app.post("/policy", (req, res) => createPolicyHandler(req, res, logger));
   app.get("/policy", (req, res) => getAllPoliciesHandler(req, res, logger));
-  app.get("/policy/:policy_id", (req, res) =>
-    getPolicyByIdHandler(req, res, logger),
-  );
 };
 
 export default PrimistoreController;

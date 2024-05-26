@@ -10,7 +10,6 @@ import {
   DownloadBackupThunk,
   UploadBackupThunk,
   CreatePolicyThunk,
-  FetchPolicyByIdThunk,
   PasswordPolicyIdThunk,
   PasswordPolicyUpdateThunk,
 } from "../models/passwordInterface";
@@ -173,18 +172,6 @@ export const fetchPoliciesThunk = createAsyncThunk(
   async () => {
     try {
       const response = await passwordService.fetchPolicies();
-      return response;
-    } catch (e) {
-      return e;
-    }
-  },
-);
-
-export const fetchPolicyByIdThunk = createAsyncThunk(
-  "password/fetchPolicyById",
-  async (payload: FetchPolicyByIdThunk, { getState }) => {
-    try {
-      const response = await passwordService.fetchPolicyById(payload.policyId);
       return response;
     } catch (e) {
       return e;
