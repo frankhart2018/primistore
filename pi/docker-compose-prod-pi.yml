@@ -1,7 +1,7 @@
 version: "3"
 services:
   frontend:
-    image: frankhart2018/primistore:frontend-v0.4
+    image: frankhart2018/primistore:frontend-v0.5
     ports:
       - "3000:3000"
     environment:
@@ -10,7 +10,7 @@ services:
       - REACT_APP_PI=true
 
   password_manager:
-    image: frankhart2018/primistore:password-manager-v0.4
+    image: frankhart2018/primistore:password-manager-v0.5
     ports:
       - "4000:4000"
     depends_on:
@@ -18,13 +18,17 @@ services:
     environment:
       - HOST=0.0.0.0
       - DB_CONNECTION_STRING=mongodb://mongodb:27017/primistore
+      - PIPE_PATH=/command-runner
+      - PIPE_COMM_DIR=/pipe-comm
+      - HOST_PIPE_COMM_DIR=${PIPE_COMM_DIR}
+      - LOCAL_DIR=/root/.primistore
     volumes:
       - ${LOCAL_DIR}:/root/.primistore
       - ${PIPE_PATH}:/command-runner
       - ${PIPE_COMM_DIR}:/pipe-comm
 
   image_decryptor:
-    image: frankhart2018/primistore:image-decryptor-v0.4
+    image: frankhart2018/primistore:image-decryptor-v0.5
     ports:
       - "8000:8000"
     depends_on:
