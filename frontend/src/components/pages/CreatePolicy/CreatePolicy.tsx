@@ -11,10 +11,6 @@ const CreatePolicy = () => {
   const dispatch = useDispatch<any>();
 
   const createPolicyHandler = () => {
-    console.log("Policy Name: ", policyName);
-    console.log("Update Window Min: ", updateWindowMin);
-    console.log("Update Window Max: ", updateWindowMax);
-
     let errors = "";
     if (policyName === "") {
       errors += "Policy Name is required\n";
