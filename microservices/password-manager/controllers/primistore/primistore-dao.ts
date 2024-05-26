@@ -66,6 +66,22 @@ export const updatePasswordCharset = (
   return passwordModel.findOneAndUpdate(query, update, options);
 };
 
+export const updatePasswordPolicy = (
+  pass_uid: string,
+  policy_id: string,
+): Promise<IPassword | null> => {
+  const query = { pass_uid };
+  const options = { new: true };
+
+  const update = {
+    $set: {
+      policy_id: policy_id,
+    },
+  };
+
+  return passwordModel.findOneAndUpdate(query, update, options);
+};
+
 export const getPasswordByPassUid = (
   pass_uid: string,
 ): Promise<IPassword | null> => {
@@ -98,8 +114,8 @@ export const createPolicy = (
 
 export const getPolicies = (): Promise<IPolicy[]> => {
   return policyModel.find();
-}
+};
 
 export const getPolicyById = (policy_id: string): Promise<IPolicy | null> => {
   return policyModel.findOne({ _id: policy_id });
-}
+};

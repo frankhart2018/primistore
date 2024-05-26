@@ -37,6 +37,13 @@ interface CreatePolicyThunk {
 interface FetchPolicyByIdThunk {
   policyId: string;
 }
+interface PasswordPolicyIdThunk {
+  passUid: string;
+}
+interface PasswordPolicyUpdateThunk {
+  passUid: string;
+  policyId: string;
+}
 
 interface Password {
   pass_uid: string;
@@ -72,6 +79,7 @@ interface InitialState {
   backupRestorationSuccess: boolean;
   policies: Policy[] | null;
   policy_map: PolicyMap;
+  currentPolicy: Policy | null;
 }
 
 export {
@@ -88,4 +96,6 @@ export {
   CreatePolicyThunk,
   FetchPolicyByIdThunk,
   Password,
+  PasswordPolicyIdThunk,
+  PasswordPolicyUpdateThunk,
 };

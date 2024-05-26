@@ -14,6 +14,7 @@ import {
   createPolicyThunk,
   fetchPoliciesThunk,
   fetchPolicyByIdThunk,
+  getPasswordPolicyIdThunk,
 } from "../services/password-thunk";
 import { InitialState } from "../models/passwordInterface";
 import { COLS, ROWS } from "../utils/constants";
@@ -39,6 +40,7 @@ const initialState: InitialState = {
   backupRestorationSuccess: false,
   policies: null,
   policy_map: {},
+  currentPolicy: null,
 };
 
 const passwordSlice = createSlice({
@@ -215,6 +217,19 @@ const passwordSlice = createSlice({
         alert(payload.response.data.error);
       }
     });
+
+    builder.addCase(
+      getPasswordPolicyIdThunk.fulfilled,
+      (state, action: any) => {
+        const payload = action.payload;
+
+        if ("data" in payload) {
+          state.currentPolicy = payload.data.policy_id;
+        } else {
+          alert(payload.response.data.error);
+        }
+      },
+    );
   },
 });
 export const { clearEncryptedData, clearBackupInfo } = passwordSlice.actions;

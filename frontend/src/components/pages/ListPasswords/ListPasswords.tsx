@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deletePasswordThunk,
   fetchPasswordsThunk,
   fetchPolicyByIdThunk,
-  rotateAESKeyAndIVThunk,
-  rotateCharsetThunk,
 } from "../../../services/password-thunk";
 
 import "./ListPasswords.css";
@@ -23,50 +20,18 @@ const ListPasswords = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const rotateAESKeyAndIV = (passUid: string) => {
-    const userConfirmed = window.confirm(
-      "Have you copied your current password?"
-    );
-
-    if (userConfirmed) {
-      dispatch(
-        rotateAESKeyAndIVThunk({
-          passUid,
-        })
-      );
-    } else {
-      alert("Cancelling AES Key and IV rotation!");
-    }
-  };
-
-  const rotateCharset = (passUid: string) => {
-    const userConfirmed = window.confirm(
-      "Have you copied your current password?"
-    );
-
-    if (userConfirmed === true) {
-      dispatch(
-        rotateCharsetThunk({
-          passUid,
-        })
-      );
-    } else {
-      alert("Cancelling Charset rotation!");
-    }
-  };
-
   const dateDiffInDays = (date1: Date, date2: Date) => {
     const oneDayMs = 24 * 60 * 60 * 1000;
 
     const utcDate1 = Date.UTC(
       date1.getFullYear(),
       date1.getMonth(),
-      date1.getDate()
+      date1.getDate(),
     );
     const utcDate2 = Date.UTC(
       date2.getFullYear(),
       date2.getMonth(),
-      date2.getDate()
+      date2.getDate(),
     );
 
     const timeDiff = Math.abs(utcDate2 - utcDate1);
@@ -86,24 +51,13 @@ const ListPasswords = () => {
 
     if (days > policy.update_window_max) {
       return "red text-center";
-    } else if (days > policy.update_window_min && days <= policy.update_window_max) {
+    } else if (
+      days > policy.update_window_min &&
+      days <= policy.update_window_max
+    ) {
       return "yellow text-center";
     } else {
       return "green text-center";
-    }
-  };
-
-  const deletePassword = (passUid: string) => {
-    const userConfirmed = window.confirm(`Deleting password for ${passUid}`);
-
-    if (userConfirmed === true) {
-      dispatch(
-        deletePasswordThunk({
-          passUid,
-        })
-      );
-    } else {
-      alert(`Retaining password for ${passUid}`);
     }
   };
 
@@ -113,7 +67,7 @@ const ListPasswords = () => {
         dispatch(
           fetchPolicyByIdThunk({
             policyId: password_obj.policy_id,
-          })
+          }),
         );
       });
     }
@@ -148,80 +102,72 @@ const ListPasswords = () => {
             </tr>
           </thead>
           <tbody>
-            {(Object.keys(policy_map).length > 0 && passwords.length > 0) && passwords.map((password_obj: any, idx: number) => {
-              return (
-                <tr key={idx}>
-                  <td className="text-center font-bold">{idx + 1}</td>
-                  <td className="pl-5">{password_obj.pass_uid}</td>
-                  <td
-                    className={getClassByDays(
-                      daysSinceLastRotated(password_obj.aes_last_rotated),
-                      password_obj.policy_id
-                    )}
-                  >
-                    <button
-                      onClick={() => rotateAESKeyAndIV(password_obj.pass_uid)}
-                      className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2"
+            {Object.keys(policy_map).length > 0 &&
+              passwords.length > 0 &&
+              passwords.map((password_obj: any, idx: number) => {
+                return (
+                  <tr key={idx}>
+                    <td className="text-center font-bold">{idx + 1}</td>
+                    <td className="pl-5">{password_obj.pass_uid}</td>
+                    <td
+                      className={getClassByDays(
+                        daysSinceLastRotated(password_obj.aes_last_rotated),
+                        password_obj.policy_id,
+                      )}
                     >
-                      Rotate AES Key and IV
-                    </button>
-                    <p className="mb-2">
-                      <span>
-                        <strong>Last rotated:</strong>{" "}
-                        {daysSinceLastRotated(password_obj.aes_last_rotated)}
-                      </span>{" "}
-                      day(s) ago
-                    </p>
-                  </td>
-                  <td
-                    className={getClassByDays(
-                      daysSinceLastRotated(password_obj.charset_last_rotated),
-                      password_obj.policy_id
-                    )}
-                  >
-                    <button
-                      onClick={() => rotateCharset(password_obj.pass_uid)}
-                      className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2"
-                    >
-                      Rotate Charset
-                    </button>
-                    <p className="mb-2">
-                      <span>
-                        <strong>Last rotated:</strong>{" "}
-                        {daysSinceLastRotated(
-                          password_obj.charset_last_rotated
-                        )}{" "}
+                      <p className="mb-2">
+                        <span>
+                          <strong>Last rotated:</strong>{" "}
+                          {daysSinceLastRotated(password_obj.aes_last_rotated)}
+                        </span>{" "}
                         day(s) ago
-                      </span>
-                    </p>
-                  </td>
-                  <td className="text-center">
-                    <NavLink
-                      className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2"
-                      to={{
-                        pathname: `/password/encrypt/${password_obj.pass_uid}`,
-                      }}
+                      </p>
+                    </td>
+                    <td
+                      className={getClassByDays(
+                        daysSinceLastRotated(password_obj.charset_last_rotated),
+                        password_obj.policy_id,
+                      )}
                     >
-                      Encrypt
-                    </NavLink>
-                    <NavLink
-                      className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2"
-                      to={{
-                        pathname: `/password/decrypt/${password_obj.pass_uid}`,
-                      }}
-                    >
-                      Decrypt
-                    </NavLink>
-                    <button
-                      className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2"
-                      onClick={() => deletePassword(password_obj.pass_uid)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+                      <p className="mb-2">
+                        <span>
+                          <strong>Last rotated:</strong>{" "}
+                          {daysSinceLastRotated(
+                            password_obj.charset_last_rotated,
+                          )}{" "}
+                          day(s) ago
+                        </span>
+                      </p>
+                    </td>
+                    <td className="text-center">
+                      <NavLink
+                        className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2"
+                        to={{
+                          pathname: `/password/encrypt/${password_obj.pass_uid}`,
+                        }}
+                      >
+                        Encrypt
+                      </NavLink>
+                      <NavLink
+                        className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2"
+                        to={{
+                          pathname: `/password/decrypt/${password_obj.pass_uid}`,
+                        }}
+                      >
+                        Decrypt
+                      </NavLink>
+                      <button
+                        className="border bg-gray-400/60 border-gray-600 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full w-fit text-base px-3 py-2.5 me-2 my-2"
+                        onClick={() => {
+                          window.location.href = `/password/edit/${password_obj.pass_uid}`;
+                        }}
+                      >
+                        Edit Password
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>

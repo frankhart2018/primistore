@@ -14,6 +14,7 @@ import GeneratePassword from "./components/pages/GeneratePassword/GeneratePasswo
 import VERSION from "./utils/version";
 import DeviceInfo from "./components/pages/DeviceInfo/DeviceInfo";
 import CreatePolicy from "./components/pages/CreatePolicy/CreatePolicy";
+import EditPassword from "./components/pages/EditPassword/EditPassword";
 
 const store = configureStore({
   reducer: {
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/generate-password" element={<GeneratePassword />} />
           <Route path="/device-info" element={<DeviceInfo />} />
           <Route path="/policy" element={<CreatePolicy />} />
+          <Route path="/password/edit/:pass_uid" element={<EditPassword />} />
         </Routes>
       </Provider>
     </div>

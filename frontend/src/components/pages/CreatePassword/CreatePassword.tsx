@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createPasswordThunk, fetchPoliciesThunk } from "../../../services/password-thunk";
+import {
+  createPasswordThunk,
+  fetchPoliciesThunk,
+} from "../../../services/password-thunk";
 import NavBar from "../../parts/NavBar/NavBar";
 
 const CreatePassword = () => {
@@ -15,7 +18,7 @@ const CreatePassword = () => {
       createPasswordThunk({
         identifier,
         policy,
-      })
+      }),
     );
   };
 
@@ -72,7 +75,8 @@ const CreatePassword = () => {
             {policies !== null &&
               policies.map((policy: any) => (
                 <option key={policy._id} value={policy._id}>
-                  {policy.policy_name} (min: {policy.update_window_min}, max: {policy.update_window_max})
+                  {policy.policy_name} (min: {policy.update_window_min}, max:{" "}
+                  {policy.update_window_max})
                 </option>
               ))}
           </select>
