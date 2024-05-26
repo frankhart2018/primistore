@@ -78,7 +78,8 @@ interface InitialState {
   backupData: any | null;
   backupRestorationSuccess: boolean;
   policies: Policy[] | null;
-  policy_map: PolicyMap;
+  policyMap: PolicyMap;
+  loadedPoliciesCount: number;
   currentPolicy: Policy | null;
 }
 

@@ -11,7 +11,7 @@ import { NavLink } from "react-router-dom";
 import { Password } from "../../../models/passwordInterface";
 
 const ListPasswords = () => {
-  const { passwords, policy_map } = useSelector((state: any) => state.password);
+  const { passwords, policyMap, loadedPoliciesCount } = useSelector((state: any) => state.password);
 
   const dispatch = useDispatch<any>();
 
@@ -47,7 +47,7 @@ const ListPasswords = () => {
   };
 
   const getClassByDays = (days: number, policy_id: string) => {
-    const policy = policy_map[policy_id];
+    const policy = policyMap[policy_id];
 
     if (days > policy.update_window_max) {
       return "red text-center";
@@ -102,8 +102,7 @@ const ListPasswords = () => {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(policy_map).length > 0 &&
-              passwords.length > 0 &&
+            {passwords.length > 0 && passwords.length === loadedPoliciesCount &&
               passwords.map((password_obj: any, idx: number) => {
                 return (
                   <tr key={idx}>

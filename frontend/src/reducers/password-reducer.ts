@@ -39,7 +39,8 @@ const initialState: InitialState = {
   backupData: null,
   backupRestorationSuccess: false,
   policies: null,
-  policy_map: {},
+  policyMap: {},
+  loadedPoliciesCount: 0,
   currentPolicy: null,
 };
 
@@ -65,6 +66,8 @@ const passwordSlice = createSlice({
 
     builder.addCase(fetchPasswordsThunk.fulfilled, (state, action: any) => {
       state.passwords = action.payload.data;
+      state.policyMap = {};
+      state.loadedPoliciesCount = 0;
     });
 
     builder.addCase(rotateAESKeyAndIVThunk.fulfilled, (state, action: any) => {
@@ -212,7 +215,8 @@ const passwordSlice = createSlice({
 
       if ("data" in payload) {
         const data = payload.data;
-        state.policy_map[data._id] = payload.data;
+        state.policyMap[data._id] = payload.data;
+        state.loadedPoliciesCount += 1;
       } else {
         alert(payload.response.data.error);
       }
