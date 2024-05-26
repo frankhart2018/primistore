@@ -31,22 +31,12 @@ const EncryptPassword = () => {
   const passUid = pathName.split("/")[3];
 
   const handleDownloadImage = async (uuid: any) => {
-    const element = targetRef.current;
-    const canvas = await html2canvas(element);
-
-    const data = canvas.toDataURL("image/jpg");
-    const link = document.createElement("a");
-
-    if (typeof link.download === "string") {
-      link.href = data;
-      link.download = `image-${uuid}.jpg`;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      window.open(data);
-    }
+    const canvas = await html2canvas(targetRef.current);
+    const image = canvas.toDataURL('image/jpeg', 1.0);
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = `image-${uuid}.jpg`;
+    link.click();
     setEncryptedDataLoaded(false);
   };
 
@@ -56,8 +46,9 @@ const EncryptPassword = () => {
         passUid,
         password,
       }),
-    );
-    setEncryptedDataLoaded(true);
+    ).then(() => {
+      setEncryptedDataLoaded(true);
+    });
   };
 
   return (

@@ -10,14 +10,6 @@ interface PasswordState {
 interface RootState {
   password: PasswordState;
 }
-interface Stats {
-  Length: number;
-  "Has uppercase": string;
-  "Has lowercase": string;
-  "% alphabets": any;
-  "% numbers": any;
-  "% specials"?: any;
-}
 
 const DecryptPassword = () => {
   const decryptedData: string = useSelector<RootState, string>(
@@ -48,42 +40,51 @@ const DecryptPassword = () => {
 
   const computeDecryptedDataStats = (decryptedData: string) => {
     const length = decryptedData.length;
-    const transformedData: { [key: string]: number } = decryptedData
-      .trim()
-      .toLowerCase()
-      .split("")
-      .reduce<{ [key: string]: number }>(
-        (count, char) =>
-          /[a-z]/.test(char)
-            ? { ...count, [char]: (count[char] || 0) + 1 }
-            : count,
-        {},
-      );
 
-    const stats: Stats = {
+    const stats: object = {
       Length: length,
       "Has uppercase": decryptedData.match(/[A-Z]/) ? "yes" : "no",
       "Has lowercase": decryptedData.match(/[a-z]/) ? "yes" : "no",
       "% alphabets": (
-        Object.values(decryptedData).reduce(
-          (sum, key) => sum + parseFloat(key),
-          0,
-        ) / length
+        Object.values(
+          decryptedData
+            .trim()
+            .toLowerCase()
+            .split("")
+            .reduce<{ [key: string]: number }>(
+              (count, char) =>
+                /[a-z]/.test(char)
+                  ? { ...count, [char]: (count[char] || 0) + 1 }
+                  : count,
+              {}
+            )
+        ).reduce((sum: number, key: number) => sum + parseFloat(key.toString()), 0) / length
       ).toFixed(2),
       "% numbers": (
-        Object.values(transformedData).reduce(
-          (sum, key) => sum + parseFloat(String(key)),
-          0,
-        ) / length
+        Object.values(
+          decryptedData
+            .trim()
+            .toLowerCase()
+            .split("")
+            .reduce<{ [key: string]: number }>(
+              (count, char) =>
+                /[0-9]/.test(char)
+                  ? { ...count, [char]: (count[char] || 0) + 1 }
+                  : count,
+              {}
+            )
+        ).reduce((sum: number, key: number) => sum + parseFloat(key.toString()), 0) / length
       ).toFixed(2),
     };
 
-    stats["% specials"] = (
+    const updatedStats: { [key: string]: any } = { ...stats };
+    updatedStats["% specials"] = (
       1 -
-      stats["% alphabets"] -
-      stats["% numbers"]
+      parseFloat(updatedStats["% alphabets"]) -
+      parseFloat(updatedStats["% numbers"])
     ).toFixed(2);
-    return stats;
+    
+    return updatedStats;
   };
 
   useEffect(() => {
