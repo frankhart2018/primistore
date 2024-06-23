@@ -2,19 +2,13 @@
 // import SinglePage from "./components/SinglePage/SinglePage";
 // import { COLS, ROWS } from "./utils/constants";
 // import { CHAR2CODE } from "./utils/charset";
-import { Route, Routes } from "react-router";
+// import { Route, Routes } from "react-router";
 import { configureStore } from "@reduxjs/toolkit";
 import passwordReducer from "./reducers/password-reducer";
 import { Provider } from "react-redux";
-import ListPasswords from "./components/pages/ListPasswords/ListPasswords";
-import EncryptPassword from "./components/pages/EncryptPassword/EncryptPassword";
-import DecryptPassword from "./components/pages/DecryptPassword/DecryptPassword";
-import CreatePassword from "./components/pages/CreatePassword/CreatePassword";
-import GeneratePassword from "./components/pages/GeneratePassword/GeneratePassword";
 import VERSION from "./utils/version";
-import DeviceInfo from "./components/pages/DeviceInfo/DeviceInfo";
-import CreatePolicy from "./components/pages/CreatePolicy/CreatePolicy";
-import EditPassword from "./components/pages/EditPassword/EditPassword";
+import { RouterProvider } from "react-router-dom";
+import router from "./configs/routes";
 
 const store = configureStore({
   reducer: {
@@ -32,22 +26,7 @@ const App = () => {
   return (
     <div className="bg-white h-[100vh] w-[100vw]">
       <Provider store={store}>
-        <Routes>
-          <Route path="/" element={<ListPasswords />} />
-          <Route path="/password" element={<CreatePassword />} />
-          <Route
-            path="/password/encrypt/:pass_uid"
-            element={<EncryptPassword />}
-          />
-          <Route
-            path="/password/decrypt/:pass_uid"
-            element={<DecryptPassword />}
-          />
-          <Route path="/generate-password" element={<GeneratePassword />} />
-          <Route path="/device-info" element={<DeviceInfo />} />
-          <Route path="/policy" element={<CreatePolicy />} />
-          <Route path="/password/edit/:pass_uid" element={<EditPassword />} />
-        </Routes>
+        <RouterProvider router={router}/>
       </Provider>
     </div>
   );
